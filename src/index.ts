@@ -1,25 +1,37 @@
 // main starting point
-import express, { Request, Response } from 'express';
+import express, { Response } from 'express';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import { requestLogger } from './common/middleware/request-logger';
+import { devLogger } from './common/utils/logger';
 
 // configure .env
 dotenv.config();
 const app = express();
 
+// connect to database
+mongoose
+  .connect(process.env.MONGO_URI ?? '')
+  .then(() => {
+    console.log('Connected to database');
+  })
+  .catch((err) => {
+    console.log('Error connecting to database');
+    devLogger(JSON.stringify(err, null, 2));
+  });
+
 // Middleware for parsing JSON request bodies
 app.use(express.json());
 
+// Middleware to log all requests
+app.use(requestLogger);
+
 // Example Route
 app.get('/', (_, res: Response) => {
-  res.send('Hello TypeScript with Express! Enjoy');
+  res.send('This is media logger backend');
 });
-export const getExample = (_: Request, res: Response) => {
-  res.json({ message: 'This is a sample endpoint' });
-};
-// Example Route to test a controller
-app.get('/example', getExample);
 
 // Start the server
 export default app.listen(process.env.PORT, () => {
-  console.log(`Server running at http://localhost:${process.env.PORT}`);
+  console.log(`Server running at ${process.env.PORT}`);
 });
