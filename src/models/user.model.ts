@@ -13,7 +13,10 @@ export interface IUser extends Document {
   password: string;
   email: string;
   profileImg: string;
-  walletBalance: number;
+  role: string;
+  xp: number;
+  location: string;
+  bio: string;
 }
 
 // schema
