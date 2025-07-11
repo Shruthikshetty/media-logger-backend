@@ -26,7 +26,7 @@
 
 # setup express with typescript
 
-### package sto install
+### packages to install
 
 ```bash
 npm install express
@@ -41,13 +41,13 @@ npm init -y
 
 ### create typescript config
 
-this command will create the tdconfig.json
+this command will create the tsconfig.json
 
 ```bash
 npx tsc --init
 ```
 
-content of tsCotdconfig.jsonnfig file
+content of tsconfig.json file
 
 ```json
 {
@@ -68,7 +68,7 @@ content of tsCotdconfig.jsonnfig file
 }
 ```
 
-check th pacakage.josn to be somthing like this if using src folder
+check th package.json to be something like this if using src folder
 
 ```json
 {
@@ -98,7 +98,7 @@ check th pacakage.josn to be somthing like this if using src folder
 }
 ```
 
-### Setup nodemon for continious reload
+### Setup nodemon for continuous reload
 
 create nodemon.json
 
