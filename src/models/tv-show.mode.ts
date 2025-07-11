@@ -1,16 +1,16 @@
 /**
- * This contains the movie model
+ * This contains the tv show model
  */
 
 import { Schema, Document, model } from 'mongoose';
 import {
-  MEDIA_STATUS,
   GENRE_MOVIE_TV,
+  MEDIA_STATUS,
   TAGS,
 } from '../common/constants/model.constants';
 
 //types
-export interface IMovie extends Document {
+export interface ITVShow extends Document {
   title: string;
   description: string;
   averageRating: number;
@@ -18,17 +18,19 @@ export interface IMovie extends Document {
   releaseDate: string;
   cast: string[];
   directors: string[];
-  runTime: number; // in minutes
+  runTime: number;
   languages: string[];
   posterUrl: string;
   backdropUrl: string;
   isActive: boolean;
   status: string;
   tags: string[];
+  totalSeasons: number;
+  totalEpisodes: number;
 }
 
-// schema
-const MovieSchema: Schema = new Schema(
+//schema
+const TVShowSchema: Schema = new Schema(
   {
     title: {
       type: String,
@@ -48,7 +50,7 @@ const MovieSchema: Schema = new Schema(
       enum: GENRE_MOVIE_TV,
     },
     releaseDate: {
-      type: String, // will be iso string
+      type: String,
       required: true,
     },
     cast: {
@@ -67,24 +69,27 @@ const MovieSchema: Schema = new Schema(
     },
     languages: {
       type: [String],
-      required: true,
+      required: false,
+      default: [],
     },
     posterUrl: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     backdropUrl: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     isActive: {
       type: Boolean,
+      required: true,
       default: true,
     },
     status: {
       type: String,
-      required: false,
-      default: 'active',
+      required: true,
       enum: MEDIA_STATUS,
     },
     tags: {
@@ -93,10 +98,18 @@ const MovieSchema: Schema = new Schema(
       default: [],
       enum: TAGS,
     },
+    totalSeasons: {
+      type: Number,
+      required: true,
+    },
+    totalEpisodes: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-// create model from the above model
-const Movie = model<IMovie>('Movie', MovieSchema);
-export default Movie;
+// create model from the above schema
+const TVShow = model<ITVShow>('TVShow', TVShowSchema);
+export default TVShow;

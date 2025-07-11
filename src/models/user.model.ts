@@ -1,7 +1,6 @@
 /**
  * This contains the user model
  */
-//@TODO in progress
 import { Schema, Document, model } from 'mongoose';
 import { USER_ROLES } from '../common/constants/model.constants';
 import { Regex } from '../common/constants/patterns.constants';
