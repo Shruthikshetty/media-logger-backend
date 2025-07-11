@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { requestLogger } from './common/middleware/request-logger';
 import { devLogger } from './common/utils/logger';
+import allRoutes from './routes/index';
 
 // configure .env
 dotenv.config();
@@ -26,10 +27,13 @@ app.use(express.json());
 // Middleware to log all requests
 app.use(requestLogger);
 
-// Example Route
+// base Route
 app.get('/', (_, res: Response) => {
   res.send('This is media logger backend');
 });
+
+// all routes
+app.use('/api', allRoutes);
 
 // Start the server
 export default app.listen(process.env.PORT, () => {
