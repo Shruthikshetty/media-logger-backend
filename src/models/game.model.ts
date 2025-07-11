@@ -1,34 +1,32 @@
 /**
- * This contains the movie model
+ * This contains the game model
  */
 
 import { Schema, Document, model } from 'mongoose';
 import {
+  GAME_GENRES,
+  GAME_PLATFORMS,
   MEDIA_STATUS,
-  GENRE_MOVIE_TV,
-  TAGS,
 } from '../common/constants/model.constants';
 
 //types
-export interface IMovie extends Document {
+export interface IGame extends Document {
   title: string;
   description: string;
   averageRating: number;
   genre: string[];
   releaseDate: Date;
-  cast: string[];
-  directors: string[];
-  runTime: number; // in min
-  languages: string[];
   posterUrl: string;
   backdropUrl: string;
   isActive: boolean;
   status: string;
-  tags: string[];
+  platforms: string[];
+  avgPlaytime?: number;
+  developer: string;
 }
 
-// schema
-const MovieSchema: Schema = new Schema(
+//schema
+const GameSchema: Schema = new Schema(
   {
     title: {
       type: String,
@@ -40,63 +38,55 @@ const MovieSchema: Schema = new Schema(
     },
     averageRating: {
       type: Number,
-      required: false
+      required: false,
     },
     genre: {
       type: [String],
       required: true,
-      enum: GENRE_MOVIE_TV,
+      enum: GAME_GENRES,
     },
     releaseDate: {
       type: Date,
       required: true,
     },
-    cast: {
-      type: [String],
-      required: false,
-      default: [],
-    },
-    directors: {
-      type: [String],
-      required: false,
-      default: [],
-    },
-    runTime: {
-      type: Number,
-      required: true,
-    },
-    languages: {
-      type: [String],
-      required: true,
-    },
     posterUrl: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     backdropUrl: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     isActive: {
       type: Boolean,
+      required: false,
       default: true,
     },
     status: {
       type: String,
-      required: false,
-      default: 'active',
+      required: true,
       enum: MEDIA_STATUS,
     },
-    tags: {
+    platforms: {
       type: [String],
+      required: true,
+      enum: GAME_PLATFORMS,
+    },
+    avgPlaytime: {
+      type: Number,
       required: false,
-      default: [],
-      enum: TAGS,
+    },
+    developer: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   { timestamps: true }
 );
 
-// create model from the above model
-const Movie = model<IMovie>('Movie', MovieSchema);
-export default Movie;
+const Game = model<IGame>('Game', GameSchema);
+
+export default Game;

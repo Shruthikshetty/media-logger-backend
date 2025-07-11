@@ -7,7 +7,7 @@ export const USER_ROLES = ['user', 'admin'];
 export const MEDIA_STATUS = ['released', 'upcoming'];
 
 //@TODO move this db later
-export const GENRE = [
+export const GENRE_MOVIE_TV = [
   'Action',
   'Adventure',
   'Animation',
@@ -86,3 +86,53 @@ export const TAGS = [
   'Minimalist',
   'Dialogue-heavy',
 ];
+
+
+//@TODO move this db later
+export const GAME_GENRES = [
+  'Action',
+  'Adventure',
+  'RPG',
+  'Shooter',
+  'Puzzle',
+  'Racing',
+  'Sports',
+  'Strategy',
+  'Simulation',
+  'Fighting',
+  'Stealth',
+  'Survival',
+  'MMORPG',
+  'Indie',
+  'Sandbox',
+  'Horror',
+  'Open World',
+  'Rhythm',
+  'Card Game',
+  'Board Game',
+  'Battle Royale',
+  'Visual Novel',
+  'Metroidvania',
+  'Roguelike',
+  'Tactical',
+  'Point-and-Click',
+];
+
+export const GAME_PLATFORMS = [
+  'PC',
+  'PlayStation 5',
+  'PlayStation 4',
+  'PlayStation 3',
+  'Xbox Series X',
+  'Xbox One',
+  'Xbox 360',
+  'Nintendo Switch',
+  'Nintendo Wii U',
+  'Nintendo 3DS',
+  'Android',
+  'iOS',
+  'Google Stadia',
+  'Amazon Luna',
+  'VR',
+];
+
