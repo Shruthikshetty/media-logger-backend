@@ -6,6 +6,8 @@ export const USER_ROLES = ['user', 'admin'];
 
 export const MEDIA_STATUS = ['released', 'upcoming'];
 
+export const SEASON_STATUS = ['ended', 'upcoming', 'on-going'];
+
 //@TODO move this db later
 export const GENRE_MOVIE_TV = [
   'Action',
@@ -87,7 +89,6 @@ export const TAGS = [
   'Dialogue-heavy',
 ];
 
-
 //@TODO move this db later
 export const GAME_GENRES = [
   'Action',
@@ -135,4 +136,3 @@ export const GAME_PLATFORMS = [
   'Amazon Luna',
   'VR',
 ];
-
