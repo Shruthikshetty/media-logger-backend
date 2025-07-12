@@ -7,11 +7,11 @@ import { ValidatedRequest } from '../types/custom-types';
 import { handleError } from '../common/utils/handle-error';
 import User from '../models/user.model';
 import { isDuplicateKeyError } from '../common/utils/mongo-errors';
-import { AddUserValidationType } from '../common/validation-schema/user/add-user';
+import { AddUserZodSchemaType } from '../common/validation-schema/user/add-user';
 
 // controller to add a new user
 export const addUser = async (
-  req: ValidatedRequest<AddUserValidationType>,
+  req: ValidatedRequest<AddUserZodSchemaType>,
   res: Response
 ) => {
   try {
