@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001
-
+@authToken = Bearer <auth token>
 ##-------------------------------------------- USER -------------------------------------------------------------
 ### add user
 POST {{baseUrl}}/api/user
@@ -10,6 +10,11 @@ Content-Type: application/json
   "email": "moon@gmail.com",
   "password": "moon"
 }
+
+### get all users 
+GET {{baseUrl}}/api/user/all
+Authorization: {{authToken}}
+
 
 ##------------------------------------------- AUTH --------------------------------------------------------------
 ###login user 

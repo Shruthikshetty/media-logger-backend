@@ -43,3 +43,29 @@ export const addUser = async (
     });
   }
 };
+
+//controller to get all users
+//@TODO add pagination
+export const getAllUsers = async (req: ValidatedRequest<{}>, res: Response) => {
+  try {
+    // get all users from database
+    const users = await User.find({});
+
+    // in case users are not found
+    if (!users || users.length === 0) {
+      handleError(res, { message: 'Users not found' });
+      return;
+    }
+
+    // return the users
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};

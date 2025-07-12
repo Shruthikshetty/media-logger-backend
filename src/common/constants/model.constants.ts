@@ -1,5 +1,6 @@
 /**
  * this contains all the constants used in models
+ * NOTE : if new value are added make sure to add them at the end of array
  */
 
 export const USER_ROLES = ['user', 'admin'];
