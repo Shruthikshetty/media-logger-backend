@@ -6,10 +6,6 @@ import { Request, NextFunction, Response } from 'express';
  * Express middleware to log all incoming HTTP requests.
  * Logs method, URL, IP address, and response status code.
  * The status codes are colord using chalk for better visibility
- *
- * @param {Request} req - Express request object
- * @param {Response} res - Express response object
- * @param {NextFunction} next - Express next function
  */
 export const requestLogger = (
   req: Request,

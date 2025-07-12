@@ -7,3 +7,5 @@ export const SALT_ROUNDS = 10;
 export const JWT_SECRET_DEFAULT = 'super-secret';
 
 export const JWT_EXPIRES_IN = '1d';
+
+export const ADMIN = 'admin';
