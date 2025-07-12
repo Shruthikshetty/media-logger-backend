@@ -6,9 +6,9 @@ POST {{baseUrl}}/api/user
 Content-Type: application/json
 
 {
-  "name": "john",
-  "email": "john@gmail.com",
-  "password": "john"
+  "name": "moon",
+  "email": "moon@gmail.com",
+  "password": "moon"
 }
 
 ## ------------------------------------------ movies -------------------------------------------------------------
