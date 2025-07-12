@@ -16,9 +16,7 @@ export const addUser = async (
 ) => {
   try {
     // create a new user
-    const newUser = new User({
-      ...req.validatedData!,
-    });
+    const newUser = new User(req.validatedData!);
 
     // save the user
     const saveUser = await newUser.save();
