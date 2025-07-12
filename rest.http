@@ -5,6 +5,12 @@
 POST {{baseUrl}}/api/user
 Content-Type: application/json
 
+{
+  "name": "john",
+  "email": "john@gmail.com",
+  "password": "john"
+}
+
 ## ------------------------------------------ movies -------------------------------------------------------------
 
 ### get all movies

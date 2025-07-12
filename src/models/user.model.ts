@@ -24,6 +24,8 @@ const UserSchema: Schema = new Schema(
     name: {
       type: String,
       required: true,
+      minLength: 3,
+      maxLength: 50,
     },
     password: {
       type: String,
@@ -60,6 +62,7 @@ const UserSchema: Schema = new Schema(
       type: String,
       required: false,
       default: '',
+      maxLength: 200,
     },
   },
   { timestamps: true }
