@@ -1,5 +1,5 @@
 /**
- * This contains the game model
+ * This @file contains the game model
  */
 
 import { Schema, Document, model } from 'mongoose';
@@ -23,6 +23,7 @@ export interface IGame extends Document {
   platforms: string[];
   avgPlaytime?: number;
   developer: string;
+  ageRating: number;
 }
 
 //schema
@@ -82,6 +83,10 @@ const GameSchema: Schema = new Schema(
       type: String,
       required: false,
       default: '',
+    },
+    ageRating: {
+      type: Number,
+      required: false,
     },
   },
   { timestamps: true }

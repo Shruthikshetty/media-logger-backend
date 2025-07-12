@@ -27,6 +27,7 @@ export interface ITVShow extends Document {
   tags: string[];
   totalSeasons: number;
   totalEpisodes: number;
+  ageRating: number;
 }
 
 //schema
@@ -105,6 +106,10 @@ const TVShowSchema: Schema = new Schema(
     totalEpisodes: {
       type: Number,
       required: true,
+    },
+    ageRating: {
+      type: Number,
+      required: false,
     },
   },
   { timestamps: true }

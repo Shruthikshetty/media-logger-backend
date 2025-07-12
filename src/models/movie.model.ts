@@ -1,5 +1,5 @@
 /**
- * This contains the movie model
+ * This @file contains the movie model
  */
 
 import { Schema, Document, model } from 'mongoose';
@@ -25,6 +25,7 @@ export interface IMovie extends Document {
   isActive: boolean;
   status: string;
   tags: string[];
+  ageRating: number;
 }
 
 // schema
@@ -92,6 +93,10 @@ const MovieSchema: Schema = new Schema(
       required: false,
       default: [],
       enum: TAGS,
+    },
+    ageRating: {
+      type: Number,
+      required: false,
     },
   },
   { timestamps: true }
