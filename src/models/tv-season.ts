@@ -15,6 +15,7 @@ interface ISeason extends Document {
   posterUrl: string;
   seasonRating?: number;
   status: string;
+  trailerYoutubeUrl: string;
 }
 
 // schema
@@ -53,6 +54,10 @@ const SeasonSchema: Schema = new Schema(
       type: String,
       required: true,
       enum: SEASON_STATUS,
+    },
+    trailerYoutubeUrl: {
+      type: String,
+      required: false,
     },
   },
   { timestamps: true }
