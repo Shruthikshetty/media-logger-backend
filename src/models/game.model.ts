@@ -24,6 +24,7 @@ export interface IGame extends Document {
   avgPlaytime?: number;
   developer: string;
   ageRating: number;
+  trailerYoutubeUrl: string;
 }
 
 //schema
@@ -87,6 +88,11 @@ const GameSchema: Schema = new Schema(
     ageRating: {
       type: Number,
       required: false,
+    },
+    trailerYoutubeUrl: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   { timestamps: true }
