@@ -1,5 +1,5 @@
 /**
- * @file Middleware to handle validation results from express-validator
+ * @file Middleware to handle validation using zod
  */
 
 import { Request, Response, NextFunction } from 'express';

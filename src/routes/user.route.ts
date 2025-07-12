@@ -10,7 +10,7 @@ import { validateReq } from '../common/middleware/handle-validation';
 // initialize router
 const route = Router();
 
-//Route to create a user
+//Route to create a user (register)
 route.post('/', validateReq(AddUserZodSchema), addUser);
 
 // export all routers clubbed

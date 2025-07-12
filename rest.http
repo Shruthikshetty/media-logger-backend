@@ -11,7 +11,17 @@ Content-Type: application/json
   "password": "moon"
 }
 
-## ------------------------------------------ movies -------------------------------------------------------------
+##------------------------------------------- AUTH --------------------------------------------------------------
+###login user 
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "moon@gmail.com",
+  "password": "moon"
+}
+
+## ------------------------------------------ MOVIES -------------------------------------------------------------
 
 ### get all movies
 GET {{baseUrl}}/api/movies

@@ -1,25 +1,29 @@
 # How to Run the Project
 
 1. **Create a `.env` file**  
-  Copy the required environment variables from `.env.example` and update them as needed.
+   Copy the required environment variables from `.env.example` and update them as needed.
 
 2. **Start in Development Mode**  
-  For automatic reloads and TypeScript support, run:
-  ```bash
-  npm run dev
-  ```
+   For automatic reloads and TypeScript support, run:
+
+```bash
+npm run dev
+```
 
 3. **Build and Run in Production Mode**  
-  First, compile the TypeScript code:
-  ```bash
-  npm run build
-  ```
-  This will generate JavaScript files in the `dist` folder.
+   First, compile the TypeScript code:
 
-  Then, start the application:
-  ```bash
-  npm run start
-  ```
+```bash
+npm run build
+```
+
+This will generate JavaScript files in the `dist` folder.
+
+Then, start the application:
+
+```bash
+npm run start
+```
 
 > **Tip:**  
 > Use `npm run dev` for development and `npm run build && npm run start` for production.
