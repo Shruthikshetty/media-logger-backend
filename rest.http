@@ -6,9 +6,9 @@ POST {{baseUrl}}/api/user
 Content-Type: application/json
 
 {
-  "name": "moon",
-  "email": "moon@gmail.com",
-  "password": "moon"
+  "name": "doom",
+  "email": "doom@gmail.com",
+  "password": "doom"
 }
 
 ### get all users 
@@ -27,6 +27,14 @@ Authorization: {{authToken}}
 GET {{baseUrl}}/api/user
 Authorization: {{authToken}}
 
+### delete logged in user 
+DELETE {{baseUrl}}/api/user
+Authorization: {{authToken}}
+
+### delete user by id 
+DELETE {{baseUrl}}/api/user/6873c1a2a4482d1815c78ac2
+Authorization: {{authToken}}
+
 
 ##------------------------------------------- AUTH --------------------------------------------------------------
 ###login user 
@@ -34,8 +42,8 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "moon@gmail.com",
-  "password": "moon"
+  "email": "doom@gmail.com",
+  "password": "doom"
 }
 
 ## ------------------------------------------ MOVIES -------------------------------------------------------------

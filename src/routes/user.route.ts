@@ -7,6 +7,8 @@ import {
   addUser,
   getAllUsers,
   getUserDetail,
+  deleteUser,
+  deleteUserById,
 } from '../controllers/user.controller';
 import { AddUserZodSchema } from '../common/validation-schema/user/add-user';
 import { validateReq } from '../common/middleware/handle-validation';
@@ -23,6 +25,12 @@ route.get('/all', requireAuth('admin'), getAllUsers);
 
 //Route to get a user detail
 route.get('/', requireAuth(), getUserDetail);
+
+// delete user by id
+route.delete('/', requireAuth(), deleteUser);
+
+//delete user by id
+route.delete('/:id', requireAuth('admin'), deleteUserById);
 
 // export all routers clubbed
 export default route;

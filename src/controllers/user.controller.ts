@@ -14,6 +14,7 @@ import {
   getPaginationParams,
   getPaginationResponse,
 } from '../common/utils/pagination';
+import { DeleteUserZodSchema } from '../common/validation-schema/user/delete-user';
 
 // controller to add a new user
 export const addUser = async (
@@ -99,6 +100,76 @@ export const getUserDetail = async (
     res.status(200).json({
       success: true,
       data: userDetails,
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+export const deleteUser = async (req: ValidatedRequest<{}>, res: Response) => {
+  try {
+    //delete the user
+    const deletedUser = await User.findByIdAndDelete(req.userData!._id)
+      .select('-password')
+      .lean()
+      .exec();
+
+    // in case user is not deleted
+    if (!deletedUser) {
+      handleError(res, { message: 'User deletion failed' });
+      return;
+    }
+
+    // return the deleted user
+    res.status(200).json({
+      success: true,
+      data: deletedUser,
+      message: 'User deleted successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+export const deleteUserById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    //get id from params
+    const { id } = req.params;
+
+    // validate if
+    const isValidId = DeleteUserZodSchema.safeParse({ id }).success;
+
+    if (!isValidId) {
+      handleError(res, { message: 'Invalid user id', statusCode: 400 });
+      return;
+    }
+
+    //delete the user
+    const deletedUser = await User.findByIdAndDelete(id)
+      .select('-password')
+      .lean()
+      .exec();
+
+    // in case user is not deleted
+    if (!deletedUser) {
+      handleError(res, { message: 'User deletion failed' });
+      return;
+    }
+
+    // return the deleted user
+    res.status(200).json({
+      success: true,
+      data: deletedUser,
+      message: 'User deleted successfully',
     });
   } catch (err) {
     // handle unexpected error
