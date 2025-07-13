@@ -8,6 +8,7 @@ import { handleError } from '../common/utils/handle-error';
 import User from '../models/user.model';
 import { isDuplicateKeyError } from '../common/utils/mongo-errors';
 import { AddUserZodSchemaType } from '../common/validation-schema/user/add-user';
+import { omit } from 'lodash';
 
 // controller to add a new user
 export const addUser = async (
@@ -61,6 +62,27 @@ export const getAllUsers = async (req: ValidatedRequest<{}>, res: Response) => {
     res.status(200).json({
       success: true,
       data: users,
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//controller to get the logged in user details
+export const getUserDetail = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // filter the data
+    const userDetails = omit(req.userData, ['password', '__v']);
+    // return the user details from validated user jwt
+    res.status(200).json({
+      success: true,
+      data: userDetails,
     });
   } catch (err) {
     // handle unexpected error
