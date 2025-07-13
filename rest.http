@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer <auth token>
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzI5MzJmZjExZjI1YTc1YTg4YjIwMSIsImlhdCI6MTc1MjM4ODg5OSwiZXhwIjoxNzUyNDc1Mjk5fQ.dWW1TeIUMJK-Kw_Ok_KzDsOox1jiG0_mwlro9dBkPB4
 ##-------------------------------------------- USER -------------------------------------------------------------
 ### add user
 POST {{baseUrl}}/api/user
@@ -13,6 +13,10 @@ Content-Type: application/json
 
 ### get all users 
 GET {{baseUrl}}/api/user/all
+Authorization: {{authToken}}
+
+### get logged in user details 
+GET {{baseUrl}}/api/user
 Authorization: {{authToken}}
 
 

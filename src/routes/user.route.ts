@@ -3,7 +3,11 @@
  */
 //@TODO in progress
 import { Router } from 'express';
-import { addUser, getAllUsers } from '../controllers/user.controller';
+import {
+  addUser,
+  getAllUsers,
+  getUserDetail,
+} from '../controllers/user.controller';
 import { AddUserZodSchema } from '../common/validation-schema/user/add-user';
 import { validateReq } from '../common/middleware/handle-validation';
 import { requireAuth } from '../common/middleware/require-auth';
@@ -16,6 +20,9 @@ route.post('/', validateReq(AddUserZodSchema), addUser);
 
 //Route to get all users
 route.get('/all', requireAuth('admin'), getAllUsers);
+
+//Route to get a user detail
+route.get('/', requireAuth(), getUserDetail);
 
 // export all routers clubbed
 export default route;
