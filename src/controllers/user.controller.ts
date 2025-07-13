@@ -9,6 +9,11 @@ import User from '../models/user.model';
 import { isDuplicateKeyError } from '../common/utils/mongo-errors';
 import { AddUserZodSchemaType } from '../common/validation-schema/user/add-user';
 import { omit } from 'lodash';
+import { GET_ALL_USER_LIMITS } from '../common/constants/config.constants';
+import {
+  getValidatedLimit,
+  getValidatedStart,
+} from '../common/utils/pagination';
 
 // controller to add a new user
 export const addUser = async (
@@ -46,22 +51,64 @@ export const addUser = async (
 };
 
 //controller to get all users
-//@TODO add pagination
 export const getAllUsers = async (req: ValidatedRequest<{}>, res: Response) => {
-  try {
-    // get all users from database
-    const users = await User.find({});
+  // get the limit and start from query params
+  let { limit, start, page } = req.query;
 
-    // in case users are not found
-    if (!users || users.length === 0) {
-      handleError(res, { message: 'Users not found' });
-      return;
-    }
+  // validate the limit and start
+  const validatedLimit = getValidatedLimit(
+    limit as string,
+    GET_ALL_USER_LIMITS.limits
+  );
+
+  let validatedStart: number;
+
+  // in case page is provided
+  if (page) {
+    const pageNumber = Math.max(1, Number(page) || 1);
+    validatedStart = (pageNumber - 1) * validatedLimit;
+  } else {
+    validatedStart = getValidatedStart(
+      start as string,
+      GET_ALL_USER_LIMITS.start.default
+    );
+  }
+
+  try {
+    // get all users from database with total count
+    const [users, total] = await Promise.all([
+      User.find()
+        .sort({ createdAt: -1 }) // recent first
+        .limit(validatedLimit)
+        .skip(validatedStart)
+        .select('-password')
+        .lean()
+        .exec(),
+      User.countDocuments(),
+    ]);
+
+    // calculate pagination metadata
+    const currentPage = Math.floor(validatedStart / validatedLimit) + 1;
+    const totalPages = Math.ceil(total / validatedLimit);
 
     // return the users
     res.status(200).json({
       success: true,
-      data: users,
+      data: {
+        users,
+        // pagination details
+        pagination: {
+          total,
+          start: validatedStart,
+          limit: validatedLimit,
+          hasMore: validatedStart + validatedLimit < total,
+          currentPage,
+          totalPages,
+          hasPrevious: validatedStart > 0,
+          nextPage: currentPage < totalPages ? currentPage + 1 : null,
+          previousPage: currentPage > 1 ? currentPage - 1 : null,
+        },
+      },
     });
   } catch (err) {
     // handle unexpected error
