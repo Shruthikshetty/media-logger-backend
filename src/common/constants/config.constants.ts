@@ -11,7 +11,7 @@ export const JWT_EXPIRES_IN = '1d';
 export const ADMIN = 'admin';
 
 export const GET_ALL_USER_LIMITS = {
-  limits: {
+  limit: {
     min: 1,
     max: 100,
     default: 20,
