@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzI5MzJmZjExZjI1YTc1YTg4YjIwMSIsImlhdCI6MTc1MjM4ODg5OSwiZXhwIjoxNzUyNDc1Mjk5fQ.dWW1TeIUMJK-Kw_Ok_KzDsOox1jiG0_mwlro9dBkPB4
+@authToken = Bearer <token>
 ##-------------------------------------------- USER -------------------------------------------------------------
 ### add user
 POST {{baseUrl}}/api/user
@@ -13,6 +13,14 @@ Content-Type: application/json
 
 ### get all users 
 GET {{baseUrl}}/api/user/all
+Authorization: {{authToken}}
+
+### get all users  with pagination  (min = 0 , max = 100)
+GET {{baseUrl}}/api/user/all?start=0&limit=10
+Authorization: {{authToken}}
+
+### get all users page based
+GET {{baseUrl}}/api/user/all?page=1&limit=10
 Authorization: {{authToken}}
 
 ### get logged in user details 
