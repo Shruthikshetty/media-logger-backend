@@ -9,10 +9,12 @@ import {
   getUserDetail,
   deleteUser,
   deleteUserById,
+  updateUser,
 } from '../controllers/user.controller';
 import { AddUserZodSchema } from '../common/validation-schema/user/add-user';
 import { validateReq } from '../common/middleware/handle-validation';
 import { requireAuth } from '../common/middleware/require-auth';
+import { UpdateUserZodSchema } from '../common/validation-schema/user/update-user';
 
 // initialize router
 const route = Router();
@@ -31,6 +33,9 @@ route.delete('/', requireAuth(), deleteUser);
 
 //delete user by id
 route.delete('/:id', requireAuth('admin'), deleteUserById);
+
+//update user
+route.patch('/', requireAuth(), validateReq(UpdateUserZodSchema), updateUser);
 
 // export all routers clubbed
 export default route;

@@ -17,11 +17,17 @@ export const validateReq = (schema: z.ZodSchema<any>) => {
 
     // in case validations fail
     if (!result.success) {
-      const errors = result.error.flatten().fieldErrors;
-      // get all the error's
-      const errorMessage = Object.values(errors).flat().join(' | ');
+      const { fieldErrors, formErrors } = result.error.flatten();
+      // combine errors
+      const combinedErrors = [
+        ...Object.values(fieldErrors).flat(),
+        ...formErrors,
+      ];
 
-      handleError(res, { message: errorMessage, error: errors });
+      // get all the error's
+      const errorMessage = Object.values(combinedErrors).flat().join(' | ');
+
+      handleError(res, { message: errorMessage, error: combinedErrors });
       return;
     }
 

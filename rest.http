@@ -6,9 +6,9 @@ POST {{baseUrl}}/api/user
 Content-Type: application/json
 
 {
-  "name": "doom",
-  "email": "doom@gmail.com",
-  "password": "doom"
+  "name": "don",
+  "email": "don@gmail.com",
+  "password": "don"
 }
 
 ### get all users 
@@ -35,6 +35,17 @@ Authorization: {{authToken}}
 DELETE {{baseUrl}}/api/user/6873c1a2a4482d1815c78ac2
 Authorization: {{authToken}}
 
+### update a user details 
+PATCH {{baseUrl}}/api/user
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name":"jonny",
+  "password":"jonny"
+}
+
+
 
 ##------------------------------------------- AUTH --------------------------------------------------------------
 ###login user 
@@ -43,7 +54,7 @@ Content-Type: application/json
 
 {
   "email": "doom@gmail.com",
-  "password": "doom"
+  "password": "jonny"
 }
 
 ## ------------------------------------------ MOVIES -------------------------------------------------------------

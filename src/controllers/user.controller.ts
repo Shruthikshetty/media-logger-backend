@@ -15,6 +15,8 @@ import {
   getPaginationResponse,
 } from '../common/utils/pagination';
 import { DeleteUserZodSchema } from '../common/validation-schema/user/delete-user';
+import { UpdateUserZodSchemaType } from '../common/validation-schema/user/update-user';
+import { encrypt } from '../common/utils/hashing';
 
 // controller to add a new user
 export const addUser = async (
@@ -173,6 +175,47 @@ export const deleteUserById = async (
     });
   } catch (err) {
     // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+export const updateUser = async (
+  req: ValidatedRequest<UpdateUserZodSchemaType>,
+  res: Response
+) => {
+  try {
+    let password: string | undefined;
+    // hash password if present
+    if (req.validatedData!?.password) {
+      password = await encrypt(req.validatedData!.password);
+    }
+    // handle unexpected error
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userData!._id,
+      { ...req.validatedData!, ...(password && { password }) },
+      {
+        new: true,
+      }
+    )
+      .select('-password -__v')
+      .lean()
+      .exec();
+
+    // if not updated user
+    if (!updatedUser) {
+      handleError(res, { message: 'User update failed' });
+      return;
+    }
+
+    // send response
+    res.status(200).json({
+      success: true,
+      data: updatedUser,
+      message: 'User updated successfully',
+    });
+  } catch (err) {
     handleError(res, {
       error: err,
     });
