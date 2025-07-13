@@ -7,7 +7,7 @@ const dailyRotateTransport = new DailyRotateFile({
   datePattern: 'YYYY-MM-DD',
   zippedArchive: true,
   maxSize: '20m',
-  maxFiles: '2d', // Only keep logs for the last 2 days
+  maxFiles: '7d', // Only keep logs for the last 7 days
 });
 
 //logger function
