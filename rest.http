@@ -148,3 +148,10 @@ GET {{baseUrl}}/api/game?limit=20&page=1
 
 ### get all games by pagination (start , limit)
 GET {{baseUrl}}/api/game?limit=20&start=0
+
+### get a game by id 
+GET {{baseUrl}}/api/game/6877c2ff3f23959890faae31
+
+### delete a game buy id 
+DELETE {{baseUrl}}/api/game/6877c2ff3f23959890faae31
+Authorization: {{authToken}}

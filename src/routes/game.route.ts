@@ -5,6 +5,7 @@
 import { Router } from 'express';
 import {
   addGame,
+  deleteGameById,
   getAllGames,
   getGameById,
 } from '../controllers/game.controller';
@@ -23,6 +24,9 @@ route.get('/:id', getGameById);
 
 // Route to add a game
 route.post('/', requireAuth('admin'), validateReq(AddGameZodSchema), addGame);
+
+// Route to delete a game by id
+route.delete('/:id', requireAuth('admin'), deleteGameById);
 
 //export all the routes
 export default route;

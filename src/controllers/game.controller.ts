@@ -121,3 +121,40 @@ export const addGame = async (
     });
   }
 };
+
+//controller to delete a game by id
+export const deleteGameById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // check if id is a valid mongo id
+    if (!isMongoIdValid(req.params?.id)) {
+      handleError(res, { message: 'Invalid game id', statusCode: 400 });
+      return;
+    }
+
+    // delete the game
+    const deletedGame = await Game.findByIdAndDelete(req.params?.id)
+      .lean()
+      .exec();
+
+    // in case game is not deleted
+    if (!deletedGame) {
+      handleError(res, { message: 'Game dose not exist' });
+      return;
+    }
+
+    // return the deleted game
+    res.status(200).json({
+      success: true,
+      data: deletedGame,
+      message: 'Game deleted successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
