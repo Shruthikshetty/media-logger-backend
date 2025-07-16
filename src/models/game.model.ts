@@ -8,6 +8,7 @@ import {
   GAME_PLATFORMS,
   MEDIA_STATUS,
 } from '../common/constants/model.constants';
+import { min } from 'lodash';
 
 //types
 export interface IGame extends Document {
@@ -33,6 +34,7 @@ const GameSchema: Schema = new Schema(
     title: {
       type: String,
       required: true,
+      unique: true,
     },
     description: {
       type: String,

@@ -189,3 +189,6 @@ export const updateMovieById = async (
     });
   }
 };
+
+//@TODO controller to add bulk movies by json 
+//@TODO controller to bulk delete movies by taking list of ids
