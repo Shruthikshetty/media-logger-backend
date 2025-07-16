@@ -123,3 +123,39 @@ export const deleteMovieById = async (
     });
   }
 };
+
+//update  movie by id
+export const updateMovieById = async (
+  req: ValidatedRequest<AddMovieZodSchemaType>,
+  res: Response
+) => {
+  try {
+    // get id from params
+    const { id } = req.params;
+
+    // update the movie
+    const updatedMovie = await Movie.findByIdAndUpdate(id, req.validatedData!, {
+      new: true,
+    })
+      .lean()
+      .exec();
+
+    // in case movie is not updated
+    if (!updatedMovie) {
+      handleError(res, { message: 'movie dose not exist' });
+      return;
+    }
+
+    // return the updated movie
+    res.status(200).json({
+      success: true,
+      data: updatedMovie,
+      message: 'Movie updated successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
