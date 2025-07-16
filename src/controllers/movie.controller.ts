@@ -6,6 +6,14 @@ import { ValidatedRequest } from '../types/custom-types';
 import { handleError } from '../common/utils/handle-error';
 import { AddMovieZodSchemaType } from '../common/validation-schema/movie/add-movie';
 import Movie from '../models/movie.model';
+import { isDuplicateKeyError } from '../common/utils/mongo-errors';
+import {
+  getPaginationParams,
+  getPaginationResponse,
+} from '../common/utils/pagination';
+import {
+  GET_ALL_MOVIES_LIMITS
+} from '../common/constants/config.constants';
 
 // controller to add a new movie
 export const addMovie = async (
@@ -33,6 +41,9 @@ export const addMovie = async (
     // handle unexpected errors
     handleError(res, {
       error: err,
+      message: isDuplicateKeyError(err)
+        ? 'Movie already exists'
+        : 'Server down please try again later',
     });
   }
 };
@@ -41,17 +52,37 @@ export const addMovie = async (
  * controller to fetch all the movies
  */
 export const getAllMovies = async (
-  _req: ValidatedRequest<{}>,
+  req: ValidatedRequest<{}>,
   res: Response
 ) => {
+  // get pagination params
+  const { limit, start } = getPaginationParams(
+    req.query,
+    GET_ALL_MOVIES_LIMITS
+  );
+
   try {
     //try to fetch all movies
-    const movies = await Movie.find().lean().exec();
+    const [movies, total] = await Promise.all([
+      Movie.find()
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .skip(start)
+        .lean()
+        .exec(),
+      Movie.countDocuments(),
+    ]);
+
+    // get pagination details
+    const pagination = getPaginationResponse(total, limit, start);
 
     // return movies
     res.status(200).json({
       success: true,
-      data: movies,
+      data: {
+        movies,
+        pagination,
+      },
     });
   } catch (err) {
     // handle unexpected errors

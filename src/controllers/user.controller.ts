@@ -111,6 +111,7 @@ export const getUserDetail = async (
   }
 };
 
+//controller to delete the logged in user
 export const deleteUser = async (req: ValidatedRequest<{}>, res: Response) => {
   try {
     //delete the user
@@ -139,6 +140,7 @@ export const deleteUser = async (req: ValidatedRequest<{}>, res: Response) => {
   }
 };
 
+//controller to delete user by id
 export const deleteUserById = async (
   req: ValidatedRequest<{}>,
   res: Response
@@ -181,6 +183,7 @@ export const deleteUserById = async (
   }
 };
 
+//controller to update the logged in user
 export const updateUser = async (
   req: ValidatedRequest<UpdateUserZodSchemaType>,
   res: Response
@@ -221,3 +224,5 @@ export const updateUser = async (
     });
   }
 };
+
+//@TODO controller to update role by id 

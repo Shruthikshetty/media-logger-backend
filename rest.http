@@ -59,5 +59,35 @@ Content-Type: application/json
 
 ## ------------------------------------------ MOVIES -------------------------------------------------------------
 
-### get all movies
-GET {{baseUrl}}/api/movies
+### get all movies default (20 movies at a time) max is 50
+GET {{baseUrl}}/api/movie
+
+### get all movies by pagination (page)
+GET {{baseUrl}}/api/movie?limit=20&page=1
+
+### get all movies by pagination (start , limit)
+GET {{baseUrl}}/api/movie?limit=20&start=1
+
+
+### add a movie 
+POST {{baseUrl}}/api/movie
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "title": "The Shawshank Redemption 2",
+  "description": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+  "averageRating": 9.2,
+  "cast": ["Tim Robbins", "Morgan Freeman"],
+  "directors": ["Frank Darabont"],
+  "runTime": 142,
+  "languages": ["English"],
+  "posterUrl": "https://example.com/shawshank-poster.jpg",
+  "backdropUrl": "https://example.com/shawshank-backdrop.jpg",
+  "isActive": true,
+  "status": "released",
+  "tags": ["Cult Classic", "Award-winning", "Feel-Good"],
+  "ageRating": 18,
+  "trailerYoutubeUrl": "https://www.youtube.com/watch?v=6hB3S9bIacg",
+  "releaseDate": "1994-09-23T00:00:00.000Z"
+}
