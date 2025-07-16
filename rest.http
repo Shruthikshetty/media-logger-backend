@@ -45,6 +45,15 @@ Content-Type: application/json
   "password":"jonny"
 }
 
+### update user role by id 
+PUT  {{baseUrl}}/api/user/role/6873f16d247f3a1d7ddf15e6
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "role":"user"
+}
+
 
 
 ##------------------------------------------- AUTH --------------------------------------------------------------
@@ -68,6 +77,8 @@ GET {{baseUrl}}/api/movie?limit=20&page=1
 ### get all movies by pagination (start , limit)
 GET {{baseUrl}}/api/movie?limit=20&start=1
 
+### get Movie by id
+GET {{baseUrl}}/api/movie/6877504915e1dac22aff59d7
 
 ### add a movie 
 POST {{baseUrl}}/api/movie
@@ -90,4 +101,17 @@ Content-Type: application/json
   "ageRating": 18,
   "trailerYoutubeUrl": "https://www.youtube.com/watch?v=6hB3S9bIacg",
   "releaseDate": "1994-09-23T00:00:00.000Z"
+}
+
+### delete movie by id 
+DELETE {{baseUrl}}/api/movie/68775607854576d14ca6a8de
+Authorization: {{authToken}}
+
+### update movie by id 
+PATCH {{baseUrl}}/api/movie/6877504915e1dac22aff59d7
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "description": "2 imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."
 }
