@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { logger } from './logger';
 
 // types ....
-type HandleErrorOptions = {
+export type HandleErrorOptions = {
   statusCode?: number;
   message?: string;
   error?: any; // Optional: can be Error or any error object this is only for logging
