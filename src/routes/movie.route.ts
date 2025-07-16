@@ -7,6 +7,7 @@ import {
   addMovie,
   deleteMovieById,
   getAllMovies,
+  getMovieById,
   updateMovieById,
 } from '../controllers/movie.controller';
 import { requireAuth } from '../common/middleware/require-auth';
@@ -19,6 +20,9 @@ const route = Router();
 
 // get all movies
 route.get('/', getAllMovies);
+
+//get movie by id
+route.get('/:id', getMovieById);
 
 // add a movie
 route.post('/', requireAuth('admin'), validateReq(AddMovieZodSchema), addMovie);

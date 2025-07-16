@@ -46,6 +46,36 @@ export const addMovie = async (
   }
 };
 
+//controller to get movie by id
+export const getMovieById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get id from params
+    const { id } = req.params;
+
+    // get the movie
+    const movie = await Movie.findById(id).lean().exec();
+
+    // in case movie is not found
+    if (!movie) {
+      handleError(res, { message: 'Movie not found', statusCode: 404 });
+      return;
+    }
+
+    // return the movie
+    res.status(200).json({
+      success: true,
+      data: movie,
+    });
+  } catch (err) {
+    // handle unexpected errors
+    handleError(res, {
+      error: err,
+    });
+  }
+};
 /**
  * controller to fetch all the movies with pagination
  */
