@@ -8,7 +8,6 @@ import {
   GAME_PLATFORMS,
   MEDIA_STATUS,
 } from '../common/constants/model.constants';
-import { min } from 'lodash';
 
 //types
 export interface IGame extends Document {

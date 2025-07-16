@@ -8,17 +8,39 @@ import { ValidatedRequest } from '../types/custom-types';
 import Game from '../models/game.model';
 import { isDuplicateKeyError } from '../common/utils/mongo-errors';
 import { AddGameZodSchemaType } from '../common/validation-schema/game/add-game';
+import {
+  getPaginationParams,
+  getPaginationResponse,
+} from '../common/utils/pagination';
+import { GET_ALL_GAMES_LIMITS } from '../common/constants/config.constants';
 
 //controller to get all the games
 export const getAllGames = async (req: ValidatedRequest<{}>, res: Response) => {
+  // get pagination params
+  const { limit, start } = getPaginationParams(req.query, GET_ALL_GAMES_LIMITS);
+
   try {
     //find all the games
-    const games = await Game.find().lean().exec();
+    const [games, total] = await Promise.all([
+      Game.find()
+        .skip(start)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .lean()
+        .exec(),
+      Game.countDocuments(),
+    ]);
+
+    // get pagination details
+    const pagination = getPaginationResponse(total, limit, start);
 
     // send response
     res.status(200).json({
       success: true,
-      data: games,
+      data: {
+        games,
+        pagination,
+      },
     });
   } catch (err) {
     //handle unexpected error
