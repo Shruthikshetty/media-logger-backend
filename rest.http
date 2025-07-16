@@ -1,23 +1,50 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzI5MzJmZjExZjI1YTc1YTg4YjIwMSIsImlhdCI6MTc1MjM4ODg5OSwiZXhwIjoxNzUyNDc1Mjk5fQ.dWW1TeIUMJK-Kw_Ok_KzDsOox1jiG0_mwlro9dBkPB4
+@authToken = Bearer <token>
 ##-------------------------------------------- USER -------------------------------------------------------------
 ### add user
 POST {{baseUrl}}/api/user
 Content-Type: application/json
 
 {
-  "name": "moon",
-  "email": "moon@gmail.com",
-  "password": "moon"
+  "name": "don",
+  "email": "don@gmail.com",
+  "password": "don"
 }
 
 ### get all users 
 GET {{baseUrl}}/api/user/all
 Authorization: {{authToken}}
 
+### get all users  with pagination  (min = 0 , max = 100)
+GET {{baseUrl}}/api/user/all?start=0&limit=10
+Authorization: {{authToken}}
+
+### get all users page based
+GET {{baseUrl}}/api/user/all?page=1&limit=10
+Authorization: {{authToken}}
+
 ### get logged in user details 
 GET {{baseUrl}}/api/user
 Authorization: {{authToken}}
+
+### delete logged in user 
+DELETE {{baseUrl}}/api/user
+Authorization: {{authToken}}
+
+### delete user by id 
+DELETE {{baseUrl}}/api/user/6873c1a2a4482d1815c78ac2
+Authorization: {{authToken}}
+
+### update a user details 
+PATCH {{baseUrl}}/api/user
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name":"jonny",
+  "password":"jonny"
+}
+
 
 
 ##------------------------------------------- AUTH --------------------------------------------------------------
@@ -26,11 +53,41 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "moon@gmail.com",
-  "password": "moon"
+  "email": "doom@gmail.com",
+  "password": "jonny"
 }
 
 ## ------------------------------------------ MOVIES -------------------------------------------------------------
 
-### get all movies
-GET {{baseUrl}}/api/movies
+### get all movies default (20 movies at a time) max is 50
+GET {{baseUrl}}/api/movie
+
+### get all movies by pagination (page)
+GET {{baseUrl}}/api/movie?limit=20&page=1
+
+### get all movies by pagination (start , limit)
+GET {{baseUrl}}/api/movie?limit=20&start=1
+
+
+### add a movie 
+POST {{baseUrl}}/api/movie
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "title": "The Shawshank Redemption 2",
+  "description": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+  "averageRating": 9.2,
+  "cast": ["Tim Robbins", "Morgan Freeman"],
+  "directors": ["Frank Darabont"],
+  "runTime": 142,
+  "languages": ["English"],
+  "posterUrl": "https://example.com/shawshank-poster.jpg",
+  "backdropUrl": "https://example.com/shawshank-backdrop.jpg",
+  "isActive": true,
+  "status": "released",
+  "tags": ["Cult Classic", "Award-winning", "Feel-Good"],
+  "ageRating": 18,
+  "trailerYoutubeUrl": "https://www.youtube.com/watch?v=6hB3S9bIacg",
+  "releaseDate": "1994-09-23T00:00:00.000Z"
+}

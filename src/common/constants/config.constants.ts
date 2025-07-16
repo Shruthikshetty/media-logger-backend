@@ -21,3 +21,16 @@ export const GET_ALL_USER_LIMITS = {
     default: 0,
   },
 };
+
+export const GET_ALL_MOVIES_LIMITS = {
+  limit: {
+    min: 1,
+    max: 50,
+    default: 20,
+  },
+  start: {
+    min: 0,
+    default: 0,
+  },
+};
+

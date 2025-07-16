@@ -35,6 +35,7 @@ const MovieSchema: Schema = new Schema(
     title: {
       type: String,
       required: true,
+      unique: true,
     },
     description: {
       type: String,
@@ -43,6 +44,7 @@ const MovieSchema: Schema = new Schema(
     averageRating: {
       type: Number,
       required: false,
+      max: 10,
     },
     genre: {
       type: [String],
@@ -73,11 +75,13 @@ const MovieSchema: Schema = new Schema(
     },
     posterUrl: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     backdropUrl: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     isActive: {
       type: Boolean,

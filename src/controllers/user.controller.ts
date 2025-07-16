@@ -14,6 +14,9 @@ import {
   getPaginationParams,
   getPaginationResponse,
 } from '../common/utils/pagination';
+import { DeleteUserZodSchema } from '../common/validation-schema/user/delete-user';
+import { UpdateUserZodSchemaType } from '../common/validation-schema/user/update-user';
+import { encrypt } from '../common/utils/hashing';
 
 // controller to add a new user
 export const addUser = async (
@@ -107,3 +110,119 @@ export const getUserDetail = async (
     });
   }
 };
+
+//controller to delete the logged in user
+export const deleteUser = async (req: ValidatedRequest<{}>, res: Response) => {
+  try {
+    //delete the user
+    const deletedUser = await User.findByIdAndDelete(req.userData!._id)
+      .select('-password')
+      .lean()
+      .exec();
+
+    // in case user is not deleted
+    if (!deletedUser) {
+      handleError(res, { message: 'User deletion failed' });
+      return;
+    }
+
+    // return the deleted user
+    res.status(200).json({
+      success: true,
+      data: deletedUser,
+      message: 'User deleted successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//controller to delete user by id
+export const deleteUserById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    //get id from params
+    const { id } = req.params;
+
+    // validate if
+    const isValidId = DeleteUserZodSchema.safeParse({ id }).success;
+
+    if (!isValidId) {
+      handleError(res, { message: 'Invalid user id', statusCode: 400 });
+      return;
+    }
+
+    //delete the user
+    const deletedUser = await User.findByIdAndDelete(id)
+      .select('-password')
+      .lean()
+      .exec();
+
+    // in case user is not deleted
+    if (!deletedUser) {
+      handleError(res, { message: 'User deletion failed' });
+      return;
+    }
+
+    // return the deleted user
+    res.status(200).json({
+      success: true,
+      data: deletedUser,
+      message: 'User deleted successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//controller to update the logged in user
+export const updateUser = async (
+  req: ValidatedRequest<UpdateUserZodSchemaType>,
+  res: Response
+) => {
+  try {
+    let password: string | undefined;
+    // hash password if present
+    if (req.validatedData!?.password) {
+      password = await encrypt(req.validatedData!.password);
+    }
+    // handle unexpected error
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userData!._id,
+      { ...req.validatedData!, ...(password && { password }) },
+      {
+        new: true,
+      }
+    )
+      .select('-password -__v')
+      .lean()
+      .exec();
+
+    // if not updated user
+    if (!updatedUser) {
+      handleError(res, { message: 'User update failed' });
+      return;
+    }
+
+    // send response
+    res.status(200).json({
+      success: true,
+      data: updatedUser,
+      message: 'User updated successfully',
+    });
+  } catch (err) {
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//@TODO controller to update role by id 
