@@ -11,9 +11,7 @@ import {
   getPaginationParams,
   getPaginationResponse,
 } from '../common/utils/pagination';
-import {
-  GET_ALL_MOVIES_LIMITS
-} from '../common/constants/config.constants';
+import { GET_ALL_MOVIES_LIMITS } from '../common/constants/config.constants';
 
 // controller to add a new movie
 export const addMovie = async (
@@ -49,7 +47,7 @@ export const addMovie = async (
 };
 
 /**
- * controller to fetch all the movies
+ * controller to fetch all the movies with pagination
  */
 export const getAllMovies = async (
   req: ValidatedRequest<{}>,
@@ -86,6 +84,40 @@ export const getAllMovies = async (
     });
   } catch (err) {
     // handle unexpected errors
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+/**
+ * delete movie by id
+ */
+export const deleteMovieById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get id from params
+    const { id } = req.params;
+
+    // delete the movie
+    const deletedMovie = await Movie.findByIdAndDelete(id).lean().exec();
+
+    // in case movie is not deleted
+    if (!deletedMovie) {
+      handleError(res, { message: 'movie dose not exist' });
+      return;
+    }
+
+    // return the deleted movie
+    res.status(200).json({
+      success: true,
+      data: deletedMovie,
+      message: 'Movie deleted successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
     handleError(res, {
       error: err,
     });
