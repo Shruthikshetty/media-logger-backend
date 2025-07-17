@@ -164,3 +164,58 @@ Content-Type: application/json
 {
   "description": "Squad uupp and drop into the arena in this free-to-play battle royale where legendary characters fight for glory"
 }
+
+##-------------------------------------------------TV-SHOW-----------------------------------------------------------
+
+### add a new tv show (this can add all all tv show , seasons , episodes)
+POST {{baseUrl}}/api/tv-show
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "title": "The Midnight Library",
+  "description": "A mysterious anthology series exploring the strange happenings in a library that only appears at midnight.",
+  "genre": ["Drama", "Fantasy"],
+  "releaseDate": "2025-09-15",
+  "directors": ["Ava DuVernay"],
+  "runTime": 50,
+  "status": "released",
+  "totalSeasons": 1,
+  "totalEpisodes": 2,
+  "cast": ["Gugu Mbatha-Raw", "David Oyelowo"],
+  "languages": ["English"],
+  "posterUrl": "https://example.com/posters/midnight-library.jpg",
+  "backdropUrl": "https://example.com/backdrops/midnight-library.jpg",
+  "isActive": true,
+  "tags": ["Supernatural", "Dark", "Mind-Bending"],
+  "ageRating": 16,
+  "seasons": [
+    {
+      "seasonNumber": 1,
+      "title": "Season 1",
+      "description": "The first season introduces the Midnight Library and its secrets.",
+      "releaseDate": "2025-09-15",
+      "noOfEpisodes": 2,
+      "posterUrl": "https://example.com/posters/midnight-library-s1.jpg",
+      "seasonRating": 8.5,
+      "status": "ended",
+      "trailerYoutubeUrl": "https://youtube.com/watch?v=example",
+      "episodes": [
+        {
+          "title": "The Door at Midnight",
+          "description": "A young woman discovers the library for the first time.",
+          "episodeNumber": 1,
+          "releaseDate": "2025-09-15",
+          "runTime": 50
+        },
+        {
+          "title": "The Book of Lost Hours",
+          "description": "A mysterious book reveals the past of a missing librarian.",
+          "episodeNumber": 2,
+          "releaseDate": "2025-09-22",
+          "runTime": 50
+        }
+      ]
+    }
+  ]
+}

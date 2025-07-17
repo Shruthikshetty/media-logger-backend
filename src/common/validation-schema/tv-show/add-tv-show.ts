@@ -8,6 +8,7 @@ import {
   MEDIA_STATUS,
   TAGS,
 } from '../../constants/model.constants';
+import { AddSeasonZodSchema } from './add-season';
 
 //schema
 export const AddTvShowZodSchema = z.object({
@@ -126,6 +127,8 @@ export const AddTvShowZodSchema = z.object({
       message: 'Age rating must be number',
     })
     .optional(),
+
+  seasons: z.array(AddSeasonZodSchema.omit({ tvShow: true })).optional(),
 });
 
 //type

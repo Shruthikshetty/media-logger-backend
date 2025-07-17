@@ -5,6 +5,7 @@
 import z from 'zod';
 import { isMongoIdValid } from '../../utils/mongo-errors';
 import { SEASON_STATUS } from '../../constants/model.constants';
+import { AddEpisodeZodSchema } from './add-episode';
 
 // schema
 export const AddSeasonZodSchema = z.object({
@@ -65,12 +66,14 @@ export const AddSeasonZodSchema = z.object({
     .refine((val) => SEASON_STATUS.includes(val), {
       message: `Status must be one of the following: ${SEASON_STATUS.join(', ')}`,
     }),
-    
+
   trailerYoutubeUrl: z
     .string({
       message: 'Trailer youtube url must be string',
     })
     .optional(),
+
+  episodes: z.array(AddEpisodeZodSchema.omit({ season: true })).optional(),
 });
 
 // export the type
