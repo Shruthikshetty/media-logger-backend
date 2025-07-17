@@ -155,3 +155,12 @@ GET {{baseUrl}}/api/game/6877c2ff3f23959890faae31
 ### delete a game buy id 
 DELETE {{baseUrl}}/api/game/6877c2ff3f23959890faae31
 Authorization: {{authToken}}
+
+### update a game by id 
+PATCH {{baseUrl}}/api/game/6877ed5901d671894b2f40e7
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "description": "Squad uupp and drop into the arena in this free-to-play battle royale where legendary characters fight for glory"
+}

@@ -16,6 +16,7 @@ import {
   getPaginationResponse,
 } from '../common/utils/pagination';
 import { GET_ALL_GAMES_LIMITS } from '../common/constants/config.constants';
+import { UpdateGameZodSchemaType } from '../common/validation-schema/game/update-game';
 
 //controller to get all the games
 export const getAllGames = async (req: ValidatedRequest<{}>, res: Response) => {
@@ -158,3 +159,50 @@ export const deleteGameById = async (
     });
   }
 };
+
+//controller to update a game
+export const updateGameById = async (
+  req: ValidatedRequest<UpdateGameZodSchemaType>,
+  res: Response
+) => {
+  try {
+    // check if id is a valid mongo id
+    if (!isMongoIdValid(req.params?.id)) {
+      handleError(res, { message: 'Invalid game id', statusCode: 400 });
+      return;
+    }
+
+    //update the game by id
+    const updatedGame = await Game.findByIdAndUpdate(
+      req.params?.id,
+      req.validatedData!,
+      {
+        new: true,
+      }
+    )
+      .lean()
+      .exec();
+
+    // in case game is not updated
+    if (!updatedGame) {
+      handleError(res, { message: 'Game not found' });
+      return;
+    }
+
+    // return the updated game
+    res.status(200).json({
+      success: true,
+      data: updatedGame,
+      message: 'Game updated successfully',
+    });
+
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//@TODO controller to bulk update games by taking json
+//@TODO controller to bulk delete games by taking ids
