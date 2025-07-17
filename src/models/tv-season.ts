@@ -30,6 +30,10 @@ const SeasonSchema: Schema = new Schema(
       type: Number,
       required: true,
     },
+    title: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String,
       default: '',
@@ -58,6 +62,7 @@ const SeasonSchema: Schema = new Schema(
     trailerYoutubeUrl: {
       type: String,
       required: false,
+      default: '',
     },
   },
   { timestamps: true }

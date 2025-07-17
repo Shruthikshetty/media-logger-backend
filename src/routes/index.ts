@@ -7,6 +7,7 @@ import userRoutes from './user.route';
 import authRoutes from './auth.route';
 import movieRoutes from './movie.route';
 import gameRoutes from './game.route';
+import tvShowRoutes from './tv-show.route';
 
 //initialize router
 const route = Router();
@@ -22,6 +23,9 @@ route.use('/movie', movieRoutes);
 
 //Game routes
 route.use('/game', gameRoutes);
+
+//TV Show routes
+route.use('/tv-show', tvShowRoutes);
 
 // export all the routes
 export default route;

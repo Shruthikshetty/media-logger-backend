@@ -36,6 +36,7 @@ const EpisodeSchema: Schema = new Schema(
     },
     releaseDate: {
       type: String,
+      default: '',
     },
     runTime: {
       type: Number,
