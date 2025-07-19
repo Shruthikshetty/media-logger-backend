@@ -4,8 +4,96 @@
 
 components:
   schemas:
+    TagsMovieTvEnum:
+      type: string
+      enum:
+        - Based on True Story
+        - Cult Classic
+        - Binge-worthy
+        - Award-winning
+        - Coming of Age
+        - Post-Apocalyptic
+        - Dystopian
+        - Feel-Good
+        - Dark
+        - Slow Burn
+        - Fast-paced
+        - Character-driven
+        - Plot Twist
+        - Underrated
+        - Critically Acclaimed
+        - Soundtrack Heavy
+        - Visual Masterpiece
+        - Mind-Bending
+        - Satirical
+        - Non-linear Story
+        - Multi-language
+        - Psychological
+        - Time Travel
+        - Violent
+        - Family Friendly
+        - Adult
+        - Romantic
+        - Political
+        - Fantasy World
+        - Supernatural
+        - Historical Fiction
+        - Episodic
+        - Serialized
+        - Minimalist
+        - Dialogue-heavy
+    GenreMovieTvEnum:
+      type: string
+      enum:
+        - Action
+        - Adventure
+        - Animation
+        - Comedy
+        - Crime
+        - Documentary
+        - Drama
+        - Fantasy
+        - Historical
+        - Horror
+        - Mystery
+        - Romance
+        - Sci-Fi
+        - Thriller
+        - War
+        - Western
+        - Superhero
+        - Family
+        - Musical
+        - Biography
+        - Sport
+        - Noir
+        - Reality
+        - Talk Show
+        - Game Show
+        - News
+        - Cooking
+        - Kids
+        - Indie
+        - RPG
+        - Shooter
+        - Strategy
+        - Puzzle
+        - Simulation
+        - Fighting
+        - Racing
+        - Survival
+        - Sandbox
     TvShow:
       type: object
+      required:
+        - title
+        - description
+        - genre
+        - releaseDate
+        - runTime
+        - status
+        - totalSeasons
+        - totalEpisodes
       properties:
         title:
           type: string
@@ -14,10 +102,99 @@ components:
         description:
           type: string
           description: A brief summary of the show.
+          example: 'A high school chemistry teacher turned methamphetamine producer navigates the dangers of the criminal underworld.'
+        averageRating:
+          type: number
+          description: The average rating of the TV show, on a scale of 0 to 10.
+          format: float
+          maximum: 10
+          example: 9.5
+        genre:
+          type: array
+          description: List of genres for the TV show.
+          items:
+            $ref: '#/components/schemas/GenreMovieTvEnum'
+          example: ['Drama', 'Crime']
+        releaseDate:
+          type: string
+          description: The release date (ISO format, e.g., YYYY-MM-DD).
+          example: '2008-01-20'
+        cast:
+          type: array
+          description: List of cast members.
+          items:
+            type: string
+          example: ['Bryan Cranston', 'Aaron Paul']
+        directors:
+          type: array
+          description: List of directors.
+          items:
+            type: string
+          example: ['Vince Gilligan']
+        runTime:
+          type: integer
+          description: Runtime of each episode, in minutes.
+          example: 47
+        languages:
+          type: array
+          description: List of spoken languages.
+          items:
+            type: string
+          example: ['English', 'Spanish']
+        posterUrl:
+          type: string
+          description: URL for the poster image.
+          example: 'http://example.com/poster.jpg'
+        backdropUrl:
+          type: string
+          description: URL for the backdrop image.
+          example: 'http://example.com/backdrop.jpg'
+        isActive:
+          type: boolean
+          description: Indicates if the show is currently active in the system.
+          default: true
+          example: true
         status:
           type: string
           description: The current status of the media.
-          enum: ['ended', 'upcoming', 'on-going']
+          enum: ['released', 'upcoming']
+          example: 'ended'
+        tags:
+          type: array
+          description: List of tag strings.
+          items:
+            $ref: '#/components/schemas/TagsMovieTvEnum'
+        totalSeasons:
+          type: integer
+          description: Total number of seasons.
+          example: 5
+        totalEpisodes:
+          type: integer
+          description: Total number of episodes.
+          example: 62
+        ageRating:
+          type: integer
+          description: Suggested viewer age rating.
+          example: 18
+      example:
+        title: 'Breaking Bad'
+        description: 'A high school chemistry teacher turned methamphetamine producer navigates the dangers of the criminal underworld.'
+        averageRating: 9.5
+        genre: ['Drama', 'Crime']
+        releaseDate: '2008-01-20'
+        cast: ['Bryan Cranston', 'Aaron Paul']
+        directors: ['Vince Gilligan']
+        runTime: 47
+        languages: ['English', 'Spanish']
+        posterUrl: 'http://example.com/poster.jpg'
+        backdropUrl: 'http://example.com/backdrop.jpg'
+        isActive: true
+        status: 'released'
+        tags: ['Award-winning', 'Critically-acclaimed']
+        totalSeasons: 5
+        totalEpisodes: 62
+        ageRating: 18
+
   requestBodies:
     AddTvShowBody:
       description: The request body for creating a new TV Show.
@@ -26,6 +203,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/TvShow'
+
   responses:
     TvShowResponse:
       description: A single TV Show object.
@@ -48,4 +226,3 @@ components:
                 example: 'Resource not found'
     Unauthorized:
       description: Unauthorized access. Missing or invalid token.
-
