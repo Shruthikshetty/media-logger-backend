@@ -44,6 +44,7 @@ const TVShowSchema: Schema = new Schema(
     averageRating: {
       type: Number,
       required: false,
+      max: 10,
     },
     genre: {
       type: [String],
@@ -85,7 +86,6 @@ const TVShowSchema: Schema = new Schema(
     },
     isActive: {
       type: Boolean,
-      required: true,
       default: true,
     },
     status: {

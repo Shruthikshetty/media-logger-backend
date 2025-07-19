@@ -43,7 +43,6 @@ export const UpdateUserZodSchema = z
   })
   .superRefine((data, ctx) => {
     const hasValue = Object.values(data).some((val) => val !== undefined);
-    console.log(hasValue);
     if (!hasValue) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

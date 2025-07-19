@@ -34,3 +34,15 @@ export const GET_ALL_MOVIES_LIMITS = {
   },
 };
 
+export const GET_ALL_GAMES_LIMITS = {
+  limit: {
+    min: 1,
+    max: 50,
+    default: 20,
+  },
+  start: {
+    min: 0,
+    default: 0,
+  },
+};
+

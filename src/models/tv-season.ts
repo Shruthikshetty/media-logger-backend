@@ -6,7 +6,7 @@ import { Schema, model, Document } from 'mongoose';
 import { SEASON_STATUS } from '../common/constants/model.constants';
 
 //types...
-interface ISeason extends Document {
+export interface ISeason extends Document {
   tvShow: string;
   seasonNumber: number;
   description: string;
@@ -28,6 +28,10 @@ const SeasonSchema: Schema = new Schema(
     },
     seasonNumber: {
       type: Number,
+      required: true,
+    },
+    title: {
+      type: String,
       required: true,
     },
     description: {
@@ -58,6 +62,7 @@ const SeasonSchema: Schema = new Schema(
     trailerYoutubeUrl: {
       type: String,
       required: false,
+      default: '',
     },
   },
   { timestamps: true }

@@ -11,9 +11,7 @@ import {
   getPaginationParams,
   getPaginationResponse,
 } from '../common/utils/pagination';
-import {
-  GET_ALL_MOVIES_LIMITS
-} from '../common/constants/config.constants';
+import { GET_ALL_MOVIES_LIMITS } from '../common/constants/config.constants';
 
 // controller to add a new movie
 export const addMovie = async (
@@ -48,8 +46,38 @@ export const addMovie = async (
   }
 };
 
+//controller to get movie by id
+export const getMovieById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get id from params
+    const { id } = req.params;
+
+    // get the movie
+    const movie = await Movie.findById(id).lean().exec();
+
+    // in case movie is not found
+    if (!movie) {
+      handleError(res, { message: 'Movie not found', statusCode: 404 });
+      return;
+    }
+
+    // return the movie
+    res.status(200).json({
+      success: true,
+      data: movie,
+    });
+  } catch (err) {
+    // handle unexpected errors
+    handleError(res, {
+      error: err,
+    });
+  }
+};
 /**
- * controller to fetch all the movies
+ * controller to fetch all the movies with pagination
  */
 export const getAllMovies = async (
   req: ValidatedRequest<{}>,
@@ -91,3 +119,78 @@ export const getAllMovies = async (
     });
   }
 };
+
+/**
+ * delete movie by id
+ */
+export const deleteMovieById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get id from params
+    const { id } = req.params;
+
+    // delete the movie
+    const deletedMovie = await Movie.findByIdAndDelete(id).lean().exec();
+
+    // in case movie is not deleted
+    if (!deletedMovie) {
+      handleError(res, { message: 'movie dose not exist' });
+      return;
+    }
+
+    // return the deleted movie
+    res.status(200).json({
+      success: true,
+      data: deletedMovie,
+      message: 'Movie deleted successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//update  movie by id
+export const updateMovieById = async (
+  req: ValidatedRequest<AddMovieZodSchemaType>,
+  res: Response
+) => {
+  try {
+    // get id from params
+    const { id } = req.params;
+
+    // update the movie
+    const updatedMovie = await Movie.findByIdAndUpdate(id, req.validatedData!, {
+      new: true,
+    })
+      .lean()
+      .exec();
+
+    // in case movie is not updated
+    if (!updatedMovie) {
+      handleError(res, { message: 'movie dose not exist' });
+      return;
+    }
+
+    // return the updated movie
+    res.status(200).json({
+      success: true,
+      data: updatedMovie,
+      message: 'Movie updated successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//@TODO controller to add bulk movies by json 
+//@TODO controller to bulk delete movies by taking list of ids
+//@TODO search functionality 
+//@TODO get movies with filters

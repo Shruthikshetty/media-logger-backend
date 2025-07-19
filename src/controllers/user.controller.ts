@@ -17,6 +17,8 @@ import {
 import { DeleteUserZodSchema } from '../common/validation-schema/user/delete-user';
 import { UpdateUserZodSchemaType } from '../common/validation-schema/user/update-user';
 import { encrypt } from '../common/utils/hashing';
+import mongoose from 'mongoose';
+import { UpdateRoleZodSchemaType } from '../common/validation-schema/user/update-role';
 
 // controller to add a new user
 export const addUser = async (
@@ -225,4 +227,52 @@ export const updateUser = async (
   }
 };
 
-//@TODO controller to update role by id 
+//controller to update role by id
+export const updateRoleById = async (
+  req: ValidatedRequest<UpdateRoleZodSchemaType>,
+  res: Response
+) => {
+  try {
+    //get id from params
+    const { id } = req.params;
+
+    //incase invalid id
+    if (!mongoose.isValidObjectId(id)) {
+      handleError(res, { message: 'Invalid user id', statusCode: 400 });
+      return;
+    }
+
+    // get new role from validated data
+    const { role } = req.validatedData!;
+
+    // update the role
+    const updatedRole = await User.findByIdAndUpdate(
+      id,
+      { role },
+      {
+        new: true,
+      }
+    )
+      .select('-password -__v')
+      .lean()
+      .exec();
+
+    // in case role is not updated
+    if (!updatedRole) {
+      handleError(res, { message: 'User not found' });
+      return;
+    }
+
+    //send response
+    res.status(200).json({
+      success: true,
+      data: updatedRole,
+      message: 'User role updated successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
