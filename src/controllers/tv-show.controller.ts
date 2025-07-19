@@ -10,6 +10,7 @@ import TVShow from '../models/tv-show.mode';
 import Season, { ISeason } from '../models/tv-season';
 import Episode, { IEpisode } from '../models/tv-episode';
 import { startSession } from 'mongoose';
+import { isDuplicateKeyError } from '../common/utils/mongo-errors';
 
 // controller to add a new tv show
 export const addTvShow = async (
@@ -96,7 +97,10 @@ export const addTvShow = async (
     //handle unexpected errors
     handleError(res, {
       error: error,
-      message: error?.message,
+      message:
+        error?.message || isDuplicateKeyError(error)
+          ? 'Tv show already exists'
+          : 'Server down please try again later',
     });
   } finally {
     // Finally, end the session
