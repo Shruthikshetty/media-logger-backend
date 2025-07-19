@@ -194,7 +194,71 @@ components:
         totalSeasons: 5
         totalEpisodes: 62
         ageRating: 18
-
+    Season:
+      type: object
+      required:
+        - tvShow
+        - seasonNumber
+        - title
+        - releaseDate
+        - noOfEpisodes
+        - status
+      properties:
+        tvShow:
+          type: string
+          format: uuid
+          description: MongoDB ObjectId string reference to the parent TVShow.
+          example: '60e9ef67af7b8a0015e3b4bc'
+        seasonNumber:
+          type: integer
+          description: Season number.
+          example: 1
+        title:
+          type: string
+          description: Title of the season.
+          example: 'Season 1'
+        description:
+          type: string
+          description: Description of the season.
+          example: 'The gripping debut season introducing core characters and conflicts.'
+        releaseDate:
+          type: string
+          description: Release date (ISO format, YYYY-MM-DD).
+          example: '2022-02-15'
+        noOfEpisodes:
+          type: integer
+          description: Number of episodes in the season.
+          example: 10
+        posterUrl:
+          type: string
+          description: Optional poster image URL.
+          example: 'http://example.com/season1-poster.jpg'
+        seasonRating:
+          type: number
+          format: float
+          description: Optional average rating (0-10).
+          example: 8.7
+          maximum: 10
+        status:
+          type: string
+          description: Status of the season.
+          enum: ['ended', 'upcoming', 'on-going']
+          example: 'ended'
+        trailerYoutubeUrl:
+          type: string
+          description: Optional trailer YouTube URL.
+          example: 'https://youtube.com/watch?v=trailer'
+      example:
+        tvShow: '60e9ef67af7b8a0015e3b4bc'
+        seasonNumber: 1
+        title: 'Season 1'
+        description: 'The gripping debut season introducing core characters and conflicts.'
+        releaseDate: '2022-02-15'
+        noOfEpisodes: 10
+        posterUrl: 'http://example.com/season1-poster.jpg'
+        seasonRating: 8.7
+        status: 'released'
+        trailerYoutubeUrl: 'https://youtube.com/watch?v=trailer'
   requestBodies:
     AddTvShowBody:
       description: The request body for creating a new TV Show.
