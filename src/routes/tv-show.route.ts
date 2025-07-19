@@ -15,7 +15,20 @@ import { AddEpisodeZodSchema } from '../common/validation-schema/tv-show/add-epi
 //initialize router
 const route = Router();
 
-//Route to a add a tv-show
+/**
+ * @swagger
+ * /tv-shows:
+ *   post:
+ *     summary: Add a new TV Show
+ *     tags: [TV Shows]
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/AddTvShowBody'
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/TvShowResponse'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ */
 route.post(
   '/',
   requireAuth('admin'),

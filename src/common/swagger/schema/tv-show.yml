@@ -1,0 +1,51 @@
+#
+# file contains all the swagger schema and req and response bodies for tv-show
+#
+
+components:
+  schemas:
+    TvShow:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The title of the TV show.
+          example: 'Breaking Bad'
+        description:
+          type: string
+          description: A brief summary of the show.
+        status:
+          type: string
+          description: The current status of the media.
+          enum: ['ended', 'upcoming', 'on-going']
+  requestBodies:
+    AddTvShowBody:
+      description: The request body for creating a new TV Show.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TvShow'
+  responses:
+    TvShowResponse:
+      description: A single TV Show object.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TvShow'
+    NotFound:
+      description: The specified resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 'Resource not found'
+    Unauthorized:
+      description: Unauthorized access. Missing or invalid token.
+

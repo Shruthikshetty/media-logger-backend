@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer <token>
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzI4NzdjMDkwZGJjZTI5NGViY2Q2NSIsImlhdCI6MTc1MjkwNTg1MywiZXhwIjoxNzUyOTkyMjUzfQ.2H-rhYWhncnUt-nNOEaTedC-9IpI4LQZ7nal3qVWziQ
 ##-------------------------------------------- USER -------------------------------------------------------------
 ### add user
 POST {{baseUrl}}/api/user
@@ -251,4 +251,18 @@ Content-Type: application/json
       "runTime": 32
     }
   ]
+}
+
+### add a episode to a season 
+POST {{baseUrl}}/api/tv-show/episode
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "season": "687b48f792163a363d52d841",
+  "title": "The Launch",
+  "description": "The team prepares for the big product launch.",
+  "episodeNumber": 1,
+  "releaseDate": "2023-09-10",
+  "runTime": 30
 }
