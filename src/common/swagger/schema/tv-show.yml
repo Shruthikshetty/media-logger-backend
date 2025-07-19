@@ -307,6 +307,11 @@ components:
         totalSeasons: 5
         totalEpisodes: 62
         ageRating: 18
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
   requestBodies:
     AddTvShowBody:

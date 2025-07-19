@@ -17,10 +17,12 @@ const route = Router();
 
 /**
  * @swagger
- * /tv-shows:
+ * /api/tv-show:
  *   post:
  *     summary: Add a new TV Show
  *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       $ref: '#/components/requestBodies/AddTvShowBody'
  *     responses:
