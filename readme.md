@@ -1,153 +1,93 @@
-# How to Run the Project
+# Media Logger App
 
-1. **Create a `.env` file**  
-   Copy the required environment variables from `.env.example` and update them as needed.
+A backend for comprehensive media logging application that allows users to log and track their favorite games, TV shows, and movies.
 
-2. **Start in Development Mode**  
-   For automatic reloads and TypeScript support, run:
+## Tech Stack
 
-```bash
-npm run dev
+- **Backend:** Node.js, Express.js
+- **Language:** TypeScript
+- **Database:** MongoDB with Mongoose
+- **Validation:** Zod
+- **API Documentation:** Swagger (OpenAPI)
+- **Testing:** Jest
+
+## Features
+
+- Log games, TV shows, and movies with ease
+- Track your progress and updates for each media type
+- Store and manage your media library in one place
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- Node.js (v18 or higher)
+- npm
+- MongoDB
+- Git
+
+### Installation & Setup
+
+1.  **Clone the repository:**
+
+    ```sh
+    git clone <http url>
+    cd media-logger-backend
+    ```
+
+2.  **Install dependencies:**
+
+    ```sh
+    npm install
+    ```
+
+3.  **Set up environment variables:**
+    - Copy the example environment file:
+      ```sh
+      cp .env.example .env
+      ```
+    - Open the `.env` file and add your configuration values (e.g., your MongoDB URI and a JWT secret).
+
+4.  **Start the development server:**
+    - The server will run with hot-reloading at the port specified in your `.env` file.
+    ```sh
+    npm run dev
+    ```
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your `.env` file.
+
+- `PORT`: The port the application will run on (e.g., 3001)
+- `MONGO_URI`: Your MongoDB connection string.
+- `JWT_SECRET`: A secret key for signing JSON Web Tokens.
+- `NODE_ENV`: The application environment (`development` or `production`)
+
+## Testing
+
+To run the tests, use the following command:
+
+```
+npm run test
 ```
 
-3. **Build and Run in Production Mode**  
-   First, compile the TypeScript code:
+## Configuration
 
-```bash
-npm run build
-```
+The application uses the following configuration files:
 
-This will generate JavaScript files in the `dist` folder.
+- `.prettierrc`: configuration file for Prettier
+- `jest.config.js`: configuration file for Jest
 
-Then, start the application:
+## API Documentation
 
-```bash
-npm run start
-```
+The full, interactive API documentation is available via Swagger UI once the server is running.
 
-> **Tip:**  
-> Use `npm run dev` for development and `npm run build && npm run start` for production.
+Navigate to: `http://localhost:3001/api-docs`
 
-# setup express with typescript
+## Contributing
 
-### packages to install
+Contributions are welcome! If you'd like to contribute to the Media Logger App, please fork the repository and submit a pull request.
 
-```bash
-npm install express
-npm install --save-dev jest typescript @types/node @types/express ts-node nodemon
-```
+## License
 
-### run
-
-```bash
-npm init -y
-```
-
-### create typescript config
-
-this command will create the tsconfig.json
-
-```bash
-npx tsc --init
-```
-
-content of tsconfig.json file
-
-```json
-{
-  "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "outDir": "./dist",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitAny": false,
-    "resolveJsonModule": true
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
-}
-```
-
-check th package.json to be something like this if using src folder
-
-```json
-{
-  "name": "ts-backend",
-  "version": "1.0.0",
-  "type": "commonjs",
-  "main": "src/index.ts",
-  "scripts": {
-    "dev": "ts-node src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "watch": "tsc --watch"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "@types/express": "^5.0.1",
-    "@types/node": "^22.15.18",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
-  },
-  "dependencies": {
-    "express": "^5.1.0"
-  }
-}
-```
-
-### Setup nodemon for continuous reload
-
-create nodemon.json
-
-```json
-{
-  "watch": ["src"],
-  "ext": "ts",
-  "exec": "ts-node src/index.ts"
-}
-```
-
-# Jest set up
-
-```bash
-npm install --save-dev jest ts-jest @types/jest supertest
-```
-
-run this to create config file
-
-```bash
-npx ts-jest config:init
-```
-
-add script
-
-```bash
-"test": "jest"
-```
-
-now run the script
-
-### add prettier
-
-```bash
-npm i -D prettier
-```
-
-add .prettierrc file if required to change any default configs
-
-```ts
-{
-  "semi": true,
-  "singleQuote": true,
-  "printWidth": 80,
-  "tabWidth": 2,
-  "trailingComma": "es5"
-}
-```
+The Media Logger App is licensed under the MIT License.
