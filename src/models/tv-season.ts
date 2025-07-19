@@ -6,7 +6,7 @@ import { Schema, model, Document } from 'mongoose';
 import { SEASON_STATUS } from '../common/constants/model.constants';
 
 //types...
-interface ISeason extends Document {
+export interface ISeason extends Document {
   tvShow: string;
   seasonNumber: number;
   description: string;

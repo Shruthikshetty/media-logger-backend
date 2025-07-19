@@ -173,49 +173,82 @@ Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "title": "The Midnight Library",
-  "description": "A mysterious anthology series exploring the strange happenings in a library that only appears at midnight.",
-  "genre": ["Drama", "Fantasy"],
-  "releaseDate": "2025-09-15",
-  "directors": ["Ava DuVernay"],
-  "runTime": 50,
-  "status": "released",
-  "totalSeasons": 1,
-  "totalEpisodes": 2,
-  "cast": ["Gugu Mbatha-Raw", "David Oyelowo"],
+  "title": "Fleabag",
+  "description": "A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy.",
+  "averageRating": 8.7,
+  "genre": ["Comedy", "Drama"],
+  "releaseDate": "2016-07-21",
+  "cast": ["Phoebe Waller-Bridge", "Sian Clifford", "Olivia Colman"],
+  "directors": ["Harry Bradbeer"],
+  "runTime": 27,
   "languages": ["English"],
-  "posterUrl": "https://example.com/posters/midnight-library.jpg",
-  "backdropUrl": "https://example.com/backdrops/midnight-library.jpg",
+  "posterUrl": "https://m.media-amazon.com/images/M/MV5BMjA4ODU3OTEzMl5BMl5BanBnXkFtZTgwMjc4NzA4OTE@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+  "backdropUrl": "https://www.themoviedb.org/t/p/original/4FV98Rj42n22I5OQ6dM2p12lT1z.jpg",
   "isActive": true,
-  "tags": ["Supernatural", "Dark", "Mind-Bending"],
+  "status": "released",
+  "tags": ["Award-winning", "Character-driven", "Dialogue-heavy", "Satirical"],
+  "totalSeasons": 2,
+  "totalEpisodes": 12,
   "ageRating": 16,
   "seasons": [
     {
       "seasonNumber": 1,
       "title": "Season 1",
-      "description": "The first season introduces the Midnight Library and its secrets.",
-      "releaseDate": "2025-09-15",
-      "noOfEpisodes": 2,
-      "posterUrl": "https://example.com/posters/midnight-library-s1.jpg",
+      "description": "Fleabag navigates the minefield of her family and dating life while dealing with the recent death of her best friend.",
+      "releaseDate": "2016-07-21",
+      "noOfEpisodes": 6,
+      "posterUrl": "https://www.themoviedb.org/t/p/w220_and_h330_face/ohh0255e0x9a8y6eSyrDLi2hM96.jpg",
       "seasonRating": 8.5,
       "status": "ended",
-      "trailerYoutubeUrl": "https://youtube.com/watch?v=example",
+      "trailerYoutubeUrl": "https://www.youtube.com/watch?v=I5Uv6cb9YRs",
       "episodes": [
         {
-          "title": "The Door at Midnight",
-          "description": "A young woman discovers the library for the first time.",
+          "title": "Episode 1",
+          "description": "Fleabag tries to navigate a tricky family lunch and a one-night stand.",
           "episodeNumber": 1,
-          "releaseDate": "2025-09-15",
-          "runTime": 50
+          "runTime": 27
         },
         {
-          "title": "The Book of Lost Hours",
-          "description": "A mysterious book reveals the past of a missing librarian.",
+          "title": "Episode 2",
+          "description": "With the cafe struggling, Fleabag asks her sister for money, which results in a cringeworthy encounter with her brother-in-law.",
           "episodeNumber": 2,
-          "releaseDate": "2025-09-22",
-          "runTime": 50
+          "runTime": 26
         }
       ]
+    }
+  ]
+}
+
+### add a season to a tv show (you can provide the episodes as well)
+POST {{baseUrl}}/api/tv-show/season
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "tvShow": "687b38b2fda2a91d0f01d59a",
+  "seasonNumber": 1,
+  "title": "Season 1",
+  "description": "The first season of The Startup.",
+  "releaseDate": "2023-09-10",
+  "noOfEpisodes": 2,
+  "posterUrl": "https://example.com/posters/startup-s1.jpg",
+  "seasonRating": 7.8,
+  "status": "ended",
+  "trailerYoutubeUrl": "https://www.youtube.com/watch?v=example",
+  "episodes": [
+    {
+      "title": "Launch Day",
+      "description": "The team scrambles to fix bugs before their big product launch.",
+      "episodeNumber": 1,
+      "releaseDate": "2023-09-10",
+      "runTime": 30
+    },
+    {
+      "title": "First Customer",
+      "description": "The startup gets its first customer, but things don't go as planned.",
+      "episodeNumber": 2,
+      "releaseDate": "2023-09-17",
+      "runTime": 32
     }
   ]
 }

@@ -1,108 +1,94 @@
 /**
- * This @file contains the controller related to tv-show
+ * @file holds the controller for tv season
  */
 
+// import
 import { handleError } from '../common/utils/handle-error';
 import { Response } from 'express';
 import { ValidatedRequest } from '../types/custom-types';
-import { AddTvShowZodType } from '../common/validation-schema/tv-show/add-tv-show';
-import TVShow from '../models/tv-show.mode';
-import Season from '../models/tv-season';
-import Episode from '../models/tv-episode';
+import { AddSeasonZodType } from '../common/validation-schema/tv-show/add-season';
 import { startSession } from 'mongoose';
+import Season from '../models/tv-season';
+import Episode, { IEpisode } from '../models/tv-episode';
+import TVShow from '../models/tv-show.mode';
 
-// controller to add a new tv show
-export const addTvShow = async (
-  req: ValidatedRequest<AddTvShowZodType>,
+//controller to add a tv season to a tv show
+export const addSeason = async (
+  req: ValidatedRequest<AddSeasonZodType>,
   res: Response
 ) => {
-  // Start a Mongoose session for the transaction
+  // create a mongo transaction session
   const session = await startSession();
+  //start transaction
   session.startTransaction();
-
   try {
-    //get validated data
-    const { seasons, ...restTvDetails } = req.validatedData!;
+    // get the validated data from request
+    const { episodes, ...seasonData } = req.validatedData!;
 
-    // create a new tv show
-    const newTvShow = new TVShow(restTvDetails);
+    // check if the tv show exists
+    const tvShow = await TVShow.findOne({ _id: seasonData.tvShow }).lean().exec();
 
-    // save the tv show
-    const saveTvShow = await newTvShow.save({ session });
-
-    // in case tv show is not saved
-    if (!saveTvShow) {
-      throw new Error('Tv show creation failed');
+    // in case tv show is not found
+    if (!tvShow) {
+      throw new Error('Tv show not found');
     }
 
-    // in case there are seasons
-    let savedSeasons: any[] = [];
-    let savedEpisodes: any[] = [];
+    // create a new season
+    const newSeason = new Season(seasonData);
 
-    if (seasons && seasons.length > 0) {
-      for (const seasonData of seasons) {
-        // extract episodes
-        const { episodes, ...seasonDetails } = seasonData;
-        // create a new season
-        const newSeason = new Season({
-          tvShow: saveTvShow._id,
-          ...seasonDetails,
+    // save the create season
+    const saveSeason = await newSeason.save({ session });
+
+    // in case season is not saved
+    if (!saveSeason) {
+      throw new Error('Season creation failed');
+    }
+
+    // in case there are episodes
+    let savedEpisodes: IEpisode[] = [];
+
+    if (episodes && episodes.length > 0) {
+      for (const episodeData of episodes) {
+        // create a new episode
+        const newEpisode = new Episode({
+          season: saveSeason._id,
+          ...episodeData,
         });
-        // save the season
-        const savedSeason = await newSeason.save({ session });
 
-        // in case season is not saved
-        if (!savedSeason) {
-          throw new Error(`${seasonData.title} creation failed`);
+        // save the create episode
+        const saveEpisode = await newEpisode.save({ session });
+
+        // in case episode is not saved
+        if (!saveEpisode) {
+          throw new Error(`${episodeData.title}episode creation failed`);
         }
-
-        savedSeasons.push(savedSeason);
-
-        // in case there are episodes
-        if (episodes && episodes.length > 0) {
-          for (const episodeData of episodes) {
-            // create a new episode
-            const newEpisode = new Episode({
-              season: savedSeason._id,
-              ...episodeData,
-            });
-            // save the episode
-            const savedEpisode = await newEpisode.save({ session });
-            if (!savedEpisode) {
-              handleError(res, {
-                message: `${episodeData.title} creation failed`,
-              });
-              return;
-            }
-            savedEpisodes.push(savedEpisode);
-          }
-        }
+        savedEpisodes.push(saveEpisode);
       }
     }
 
-    // If all operations were successful, commit the transaction
+    // commit the transaction
     await session.commitTransaction();
 
-    // return the saved tv show
+    //send the response
     res.status(200).json({
       success: true,
       data: {
-        tvShow: saveTvShow,
-        seasons: savedSeasons,
+        season: saveSeason,
         episodes: savedEpisodes,
       },
-      message: 'Tv show created successfully',
+      message: 'Season added successfully',
     });
-  } catch (error: any) {
-    // If any error occurred, abort the entire transaction
+  } catch (err: any) {
+    // if any error abort the transaction
     await session.abortTransaction();
-    //handle unexpected errors
+
+    // handle unexpected error
     handleError(res, {
-      error: error,
-      message: error?.message,
+      error: err,
+      message: err?.message,
     });
   } finally {
-    // Finally, end the session
-    session.endSession();
+    //end session
+    await session.endSession();
   }
 };

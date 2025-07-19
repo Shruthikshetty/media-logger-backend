@@ -13,12 +13,7 @@ export const AddEpisodeZodSchema = z.object({
       required_error: 'Season ref id is required',
       message: 'Season red id must be string',
     })
-    .refine(
-      (val) => {
-        isMongoIdValid(val);
-      },
-      { message: 'Invalid season id' }
-    ),
+    .refine((val) => isMongoIdValid(val), { message: 'Invalid season id' }),
 
   title: z.string({
     required_error: 'Title is required',
