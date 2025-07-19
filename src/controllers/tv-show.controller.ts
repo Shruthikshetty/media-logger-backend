@@ -85,9 +85,29 @@ export const addTvShow = async (
     res.status(200).json({
       success: true,
       data: {
-        tvShow: saveTvShow,
-        seasons: savedSeasons,
-        episodes: savedEpisodes,
+        /**
+         * return the saved tv show with seasons and episodes
+         * tvShow:{
+         *  ...,
+         *  seasons:[
+         *    {
+         *    ...,
+         *    episodes:[
+         *      ...
+         *    }
+         *  ]
+         * }
+         */
+        tvShow: {
+          ...saveTvShow.toObject(),
+          seasons: savedSeasons.map((season) => ({
+            ...season.toObject(),
+            episodes: savedEpisodes.filter(
+              (episode) =>
+                episode.season.toString() === season.toObject()._id.toString()
+            ),
+          })),
+        },
       },
       message: 'Tv show created successfully',
     });

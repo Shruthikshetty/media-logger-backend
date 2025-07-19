@@ -1,0 +1,456 @@
+#
+# file contains all the swagger schema and req and response bodies for tv-show
+#
+
+components:
+  schemas:
+    TagsMovieTvEnum:
+      type: string
+      enum:
+        - Based on True Story
+        - Cult Classic
+        - Binge-worthy
+        - Award-winning
+        - Coming of Age
+        - Post-Apocalyptic
+        - Dystopian
+        - Feel-Good
+        - Dark
+        - Slow Burn
+        - Fast-paced
+        - Character-driven
+        - Plot Twist
+        - Underrated
+        - Critically Acclaimed
+        - Soundtrack Heavy
+        - Visual Masterpiece
+        - Mind-Bending
+        - Satirical
+        - Non-linear Story
+        - Multi-language
+        - Psychological
+        - Time Travel
+        - Violent
+        - Family Friendly
+        - Adult
+        - Romantic
+        - Political
+        - Fantasy World
+        - Supernatural
+        - Historical Fiction
+        - Episodic
+        - Serialized
+        - Minimalist
+        - Dialogue-heavy
+    GenreMovieTvEnum:
+      type: string
+      enum:
+        - Action
+        - Adventure
+        - Animation
+        - Comedy
+        - Crime
+        - Documentary
+        - Drama
+        - Fantasy
+        - Historical
+        - Horror
+        - Mystery
+        - Romance
+        - Sci-Fi
+        - Thriller
+        - War
+        - Western
+        - Superhero
+        - Family
+        - Musical
+        - Biography
+        - Sport
+        - Noir
+        - Reality
+        - Talk Show
+        - Game Show
+        - News
+        - Cooking
+        - Kids
+        - Indie
+        - RPG
+        - Shooter
+        - Strategy
+        - Puzzle
+        - Simulation
+        - Fighting
+        - Racing
+        - Survival
+        - Sandbox
+    Episode:
+      type: object
+      required:
+        - season
+        - title
+        - episodeNumber
+        - runTime
+      properties:
+        season:
+          type: string
+          format: uuid
+          description: MongoDB ObjectId referencing the parent Season.
+          example: '60e9ef67af7b8a0015e3b4bc'
+        title:
+          type: string
+          description: Title of the episode.
+          example: 'Pilot'
+        description:
+          type: string
+          description: Description or summary of the episode.
+          example: 'Walter White, a high school chemistry teacher, learns he has cancer and starts making meth.'
+        episodeNumber:
+          type: integer
+          description: The episode number within the season.
+          example: 1
+        releaseDate:
+          type: string
+          description: Release date (ISO format, e.g., YYYY-MM-DD).
+          example: '2008-01-20'
+        runTime:
+          type: integer
+          description: Duration of the episode in minutes.
+          example: 47
+      example:
+        season: '60e9ef67af7b8a0015e3b4bc'
+        title: 'Pilot'
+        description: 'Walter White, a high school chemistry teacher, learns he has cancer and starts making meth.'
+        episodeNumber: 1
+        releaseDate: '2008-01-20'
+        runTime: 47
+    Season:
+      type: object
+      required:
+        - tvShow
+        - seasonNumber
+        - title
+        - releaseDate
+        - noOfEpisodes
+        - status
+      properties:
+        tvShow:
+          type: string
+          format: uuid
+          description: MongoDB ObjectId string reference to the parent TVShow.
+          example: '60e9ef67af7b8a0015e3b4bc'
+        seasonNumber:
+          type: integer
+          description: Season number.
+          example: 1
+        title:
+          type: string
+          description: Title of the season.
+          example: 'Season 1'
+        description:
+          type: string
+          description: Description of the season.
+          example: 'The gripping debut season introducing core characters and conflicts.'
+        releaseDate:
+          type: string
+          description: Release date (ISO format, YYYY-MM-DD).
+          example: '2022-02-15'
+        noOfEpisodes:
+          type: integer
+          description: Number of episodes in the season.
+          example: 10
+        posterUrl:
+          type: string
+          description: Optional poster image URL.
+          example: 'http://example.com/season1-poster.jpg'
+        seasonRating:
+          type: number
+          format: float
+          description: Optional average rating (0-10).
+          example: 8.7
+          maximum: 10
+        status:
+          type: string
+          description: Status of the season.
+          enum: ['ended', 'upcoming', 'on-going']
+          example: 'ended'
+        trailerYoutubeUrl:
+          type: string
+          description: Optional trailer YouTube URL.
+          example: 'https://youtube.com/watch?v=trailer'
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Episode'
+      example:
+        tvShow: '60e9ef67af7b8a0015e3b4bc'
+        seasonNumber: 1
+        title: 'Season 1'
+        description: 'The gripping debut season introducing core characters and conflicts.'
+        releaseDate: '2022-02-15'
+        noOfEpisodes: 10
+        posterUrl: 'http://example.com/season1-poster.jpg'
+        seasonRating: 8.7
+        status: 'released'
+        trailerYoutubeUrl: 'https://youtube.com/watch?v=trailer'
+    TvShow:
+      type: object
+      required:
+        - title
+        - description
+        - genre
+        - releaseDate
+        - runTime
+        - status
+        - totalSeasons
+        - totalEpisodes
+      properties:
+        title:
+          type: string
+          description: The title of the TV show.
+          example: 'Breaking Bad'
+        description:
+          type: string
+          description: A brief summary of the show.
+          example: 'A high school chemistry teacher turned methamphetamine producer navigates the dangers of the criminal underworld.'
+        averageRating:
+          type: number
+          description: The average rating of the TV show, on a scale of 0 to 10.
+          format: float
+          maximum: 10
+          example: 9.5
+        genre:
+          type: array
+          description: List of genres for the TV show.
+          items:
+            $ref: '#/components/schemas/GenreMovieTvEnum'
+          example: ['Drama', 'Crime']
+        releaseDate:
+          type: string
+          description: The release date (ISO format, e.g., YYYY-MM-DD).
+          example: '2008-01-20'
+        cast:
+          type: array
+          description: List of cast members.
+          items:
+            type: string
+          example: ['Bryan Cranston', 'Aaron Paul']
+        directors:
+          type: array
+          description: List of directors.
+          items:
+            type: string
+          example: ['Vince Gilligan']
+        runTime:
+          type: integer
+          description: Runtime of each episode, in minutes.
+          example: 47
+        languages:
+          type: array
+          description: List of spoken languages.
+          items:
+            type: string
+          example: ['English', 'Spanish']
+        posterUrl:
+          type: string
+          description: URL for the poster image.
+          example: 'http://example.com/poster.jpg'
+        backdropUrl:
+          type: string
+          description: URL for the backdrop image.
+          example: 'http://example.com/backdrop.jpg'
+        isActive:
+          type: boolean
+          description: Indicates if the show is currently active in the system.
+          default: true
+          example: true
+        status:
+          type: string
+          description: The current status of the media.
+          enum: ['released', 'upcoming']
+          example: 'ended'
+        tags:
+          type: array
+          description: List of tag strings.
+          items:
+            $ref: '#/components/schemas/TagsMovieTvEnum'
+        totalSeasons:
+          type: integer
+          description: Total number of seasons.
+          example: 5
+        totalEpisodes:
+          type: integer
+          description: Total number of episodes.
+          example: 62
+        ageRating:
+          type: integer
+          description: Suggested viewer age rating.
+          example: 18
+        seasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Season'
+      example:
+        title: 'Breaking Bad'
+        description: 'A high school chemistry teacher turned methamphetamine producer navigates the dangers of the criminal underworld.'
+        averageRating: 9.5
+        genre: ['Drama', 'Crime']
+        releaseDate: '2008-01-20'
+        cast: ['Bryan Cranston', 'Aaron Paul']
+        directors: ['Vince Gilligan']
+        runTime: 47
+        languages: ['English', 'Spanish']
+        posterUrl: 'http://example.com/poster.jpg'
+        backdropUrl: 'http://example.com/backdrop.jpg'
+        isActive: true
+        status: 'released'
+        tags: ['Award-winning', 'Critically-acclaimed']
+        totalSeasons: 5
+        totalEpisodes: 62
+        ageRating: 18
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  requestBodies:
+    AddTvShowBody:
+      description: The request body for creating a new TV Show.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TvShow'
+          example:
+            title: 'Fleabag'
+            description: 'A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy.'
+            averageRating: 8.7
+            genre: ['Comedy', 'Drama']
+            releaseDate: '2016-07-21'
+            cast: ['Phoebe Waller-Bridge', 'Sian Clifford', 'Olivia Colman']
+            directors: ['Harry Bradbeer']
+            runTime: 27
+            languages: ['English']
+            posterUrl: 'https://m.media-amazon.com/images/M/MV5B...'
+            backdropUrl: 'https://www.themoviedb.org/t/p/original/...'
+            isActive: true
+            status: 'released'
+            tags:
+              - 'Award-winning'
+              - 'Character-driven'
+              - 'Dialogue-heavy'
+              - 'Satirical'
+            totalSeasons: 2
+            totalEpisodes: 12
+            ageRating: 16
+            seasons:
+              - seasonNumber: 1
+                title: 'Season 1'
+                description: 'Fleabag navigates...'
+                releaseDate: '2016-07-21'
+                noOfEpisodes: 6
+                posterUrl: 'https://www.themoviedb.org/t/p/w220_and_h330_face/ohh0255e0x9a8y6eSyrDLi2hM96.jpg'
+                seasonRating: 8.5
+                status: ended
+                trailerYoutubeUrl: 'https://www.youtube.com/watch?v=I5Uv6cb9YRs'
+                episodes:
+                  - title: 'Episode 1'
+                    description: 'Fleabag tries...'
+                    episodeNumber: 1
+                    runTime: 27
+                  - title: 'Episode 2'
+                    description: 'With the cafe struggling...'
+                    episodeNumber: 2
+                    runTime: 26
+
+  responses:
+    TvShowResponse:
+      description: A single TV Show object including seasons and episodes.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TvShow'
+          example:
+            success: true
+            message: 'Tv show created successfully'
+            data:
+              tvShow:
+                title: 'Fleabag'
+                description: 'A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy.'
+                averageRating: 8.7
+                genre: ['Comedy', 'Drama']
+                releaseDate: '2016-07-21'
+                cast: ['Phoebe Waller-Bridge', 'Sian Clifford', 'Olivia Colman']
+                directors: ['Harry Bradbeer']
+                runTime: 27
+                languages: ['English']
+                posterUrl: 'https://m.media-amazon.com/images/...jpg'
+                backdropUrl: 'https://www.themoviedb.org/t/p/original/...jpg'
+                isActive: true
+                status: 'released'
+                tags:
+                  - 'Award-winning'
+                  - 'Character-driven'
+                  - 'Dialogue-heavy'
+                  - 'Satirical'
+                totalSeasons: 2
+                totalEpisodes: 12
+                ageRating: 16
+                seasons:
+                  - seasonNumber: 1
+                    title: 'Season 1'
+                    description: 'Fleabag navigates the minefield of her family and dating life while dealing with the recent death of her best friend.'
+                    releaseDate: '2016-07-21'
+                    noOfEpisodes: 6
+                    posterUrl: 'https://www.themoviedb.org/t/...jpg'
+                    seasonRating: 8.5
+                    status: ended
+                    trailerYoutubeUrl: 'https://www.youtube.com/watch?v=I5Uv6cb9YRs'
+                    episodes:
+                      - title: 'Episode 1'
+                        description: 'Fleabag tries to navigate a tricky family lunch and a one-night stand.'
+                        episodeNumber: 1
+                        runTime: 27
+                      - title: 'Episode 2'
+                        description: 'With the cafe struggling, Fleabag asks her sister for money...'
+                        episodeNumber: 2
+                        runTime: 26
+    NotFound:
+      description: The specified resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 'Resource not found'
+    Unauthorized:
+      description: Unauthorized access. Missing or invalid token.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 'Unauthorized access. Missing or invalid token.'
+    InternalServerError:
+      description: An unexpected error occurred
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 'Server down please try after some time'
