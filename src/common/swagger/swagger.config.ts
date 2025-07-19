@@ -23,7 +23,7 @@ const options: swaggerJSDoc.Options = {
       url: 'http://localhost:3001',
       description: 'Local Server',
     },
-    //@TODO add live server
+    // live server is not mentioned for security reasons
   ],
   },
 

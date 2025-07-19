@@ -26,8 +26,10 @@ const route = Router();
  *     responses:
  *       '201':
  *         $ref: '#/components/responses/TvShowResponse'
- *       '404':
- *         $ref: '#/components/responses/NotFound'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
  */
 route.post(
   '/',
