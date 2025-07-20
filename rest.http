@@ -167,6 +167,21 @@ Content-Type: application/json
 
 ##-------------------------------------------------TV-SHOW-----------------------------------------------------------
 
+### get all the tv shows (default 20 records at a time)
+GET {{baseUrl}}/api/tv-show
+
+### get tv shows page based pagination 
+GET {{baseUrl}}/api/tv-show?limit=2&page=1
+
+### get tv shows limit , start  based pagination 
+GET {{baseUrl}}/api/tv-show?limit=2&start=0
+
+### get full details with episodes and seasons 
+GET {{baseUrl}}/api/tv-show?limit=2&page=1&fullDetails=true
+
+### get tv-show by id
+GET {{baseUrl}}/api/tv-show/68791c6b786a8844dec84b02
+
 ### add a new tv show (this can add all all tv show , seasons , episodes)
 POST {{baseUrl}}/api/tv-show
 Authorization: {{authToken}}
@@ -219,6 +234,15 @@ Content-Type: application/json
   ]
 }
 
+### update a tv show details (only meta data can be updated )
+PATCH {{baseUrl}}/api/tv-show/68791c6b786a8844dec84b02
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "description": "A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy."
+}
+
 ### add a season to a tv show (you can provide the episodes as well)
 POST {{baseUrl}}/api/tv-show/season
 Authorization: {{authToken}}
@@ -266,3 +290,41 @@ Content-Type: application/json
   "releaseDate": "2023-09-10",
   "runTime": 30
 }
+
+### get episode by id 
+GET {{baseUrl}}/api/tv-show/episode/68791c6b786a8844dec84b06
+
+### get episode by id with full details (show and season details)
+GET {{baseUrl}}/api/tv-show/episode/68791c6b786a8844dec84b06?fullDetails=true
+
+### delete a episode by id 
+DELETE {{baseUrl}}/api/tv-show/episode/68791c6c786a8844dec84b08
+Authorization: {{authToken}}
+
+### update a episode by id 
+PATCH {{baseUrl}}/api/tv-show/episode/68791c6b786a8844dec84b06
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+   "description": "A young woman discovers the library's for the first time."
+}
+
+### get season by id 
+GET {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c
+
+### get season by id with episode details 
+GET {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c?fullDetails=true
+
+### update a season by id 
+PATCH {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "description" : "updated title"
+}
+
+### delete the season by id (all the associated episodes will also be deleted)
+DELETE {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c
+Authorization: {{authToken}}
