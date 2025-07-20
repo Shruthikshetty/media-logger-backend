@@ -12,6 +12,7 @@ import {
   getPaginationResponse,
 } from '../common/utils/pagination';
 import { GET_ALL_MOVIES_LIMITS } from '../common/constants/config.constants';
+import { BulkDeleteMovieZodSchemaType } from '../common/validation-schema/movie/bulk-delete';
 
 // controller to add a new movie
 export const addMovie = async (
@@ -190,7 +191,35 @@ export const updateMovieById = async (
   }
 };
 
-//@TODO controller to add bulk movies by json 
-//@TODO controller to bulk delete movies by taking list of ids
-//@TODO search functionality 
+//controller to bulk delete movies by taking list of ids
+export const bulkDeleteMovies = async (
+  req: ValidatedRequest<BulkDeleteMovieZodSchemaType>,
+  res: Response
+) => {
+  try {
+    //delete all the movies that are passed
+    const deletedMovies = await Movie.deleteMany({
+      _id: {
+        $in: req.validatedData!.movieIds,
+      },
+    });
+
+    // return the deleted movies
+    res.status(200).json({
+      success: true,
+      data: {
+        deletedCount: deletedMovies.deletedCount,
+      },
+      message: 'Movies deleted successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//@TODO controller to add bulk movies by json
+//@TODO search functionality
 //@TODO get movies with filters
