@@ -167,6 +167,18 @@ Content-Type: application/json
 
 ##-------------------------------------------------TV-SHOW-----------------------------------------------------------
 
+### get all the tv shows (default 20 records at a time)
+GET {{baseUrl}}/api/tv-show
+
+### get tv shows page based pagination 
+GET {{baseUrl}}/api/tv-show?limit=2&page=1
+
+### get tv shows limit , start  based pagination 
+GET {{baseUrl}}/api/tv-show?limit=2&start=0
+
+### get full details with episodes and seasons 
+GET {{baseUrl}}/api/tv-show?limit=2&page=1&fullDetails=true
+
 ### add a new tv show (this can add all all tv show , seasons , episodes)
 POST {{baseUrl}}/api/tv-show
 Authorization: {{authToken}}
@@ -272,3 +284,35 @@ GET {{baseUrl}}/api/tv-show/episode/68791c6b786a8844dec84b06
 
 ### get episode by id with full details (show and season details)
 GET {{baseUrl}}/api/tv-show/episode/68791c6b786a8844dec84b06?fullDetails=true
+
+### delete a episode by id 
+DELETE {{baseUrl}}/api/tv-show/episode/68791c6c786a8844dec84b08
+Authorization: {{authToken}}
+
+### update a episode by id 
+PATCH {{baseUrl}}/api/tv-show/episode/68791c6b786a8844dec84b06
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+   "description": "A young woman discovers the library's for the first time."
+}
+
+### get season by id 
+GET {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c
+
+### get season by id with episode details 
+GET {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c?fullDetails=true
+
+### update a season by id 
+PATCH {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "description" : "updated title"
+}
+
+### delete the season by id (all the associated episodes will also be deleted)
+DELETE {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c
+Authorization: {{authToken}}

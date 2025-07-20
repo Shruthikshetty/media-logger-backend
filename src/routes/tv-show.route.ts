@@ -6,7 +6,7 @@ import { Router } from 'express';
 import { requireAuth } from '../common/middleware/require-auth';
 import { validateReq } from '../common/middleware/handle-validation';
 import { AddTvShowZodSchema } from '../common/validation-schema/tv-show/add-tv-show';
-import { addTvShow } from '../controllers/tv-show.controller';
+import { addTvShow, getAllTvShows } from '../controllers/tv-show.controller';
 import {
   addSeason,
   getSeasonById,
@@ -51,6 +51,9 @@ route.post(
   validateReq(AddTvShowZodSchema),
   addTvShow
 );
+
+//get all the tv shows
+route.get('/', getAllTvShows);
 
 //Route to add a season to a tv-show
 route.post(
