@@ -215,6 +215,7 @@ export const getTvShowById = async (
   }
 };
 
+// controller to update tv show by id
 export const updateTvShowById = async (
   req: ValidatedRequest<UpdateTvShowZodType>,
   res: Response

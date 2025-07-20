@@ -10,12 +10,17 @@ import {
   getMovieById,
   updateMovieById,
   bulkDeleteMovies,
+  addBulkMovies
 } from '../controllers/movie.controller';
 import { requireAuth } from '../common/middleware/require-auth';
 import { validateReq } from '../common/middleware/handle-validation';
 import { AddMovieZodSchema } from '../common/validation-schema/movie/add-movie';
 import { updateMoveZodSchema } from '../common/validation-schema/movie/update-movie';
 import { BulkDeleteMovieZodSchema } from '../common/validation-schema/movie/bulk-delete';
+import jsonUpload from '../common/config/json-upload.config';
+import { ValidateJsonFile } from '../common/middleware/handle-json-file-validation';
+import { BulkAddMovieZodSchema } from '../common/validation-schema/movie/bulk-add';
+import { handleUpload } from '../common/middleware/handle-upload';
 
 // initialize router
 const route = Router();
@@ -28,6 +33,15 @@ route.get('/:id', getMovieById);
 
 // add a movie
 route.post('/', requireAuth('admin'), validateReq(AddMovieZodSchema), addMovie);
+
+// add bulk movies in json file 
+route.post(
+  '/bulk',
+  requireAuth('admin'),
+  handleUpload(jsonUpload, 'movieDataFile'),
+  ValidateJsonFile(BulkAddMovieZodSchema),
+  addBulkMovies
+);
 
 //Route to bulk delete movies
 route.delete(
