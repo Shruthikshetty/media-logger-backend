@@ -7,7 +7,12 @@ import { requireAuth } from '../common/middleware/require-auth';
 import { validateReq } from '../common/middleware/handle-validation';
 import { AddTvShowZodSchema } from '../common/validation-schema/tv-show/add-tv-show';
 import { addTvShow } from '../controllers/tv-show.controller';
-import { addSeason } from '../controllers/tv-season.controller';
+import {
+  addSeason,
+  getSeasonById,
+  updateSeason,
+  deleteSeasonById,
+} from '../controllers/tv-season.controller';
 import { AddSeasonZodSchema } from '../common/validation-schema/tv-show/add-season';
 import {
   addEpisode,
@@ -17,6 +22,7 @@ import {
 } from '../controllers/tv-episode.controller';
 import { AddEpisodeZodSchema } from '../common/validation-schema/tv-show/add-episode';
 import { UpdateEpisodeZodSchema } from '../common/validation-schema/tv-show/update-episode';
+import { UpdateSeasonZodSchema } from '../common/validation-schema/tv-show/update-season';
 
 //initialize router
 const route = Router();
@@ -75,6 +81,20 @@ route.patch(
   validateReq(UpdateEpisodeZodSchema),
   updateEpisodeById
 );
+
+//Route to get season  by id
+route.get('/season/:id', getSeasonById);
+
+//Route to update a season by id
+route.patch(
+  '/season/:id',
+  requireAuth('admin'),
+  validateReq(UpdateSeasonZodSchema),
+  updateSeason
+);
+
+//Route to delete season by id (this will delete all the episodes as well)
+route.delete('/season/:id', requireAuth('admin'), deleteSeasonById);
 
 //export all the routes
 export default route;
