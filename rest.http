@@ -86,21 +86,22 @@ Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "title": "The Shawshank Redemption 2",
-  "description": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
-  "averageRating": 9.2,
-  "cast": ["Tim Robbins", "Morgan Freeman"],
-  "directors": ["Frank Darabont"],
-  "runTime": 142,
+  "title": "The Dark Knight",
+  "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+  "averageRating": 9.0,
+  "cast": ["Christian Bale", "Heath Ledger", "Aaron Eckhart"],
+  "directors": ["Christopher Nolan"],
+  "runTime": 152,
   "languages": ["English"],
-  "posterUrl": "https://example.com/shawshank-poster.jpg",
-  "backdropUrl": "https://example.com/shawshank-backdrop.jpg",
+  "posterUrl": "https://example.com/darkknight-poster.jpg",
+  "backdropUrl": "https://example.com/darkknight-backdrop.jpg",
   "isActive": true,
   "status": "released",
-  "tags": ["Cult Classic", "Award-winning", "Feel-Good"],
-  "ageRating": 18,
-  "trailerYoutubeUrl": "https://www.youtube.com/watch?v=6hB3S9bIacg",
-  "releaseDate": "1994-09-23T00:00:00.000Z"
+  "tags": [],
+  "ageRating": 13,
+  "trailerYoutubeUrl": "https://www.youtube.com/watch?v=EXeTwQWrcwY",
+  "releaseDate": "2008-07-18T00:00:00.000Z",
+  "genre": ["Action", "Crime", "Drama"]
 }
 
 ### delete movie by id 
@@ -116,6 +117,18 @@ Content-Type: application/json
   "description": "2 imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."
 }
 
+### bulk delete movies 
+DELETE {{baseUrl}}/api/movie/bulk
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "movieIds" : ["687cfd05ac47aec79e8964cc" , "687cfd48ac47aec79e8964d1" , "687cfd82ac47aec79e8964d6"]
+}
+
+### bulk add movie
+### use post man to do this file key movieDataFile
+POST {{baseUrl}}/api/movie/bulk
 
 ##----------------------------------------------------GAMES----------------------------------------------------
 

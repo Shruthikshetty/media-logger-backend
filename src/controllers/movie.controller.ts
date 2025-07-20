@@ -13,6 +13,7 @@ import {
 } from '../common/utils/pagination';
 import { GET_ALL_MOVIES_LIMITS } from '../common/constants/config.constants';
 import { BulkDeleteMovieZodSchemaType } from '../common/validation-schema/movie/bulk-delete';
+import { BulkAddMovieZodSchemaType } from '../common/validation-schema/movie/bulk-add';
 
 // controller to add a new movie
 export const addMovie = async (
@@ -220,6 +221,28 @@ export const bulkDeleteMovies = async (
   }
 };
 
-//@TODO controller to add bulk movies by json
+//controller to add bulk movies by json
+export const addBulkMovies = async (
+  req: ValidatedRequest<BulkAddMovieZodSchemaType>,
+  res: Response
+) => {
+  try {
+    // bulk add all the movies
+    const savedMovies = await Movie.insertMany(req.validatedData!);
+
+    // return the saved movies
+    res.status(200).json({
+      success: true,
+      data: savedMovies,
+      message: 'Movies added successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
 //@TODO search functionality
 //@TODO get movies with filters
