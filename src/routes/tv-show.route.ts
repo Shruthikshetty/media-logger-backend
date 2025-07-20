@@ -11,9 +11,12 @@ import { addSeason } from '../controllers/tv-season.controller';
 import { AddSeasonZodSchema } from '../common/validation-schema/tv-show/add-season';
 import {
   addEpisode,
+  deleteEpisodeById,
   getEpisodeById,
+  updateEpisodeById,
 } from '../controllers/tv-episode.controller';
 import { AddEpisodeZodSchema } from '../common/validation-schema/tv-show/add-episode';
+import { UpdateEpisodeZodSchema } from '../common/validation-schema/tv-show/update-episode';
 
 //initialize router
 const route = Router();
@@ -61,6 +64,17 @@ route.post(
 
 //Route to get a episode by id
 route.get('/episode/:id', getEpisodeById);
+
+//Route to delete episode by id
+route.delete('/episode/:id', requireAuth('admin'), deleteEpisodeById);
+
+//Route to update a episode by id
+route.patch(
+  '/episode/:id',
+  requireAuth('admin'),
+  validateReq(UpdateEpisodeZodSchema),
+  updateEpisodeById
+);
 
 //export all the routes
 export default route;
