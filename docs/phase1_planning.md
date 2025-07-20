@@ -10,6 +10,12 @@
 - **Testing**: Jest (unit/integration tests)
 - **Code Style/Quality**: ESLint, Prettier
 
+
+## Security Note
+
+* **Only admins can modify media data (add, update, delete).**
+* **Normal users can only read media data.**
+
 ## Endpoint Overview
 
 ### Games API
