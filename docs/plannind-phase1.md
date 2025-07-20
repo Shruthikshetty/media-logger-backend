@@ -73,11 +73,11 @@
 | Bulk operations             | 3              | CSV/JSON imports, batch deletes    |
 | Consistent error handling   | 2              | Across all endpoints               |
 | Response standardization    | 1              | Uniform data structure/messages    |
-| **Swagger docs**            | 2              | OpenAPI annotation, deep examples  |
-| **Testing (unit)**          | 3              | Jest tests for all endpoints       |
-| **Buffer/Debug/Refactor**   | 2              | Final polish, bug fixes            |
+| **Swagger docs**            | 3              | OpenAPI annotation, deep examples  |
+| **Testing (unit)**          | 5              | Jest tests for all endpoints       |
+| **Buffer/Debug/Refactor**   | 4              | Final polish, bug fixes            |
 
-**Total Estimated Phase 1 Time:** **~26 days** (solo effort; pace may vary depending on final endpoint count and feature depth)
+**Total Estimated Phase 1 Time:** **~30 days** (solo effort; pace may vary depending on final endpoint count and feature depth)
 
 ## Tasks Specific to Swagger Docs & Testing
 
