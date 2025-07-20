@@ -20,6 +20,7 @@ import { BulkDeleteMovieZodSchema } from '../common/validation-schema/movie/bulk
 import jsonUpload from '../common/config/json-upload.config';
 import { ValidateJsonFile } from '../common/middleware/handle-json-file-validation';
 import { BulkAddMovieZodSchema } from '../common/validation-schema/movie/bulk-add';
+import { handleUpload } from '../common/middleware/handle-upload';
 
 // initialize router
 const route = Router();
@@ -37,7 +38,7 @@ route.post('/', requireAuth('admin'), validateReq(AddMovieZodSchema), addMovie);
 route.post(
   '/bulk',
   requireAuth('admin'),
-  jsonUpload.single('movieDataFile'),
+  handleUpload(jsonUpload, 'movieDataFile'),
   ValidateJsonFile(BulkAddMovieZodSchema),
   addBulkMovies
 );
