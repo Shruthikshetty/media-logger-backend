@@ -10,7 +10,10 @@ import TVShow, { ITVShow } from '../models/tv-show.mode';
 import Season, { ISeason } from '../models/tv-season';
 import Episode, { IEpisode } from '../models/tv-episode';
 import { startSession } from 'mongoose';
-import { isDuplicateKeyError } from '../common/utils/mongo-errors';
+import {
+  isDuplicateKeyError,
+  isMongoIdValid,
+} from '../common/utils/mongo-errors';
 import {
   getPaginationParams,
   getPaginationResponse,
@@ -20,6 +23,7 @@ import {
   getTvShowDetails,
   getSeasonsWithEpisodes,
 } from '../common/utils/get-tv-show';
+import { UpdateTvShowZodType } from '../common/validation-schema/tv-show/update-tv-show';
 
 // controller to add a new tv show
 export const addTvShow = async (
@@ -180,10 +184,10 @@ export const getTvShowById = async (
   try {
     // get id from params
     const { id } = req.params;
-console.log(id)
+    console.log(id);
     // get the tv show details
     const tvShow = await TVShow.findById(id).lean<ITVShow>().exec();
-console.log(tvShow)
+    console.log(tvShow);
     // in case tv show is not found
     if (!tvShow) {
       handleError(res, { message: 'Tv show not found', statusCode: 404 });
@@ -191,7 +195,9 @@ console.log(tvShow)
     }
 
     // add episodes to each season
-    const seasonsWithEpisodes = await getSeasonsWithEpisodes((tvShow as any)._id);
+    const seasonsWithEpisodes = await getSeasonsWithEpisodes(
+      (tvShow as any)._id
+    );
 
     // return the tv show with seasons and episodes
     res.status(200).json({
@@ -202,6 +208,46 @@ console.log(tvShow)
           seasons: seasonsWithEpisodes,
         },
       },
+    });
+  } catch (error) {
+    // handle unexpected error
+    handleError(res, { error: error });
+  }
+};
+
+export const updateTvShowById = async (
+  req: ValidatedRequest<UpdateTvShowZodType>,
+  res: Response
+) => {
+  try {
+    //extract id from params
+    const { id } = req.params;
+    // check if id is a valid mongo id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid tv show id', statusCode: 400 });
+      return;
+    }
+    //update the tv show by id
+    const updatedTvShow = await TVShow.findByIdAndUpdate(
+      id,
+      req.validatedData!,
+      { new: true }
+    )
+      .lean()
+      .exec();
+
+    // in case tv show is not updated
+    if (!updatedTvShow) {
+      handleError(res, { message: 'Tv show not found', statusCode: 404 });
+      return;
+    }
+    // return the updated tv show
+    res.status(200).json({
+      success: true,
+      data: {
+        tvShow: updatedTvShow,
+      },
+      message: 'Tv show updated successfully',
     });
   } catch (error) {
     // handle unexpected error

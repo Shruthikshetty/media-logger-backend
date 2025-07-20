@@ -234,6 +234,15 @@ Content-Type: application/json
   ]
 }
 
+### update a tv show details (only meta data can be updated )
+PATCH {{baseUrl}}/api/tv-show/68791c6b786a8844dec84b02
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "description": "A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy."
+}
+
 ### add a season to a tv show (you can provide the episodes as well)
 POST {{baseUrl}}/api/tv-show/season
 Authorization: {{authToken}}
