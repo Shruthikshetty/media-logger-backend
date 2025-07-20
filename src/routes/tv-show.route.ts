@@ -9,7 +9,10 @@ import { AddTvShowZodSchema } from '../common/validation-schema/tv-show/add-tv-s
 import { addTvShow } from '../controllers/tv-show.controller';
 import { addSeason } from '../controllers/tv-season.controller';
 import { AddSeasonZodSchema } from '../common/validation-schema/tv-show/add-season';
-import { addEpisode } from '../controllers/tv-episode.controller';
+import {
+  addEpisode,
+  getEpisodeById,
+} from '../controllers/tv-episode.controller';
 import { AddEpisodeZodSchema } from '../common/validation-schema/tv-show/add-episode';
 
 //initialize router
@@ -55,6 +58,9 @@ route.post(
   validateReq(AddEpisodeZodSchema),
   addEpisode
 );
+
+//Route to get a episode by id
+route.get('/episode/:id', getEpisodeById);
 
 //export all the routes
 export default route;

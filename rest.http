@@ -266,3 +266,9 @@ Content-Type: application/json
   "releaseDate": "2023-09-10",
   "runTime": 30
 }
+
+### get episode by id 
+GET {{baseUrl}}/api/tv-show/episode/68791c6b786a8844dec84b06
+
+### get episode by id with full details (show and season details)
+GET {{baseUrl}}/api/tv-show/episode/68791c6b786a8844dec84b06?fullDetails=true

@@ -72,10 +72,7 @@ export const addSeason = async (
     //send the response
     res.status(200).json({
       success: true,
-      data: {
-        season: saveSeason,
-        episodes: savedEpisodes,
-      },
+      data:  {...saveSeason.toObject() , episodes: savedEpisodes},
       message: 'Season added successfully',
     });
   } catch (err: any) {
