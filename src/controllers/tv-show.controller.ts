@@ -6,7 +6,7 @@ import { handleError } from '../common/utils/handle-error';
 import { Response } from 'express';
 import { ValidatedRequest } from '../types/custom-types';
 import { AddTvShowZodType } from '../common/validation-schema/tv-show/add-tv-show';
-import TVShow from '../models/tv-show.mode';
+import TVShow, { ITVShow } from '../models/tv-show.mode';
 import Season, { ISeason } from '../models/tv-season';
 import Episode, { IEpisode } from '../models/tv-episode';
 import { startSession } from 'mongoose';
@@ -16,7 +16,10 @@ import {
   getPaginationResponse,
 } from '../common/utils/pagination';
 import { GET_ALL_TV_SHOW_LIMITS } from '../common/constants/config.constants';
-import { getTvShowDetailsById } from '../common/utils/get-tv-show';
+import {
+  getTvShowDetails,
+  getSeasonsWithEpisodes,
+} from '../common/utils/get-tv-show';
 
 // controller to add a new tv show
 export const addTvShow = async (
@@ -147,7 +150,7 @@ export const getAllTvShows = async (
 
   try {
     //get all the tv shows
-    const [tvShows, total] = await getTvShowDetailsById(
+    const [tvShows, total] = await getTvShowDetails(
       req.query.fullDetails as string,
       start,
       limit
@@ -161,6 +164,43 @@ export const getAllTvShows = async (
       data: {
         tvShows,
         pagination,
+      },
+    });
+  } catch (error) {
+    // handle unexpected error
+    handleError(res, { error: error });
+  }
+};
+
+//get tv show by id
+export const getTvShowById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get id from params
+    const { id } = req.params;
+console.log(id)
+    // get the tv show details
+    const tvShow = await TVShow.findById(id).lean<ITVShow>().exec();
+console.log(tvShow)
+    // in case tv show is not found
+    if (!tvShow) {
+      handleError(res, { message: 'Tv show not found', statusCode: 404 });
+      return;
+    }
+
+    // add episodes to each season
+    const seasonsWithEpisodes = await getSeasonsWithEpisodes((tvShow as any)._id);
+
+    // return the tv show with seasons and episodes
+    res.status(200).json({
+      success: true,
+      data: {
+        tvShow: {
+          ...tvShow,
+          seasons: seasonsWithEpisodes,
+        },
       },
     });
   } catch (error) {
