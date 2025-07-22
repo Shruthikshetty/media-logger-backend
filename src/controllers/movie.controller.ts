@@ -247,6 +247,7 @@ export const addBulkMovies = async (
   }
 };
 
+//@TODO try out cursor based search (in this case its fine since we are dealing with small amount can be used in filters)
 //search functionality
 export const searchMovies = async (
   req: ValidatedRequest<{}>,
@@ -256,7 +257,11 @@ export const searchMovies = async (
     // get query from params
     const { text } = req.query;
 
-    console.log(text)
+    // get pagination params
+    const { limit, start } = getPaginationParams(
+      req.query,
+      GET_ALL_MOVIES_LIMITS
+    );
 
     //search pipeline (atlas search)
     const pipeline = [
@@ -265,21 +270,27 @@ export const searchMovies = async (
           index: MOVIE_SEARCH_INDEX,
           text: {
             query: text,
-            path: ['title', 'description'],
+            path: ['title'],
           },
         },
       },
     ];
 
     // search for movies
-    const movies = await Movie.aggregate(pipeline);
+    const movies = await Movie.aggregate(pipeline).limit(limit).skip(start);
 
     // return the movies
     res.status(200).json({
       success: true,
-      data: movies,
+      data: {
+        movies,
+        pagination: {
+          limit,
+          start,
+        },
+      },
     });
-
+    
   } catch (err) {
     // handle unexpected error
     handleError(res, {

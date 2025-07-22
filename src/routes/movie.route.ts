@@ -29,7 +29,7 @@ const route = Router();
 // get all movies
 route.get('/', getAllMovies);
 
-//search a movie by title & description
+//search a movie by title 
 route.get('/search', searchMovies);
 
 //get movie by id

@@ -130,8 +130,11 @@ Content-Type: application/json
 ### use post man to do this file key movieDataFile
 POST {{baseUrl}}/api/movie/bulk
 
-### search movies
+### search movies by title (there are default limits applied like prev endpoints)
 GET {{baseUrl}}/api/movie/search?text=Dark Knight
+
+### search movies by title  with pagination
+GET {{baseUrl}}/api/movie/search?text=Dark Knight&limit=20&start=0
 
 ##----------------------------------------------------GAMES----------------------------------------------------
 
