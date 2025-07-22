@@ -52,7 +52,7 @@ const MovieSchema: Schema = new Schema(
       enum: GENRE_MOVIE_TV,
     },
     releaseDate: {
-      type: String, // will be iso string
+      type: Date, // will be iso string
       required: true,
     },
     cast: {

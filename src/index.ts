@@ -6,7 +6,7 @@ import { requestLogger } from './common/middleware/request-logger';
 import { devLogger } from './common/utils/logger';
 import allRoutes from './routes/index';
 import swaggerSpec from './common/swagger/swagger.config';
-import swaggerUi from "swagger-ui-express"
+import swaggerUi from 'swagger-ui-express';
 
 // configure .env
 dotenv.config();
@@ -29,6 +29,7 @@ app.use(express.json());
 // Middleware to log all requests
 app.use(requestLogger);
 
+// Middleware for serving Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // base Route

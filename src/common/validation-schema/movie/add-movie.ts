@@ -90,10 +90,16 @@ export const AddMovieZodSchema = z.object({
       message: 'Trailer youtube url must be string',
     })
     .optional(),
-  releaseDate: z.string({
-    required_error: 'Release date is required',
-    message: 'Release date must be string in ISO format',
-  }),
+  releaseDate: z
+    .string({
+      required_error: 'Release date is required',
+      message: 'Release date must be string in ISO format',
+    })
+    .datetime({
+      message:
+        'Release date must be a valid ISO 8601 string (e.g., "2024-01-01T00:00:00.000Z")',
+    })
+    .transform((val) => new Date(val)),
 });
 
 //export the type

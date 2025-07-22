@@ -84,6 +84,23 @@ The full, interactive API documentation is available via Swagger UI once the ser
 
 Navigate to: `http://localhost:3001/api-docs`
 
+## Project folder structure
+
+```text
+src/
+├── controllers/    # Business logic handlers
+├── models/         # Database schemas and models
+├── routes/         # API endpoint definitions
+├── common/         # Shared utilities and middleware
+│   ├── middleware/ # Custom middleware components
+│   ├── utils/      # Utility functions
+│   ├── validation-schema/ # Zod validation schemas
+│   ├── constants/  # Application constants
+│   └── config/     # Configuration files
+└── types/          # TypeScript type definitions
+
+```
+
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute to the Media Logger App, please fork the repository and submit a pull request.

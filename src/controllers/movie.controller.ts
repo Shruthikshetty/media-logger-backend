@@ -11,7 +11,10 @@ import {
   getPaginationParams,
   getPaginationResponse,
 } from '../common/utils/pagination';
-import { GET_ALL_MOVIES_LIMITS } from '../common/constants/config.constants';
+import {
+  GET_ALL_MOVIES_LIMITS,
+  MOVIE_SEARCH_INDEX,
+} from '../common/constants/config.constants';
 import { BulkDeleteMovieZodSchemaType } from '../common/validation-schema/movie/bulk-delete';
 import { BulkAddMovieZodSchemaType } from '../common/validation-schema/movie/bulk-add';
 
@@ -244,5 +247,44 @@ export const addBulkMovies = async (
   }
 };
 
-//@TODO search functionality
+//search functionality
+export const searchMovies = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get query from params
+    const { text } = req.query;
+
+    console.log(text)
+
+    //search pipeline (atlas search)
+    const pipeline = [
+      {
+        $search: {
+          index: MOVIE_SEARCH_INDEX,
+          text: {
+            query: text,
+            path: ['title', 'description'],
+          },
+        },
+      },
+    ];
+
+    // search for movies
+    const movies = await Movie.aggregate(pipeline);
+
+    // return the movies
+    res.status(200).json({
+      success: true,
+      data: movies,
+    });
+
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
 //@TODO get movies with filters

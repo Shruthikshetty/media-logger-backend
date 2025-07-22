@@ -86,7 +86,7 @@ Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "title": "The Dark Knight",
+  "title": "The Dark Knight2",
   "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
   "averageRating": 9.0,
   "cast": ["Christian Bale", "Heath Ledger", "Aaron Eckhart"],
@@ -129,6 +129,9 @@ Content-Type: application/json
 ### bulk add movie
 ### use post man to do this file key movieDataFile
 POST {{baseUrl}}/api/movie/bulk
+
+### search movies
+GET {{baseUrl}}/api/movie/search?text=Dark Knight
 
 ##----------------------------------------------------GAMES----------------------------------------------------
 
