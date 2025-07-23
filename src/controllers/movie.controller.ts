@@ -17,6 +17,7 @@ import {
 } from '../common/constants/config.constants';
 import { BulkDeleteMovieZodSchemaType } from '../common/validation-schema/movie/bulk-delete';
 import { BulkAddMovieZodSchemaType } from '../common/validation-schema/movie/bulk-add';
+import { MovieFiltersZodType } from '../common/validation-schema/movie/movie-filters';
 
 // controller to add a new movie
 export const addMovie = async (
@@ -290,7 +291,6 @@ export const searchMovies = async (
         },
       },
     });
-    
   } catch (err) {
     // handle unexpected error
     handleError(res, {
@@ -298,4 +298,74 @@ export const searchMovies = async (
     });
   }
 };
-//@TODO get movies with filters
+
+//get movies with filters
+
+export const getMoviesWithFilters = async (
+  req: ValidatedRequest<MovieFiltersZodType>,
+  res: Response
+) => {
+  try {
+    // destructure the filters from validated data
+    const { languages, page, limit } = req.validatedData!;
+
+    //define filters and pipeline
+    const filters: any[] = [];
+    const pipeline: any[] = [];
+
+    //@TODO mandate to store all the languages in lower case for better search
+    //check if languages is defined
+    if (languages) {
+      //push language filter to filters
+      filters.push({
+        in: {
+          value: languages,
+          path: 'languages',
+        },
+      });
+    }
+
+    // build pipeline if filters are defined
+    if (filters.length > 0) {
+      pipeline.push({
+        $search: {
+          index: 'movie_filters',
+          compound: {
+            filter: filters,
+          },
+        },
+      });
+    }
+    //Use $facet to get both paginated data and total count in one query
+    const skip = (page - 1) * limit;
+    pipeline.push({
+      $facet: {
+        data: [{ $skip: skip }, { $limit: limit }],
+        totalCount: [{ $count: 'total' }],
+      },
+    });
+
+    //get the data from db
+    const result = await Movie.aggregate(pipeline);
+
+    // extract the data , total count and pagination details
+    const data = result[0]?.data || [];
+    const totalCount = result[0]?.totalCount[0]?.total || 0;
+    const pagination = getPaginationResponse(totalCount, limit, skip);
+
+    // return the data
+    res.status(200).json({
+      success: true,
+      data: {
+        movies: data,
+        pagination,
+      },
+    });
+
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
