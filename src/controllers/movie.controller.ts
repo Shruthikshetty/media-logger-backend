@@ -320,6 +320,7 @@ export const getMoviesWithFilters = async (
       averageRating,
       ageRating,
       runTime,
+      releaseDate
     } = req.validatedData!;
 
     //define filters and pipeline
@@ -399,6 +400,17 @@ export const getMoviesWithFilters = async (
         range: {
           path: 'ageRating',
           ...ageRating,
+        },
+      });
+    }
+
+    //if releaseDate is present
+    if (releaseDate) {
+      //push release date filter to filters
+      filters.push({
+        range: {
+          path: 'releaseDate',
+          ...releaseDate,
         },
       });
     }

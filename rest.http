@@ -106,12 +106,12 @@ DELETE {{baseUrl}}/api/movie/68775607854576d14ca6a8de
 Authorization: {{authToken}}
 
 ### update movie by id 
-PATCH {{baseUrl}}/api/movie/6877504915e1dac22aff59d7
+PATCH {{baseUrl}}/api/movie/68846ce94f03fdce95913727
 Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "description": "2 imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."
+  "averageRating": 8.2
 }
 
 ### bulk delete movies 
@@ -134,6 +134,7 @@ GET {{baseUrl}}/api/movie/search?text=Dark Knight
 GET {{baseUrl}}/api/movie/search?text=Dark Knight&limit=20&start=0
 
 ### get movies by filter (default pagination 20 at a time only page based pagination here )
+### all the fields are optional here , additional field means additional checks
 GET {{baseUrl}}/api/movie/filter
 Content-Type: application/json
 
@@ -141,7 +142,20 @@ Content-Type: application/json
   "languages" : "english",
   "status" : "released",
   "genre": ["Action"],
-  "tags": ["Binge-worthy" , "Serialized"]
+  "tags": ["Binge-worthy" , "Serialized"],
+  "averageRating": 5,
+  "ageRating":{
+    "gte": 12,
+    "lte": 18
+  },
+  "runTime": {
+    "gte":90,
+    "lte":120
+  },
+  "releaseDate":{
+    "gte":"2024-05-20T00:00:00.000Z",
+    "lte":"2024-07-20T00:00:00.000Z"
+  }
 }
 
 ##----------------------------------------------------GAMES----------------------------------------------------

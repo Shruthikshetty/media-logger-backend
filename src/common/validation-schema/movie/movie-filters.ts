@@ -19,23 +19,31 @@ export const MovieFiltersZodSchema = z
       })
       .optional(),
 
-    fromReleaseDate: z
-      .string({
-        message: 'From release date must be string',
+    releaseDate: z
+      .object({
+        lte: z
+          .string({
+            message: 'Release date lte must be string',
+          })
+          .datetime({
+            message:
+              'Release date lte must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)',
+          })
+          .transform((val) => new Date(val))
+          .optional(),
+        gte: z
+          .string({
+            message: 'Release date gte must be string',
+          })
+          .datetime({
+            message:
+              'Release date gte must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)',
+          })
+          .transform((val) => new Date(val))
+          .optional(),
       })
-      .datetime({
-        message:
-          'From release date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)',
-      })
-      .optional(),
-
-    toReleaseDate: z
-      .string({
-        message: 'To release date must be string',
-      })
-      .datetime({
-        message:
-          'To release date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)',
+      .refine((data) => data.gte !== undefined || data.lte !== undefined, {
+        message: 'Release date must include at least one of gte or lte',
       })
       .optional(),
 
