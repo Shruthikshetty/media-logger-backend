@@ -24,24 +24,32 @@ export const AddGameZodSchema = z.object({
     })
     .min(3, 'Description must be at least 3 characters long'),
 
-  genre: z
-    .string({
-      required_error: 'Genre is required',
-      message: 'Genre must be string',
-    })
-    .refine(
-      (val) => {
-        return GAME_GENRES.includes(val);
-      },
-      {
-        message: `Genre must be one of the following: ${GAME_GENRES.join(', ')}`,
-      }
-    ),
+  genre: z.array(
+    z
+      .string({
+        required_error: 'Genre is required',
+        message: 'Genre must be string',
+      })
+      .refine(
+        (val) => {
+          return GAME_GENRES.includes(val);
+        },
+        {
+          message: `Genre must be one of the following: ${GAME_GENRES.join(', ')}`,
+        }
+      ),
+    {
+      message: 'Genre must be an array of strings',
+    }
+  ),
 
-  releaseDate: z.string({
-    required_error: 'Release date is required',
-    message: 'Release date must be date string in iso format',
-  }),
+  releaseDate: z
+    .string({
+      required_error: 'Release date is required',
+      message: 'Release date must be date string in iso format',
+    })
+    .datetime({ message: 'Release date must be in iso format' })
+    .transform((val) => new Date(val)),
 
   posterUrl: z
     .string({

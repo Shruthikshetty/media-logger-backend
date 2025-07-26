@@ -158,6 +158,16 @@ Content-Type: application/json
   }
 }
 
+### filters with limits 
+GET {{baseUrl}}/api/movie/filter
+Content-Type: application/json
+
+{
+  "languages" : "english",
+  "limit": 2,
+  "page": 1
+}
+
 ##----------------------------------------------------GAMES----------------------------------------------------
 
 ### Add a new game 
@@ -168,7 +178,7 @@ Content-Type: application/json
 {
   "title": "Apex Legends Season 20",
   "description": "Squad up and drop into the arena in this free-to-play battle royale where legendary characters fight for glory",
-  "genre": "Battle Royale",
+  "genre": ["Battle Royale"],
   "releaseDate": "2024-02-13T00:00:00.000Z",
   "posterUrl": "https://example.com/apex-poster.jpg",
   "backdropUrl": "https://example.com/apex-backdrop.jpg",
@@ -180,6 +190,10 @@ Content-Type: application/json
   "ageRating": 16,
   "trailerYoutubeUrl": "https://www.youtube.com/watch?v=example6"
 }
+
+### Bulk add games by sending a json file 
+### use postman to do this file key gameDataFile
+POST {{baseUrl}}/api/game/bulk
 
 ### get all games(20 games at a time) max is 50
 GET {{baseUrl}}/api/game

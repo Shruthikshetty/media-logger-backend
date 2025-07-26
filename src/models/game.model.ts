@@ -15,7 +15,7 @@ export interface IGame extends Document {
   description: string;
   averageRating: number;
   genre: string[];
-  releaseDate: string;
+  releaseDate: Date;
   posterUrl: string;
   backdropUrl: string;
   isActive: boolean;
@@ -49,7 +49,7 @@ const GameSchema: Schema = new Schema(
       enum: GAME_GENRES,
     },
     releaseDate: {
-      type: String,
+      type: Date,
       required: true,
     },
     posterUrl: {
