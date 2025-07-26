@@ -90,7 +90,7 @@ const MovieSchema: Schema = new Schema(
     status: {
       type: String,
       required: false,
-      default: 'active',
+      default: MEDIA_STATUS[0],
       enum: MEDIA_STATUS,
     },
     tags: {

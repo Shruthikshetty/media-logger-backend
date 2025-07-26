@@ -38,10 +38,15 @@ export const AddMovieZodSchema = z.object({
     message: 'Run time must be number',
   }),
   languages: z
-    .array(z.string({ message: 'Languages must be string' }), {
-      required_error: 'Languages is required',
-      message: 'Languages must be an array of strings',
-    })
+    .array(
+      z
+        .string({ message: 'Languages must be string' })
+        .transform((val) => val.toLocaleLowerCase()),
+      {
+        required_error: 'Languages is required',
+        message: 'Languages must be an array of strings',
+      }
+    )
     .optional(),
   posterUrl: z
     .string({

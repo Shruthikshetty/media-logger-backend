@@ -4,7 +4,6 @@
 
 import z from 'zod';
 import { GET_ALL_MOVIES_LIMITS } from '../../constants/config.constants';
-import { min } from 'lodash';
 
 export const MovieFiltersZodSchema = z
   .object({
@@ -46,9 +45,11 @@ export const MovieFiltersZodSchema = z
       })
       .optional(),
 
-    languages: z.string({
-      message: 'Languages must be string',
-    }),
+    languages: z
+      .string({
+        message: 'Languages must be string',
+      })
+      .transform((val) => val.toLocaleLowerCase()),
 
     tags: z
       .array(z.string({ message: 'Tags must be string' }), {

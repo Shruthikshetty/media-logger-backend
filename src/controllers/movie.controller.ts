@@ -244,6 +244,9 @@ export const addBulkMovies = async (
     // handle unexpected error
     handleError(res, {
       error: err,
+      message: isDuplicateKeyError(err)
+        ? 'One of the movie already exists'
+        : 'Server down please try again later',
     });
   }
 };
@@ -361,7 +364,6 @@ export const getMoviesWithFilters = async (
         pagination,
       },
     });
-
   } catch (err) {
     // handle unexpected error
     handleError(res, {

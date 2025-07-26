@@ -86,22 +86,19 @@ Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "title": "The Dark Knight2",
-  "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-  "averageRating": 9.0,
-  "cast": ["Christian Bale", "Heath Ledger", "Aaron Eckhart"],
-  "directors": ["Christopher Nolan"],
-  "runTime": 152,
-  "languages": ["English"],
-  "posterUrl": "https://example.com/darkknight-poster.jpg",
-  "backdropUrl": "https://example.com/darkknight-backdrop.jpg",
+  "title": "Journey to Self",
+  "description": "A young protagonist's path to maturity in a changing world.",
+  "averageRating": 8.2,
+  "cast": ["Youth Protagonist", "Mentor Figure"],
+  "directors": ["Growth Storyteller"],
+  "runTime": 105,
+  "languages": ["english", "hindi"],
+  "backdropUrl": "https://example.com/backdrops/journey-to-self.jpg",
   "isActive": true,
-  "status": "released",
-  "tags": [],
-  "ageRating": 13,
-  "trailerYoutubeUrl": "https://www.youtube.com/watch?v=EXeTwQWrcwY",
-  "releaseDate": "2008-07-18T00:00:00.000Z",
-  "genre": ["Action", "Crime", "Drama"]
+  "tags": ["Coming of Age", "Character-driven", "Feel-Good"],
+  "ageRating": 12,
+  "trailerYoutubeUrl": "https://youtube.com/watch?v=journey-trailer",
+  "releaseDate": "2025-05-01T00:00:00.000Z"
 }
 
 ### delete movie by id 
