@@ -40,8 +40,22 @@ export const MovieFiltersZodSchema = z
       .optional(),
 
     runTime: z
-      .number({
-        message: 'Run time must be number',
+      .object({
+        gte: z
+          .number({
+            message: 'Run time gte must be number',
+          })
+          .min(0)
+          .optional(),
+        lte: z
+          .number({
+            message: 'Run time lte must be number',
+          })
+          .min(0)
+          .optional(),
+      })
+      .refine((data) => data.gte !== undefined || data.lte !== undefined, {
+        message: 'Run time must include at least one of gte or lte',
       })
       .optional(),
 
@@ -66,8 +80,22 @@ export const MovieFiltersZodSchema = z
       .optional(),
 
     ageRating: z
-      .number({
-        message: 'Age rating must be number',
+      .object({
+        gte: z
+          .number({
+            message: 'Age rating gte must be number',
+          })
+          .min(0)
+          .optional(),
+        lte: z
+          .number({
+            message: 'Age rating lte must be number',
+          })
+          .min(0)
+          .optional(),
+      })
+      .refine((data) => data.gte !== undefined || data.lte !== undefined, {
+        message: 'Age rating must include at least one of gte or lte',
       })
       .optional(),
 

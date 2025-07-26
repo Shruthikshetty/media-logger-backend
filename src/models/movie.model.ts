@@ -15,7 +15,7 @@ export interface IMovie extends Document {
   description: string;
   averageRating: number;
   genre: string[];
-  releaseDate: string;
+  releaseDate: Date;
   cast: string[];
   directors: string[];
   runTime: number; // in minutes

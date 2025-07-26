@@ -310,7 +310,17 @@ export const getMoviesWithFilters = async (
 ) => {
   try {
     // destructure the filters from validated data
-    const { languages, page, limit, status, genre, tags } = req.validatedData!;
+    const {
+      languages,
+      page,
+      limit,
+      status,
+      genre,
+      tags,
+      averageRating,
+      ageRating,
+      runTime,
+    } = req.validatedData!;
 
     //define filters and pipeline
     const filters: any[] = [];
@@ -357,6 +367,38 @@ export const getMoviesWithFilters = async (
         in: {
           value: tags,
           path: 'tags',
+        },
+      });
+    }
+
+    if (runTime) {
+      //push run time filter to filters
+      filters.push({
+        range: {
+          path: 'runTime',
+          ...runTime,
+        },
+      });
+    }
+
+    //if average rating is present
+    if (averageRating) {
+      //push average rating filter to filters
+      filters.push({
+        range: {
+          path: 'averageRating',
+          gte: averageRating,
+        },
+      });
+    }
+
+    //if age rating is present
+    if (ageRating) {
+      //push age rating filter to filters
+      filters.push({
+        range: {
+          path: 'ageRating',
+          ...ageRating,
         },
       });
     }
