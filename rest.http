@@ -205,11 +205,22 @@ GET {{baseUrl}}/api/game?limit=20&page=1
 GET {{baseUrl}}/api/game?limit=20&start=0
 
 ### get a game by id 
-GET {{baseUrl}}/api/game/6877c2ff3f23959890faae31
+GET {{baseUrl}}/api/game/6884ebdc9c0f28bdf8671744
 
 ### delete a game buy id 
 DELETE {{baseUrl}}/api/game/6877c2ff3f23959890faae31
 Authorization: {{authToken}}
+
+### bulk delete games by id
+DELETE {{baseUrl}}/api/game/bulk
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "gameIds" : [
+    "6884ebdc9c0f28bdf8671744"
+  ]
+}
 
 ### update a game by id 
 PATCH {{baseUrl}}/api/game/6877ed5901d671894b2f40e7

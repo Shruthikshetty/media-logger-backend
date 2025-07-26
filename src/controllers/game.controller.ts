@@ -18,6 +18,7 @@ import {
 import { GET_ALL_GAMES_LIMITS } from '../common/constants/config.constants';
 import { UpdateGameZodSchemaType } from '../common/validation-schema/game/update-game';
 import { BulkAddGameZodSchemaType } from '../common/validation-schema/game/bulk-add';
+import { BulkDeleteGameZodType } from '../common/validation-schema/game/bulk-delete';
 
 //controller to get all the games
 export const getAllGames = async (req: ValidatedRequest<{}>, res: Response) => {
@@ -219,7 +220,6 @@ export const bulkAddGames = async (
       data: games,
       message: 'Games added successfully',
     });
-    
   } catch (err) {
     // handle unexpected error
     handleError(res, {
@@ -230,6 +230,32 @@ export const bulkAddGames = async (
     });
   }
 };
-//@TODO controller to bulk delete games by taking ids
+//controller to bulk delete games by taking ids
+export const bulkDeleteGames = async (
+  req: ValidatedRequest<BulkDeleteGameZodType>,
+  res: Response
+) => {
+  try {
+    // delete all games
+    const games = await Game.deleteMany({
+      _id: { $in: req.validatedData!.gameIds },
+    });
+
+    // return the deleted games
+    res.status(200).json({
+      success: true,
+      data: {
+        deleCount: games.deletedCount,
+      },
+      message: 'Games deleted successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
 //@TODO controller for search
 //@TODO controller for filter
