@@ -138,7 +138,10 @@ GET {{baseUrl}}/api/movie/filter
 Content-Type: application/json
 
 {
-  "languages" : "English"
+  "languages" : "english",
+  "status" : "released",
+  "genre": ["Action"],
+  "tags": ["Binge-worthy" , "Serialized"]
 }
 
 ##----------------------------------------------------GAMES----------------------------------------------------

@@ -310,7 +310,7 @@ export const getMoviesWithFilters = async (
 ) => {
   try {
     // destructure the filters from validated data
-    const { languages, page, limit } = req.validatedData!;
+    const { languages, page, limit, status, genre, tags } = req.validatedData!;
 
     //define filters and pipeline
     const filters: any[] = [];
@@ -324,6 +324,39 @@ export const getMoviesWithFilters = async (
         in: {
           value: languages,
           path: 'languages',
+        },
+      });
+    }
+
+    //check if status is defined
+    if (status) {
+      //push status filter to filters
+      filters.push({
+        in: {
+          value: status,
+          path: 'status',
+        },
+      });
+    }
+
+    //if genre is defined
+    if (genre) {
+      //push genre filter to filters
+      filters.push({
+        in: {
+          value: genre,
+          path: 'genre',
+        },
+      });
+    }
+
+    //if tags is defined
+    if (tags) {
+      //push tags filter to filters
+      filters.push({
+        in: {
+          value: tags,
+          path: 'tags',
         },
       });
     }
