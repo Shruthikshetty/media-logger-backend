@@ -15,7 +15,7 @@ export interface IMovie extends Document {
   description: string;
   averageRating: number;
   genre: string[];
-  releaseDate: string;
+  releaseDate: Date;
   cast: string[];
   directors: string[];
   runTime: number; // in minutes
@@ -52,7 +52,7 @@ const MovieSchema: Schema = new Schema(
       enum: GENRE_MOVIE_TV,
     },
     releaseDate: {
-      type: String, // will be iso string
+      type: Date, // will be iso string
       required: true,
     },
     cast: {
@@ -90,7 +90,7 @@ const MovieSchema: Schema = new Schema(
     status: {
       type: String,
       required: false,
-      default: 'active',
+      default: MEDIA_STATUS[0],
       enum: MEDIA_STATUS,
     },
     tags: {

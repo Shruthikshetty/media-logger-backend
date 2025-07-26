@@ -10,7 +10,9 @@ import {
   getMovieById,
   updateMovieById,
   bulkDeleteMovies,
-  addBulkMovies
+  addBulkMovies,
+  searchMovies,
+  getMoviesWithFilters,
 } from '../controllers/movie.controller';
 import { requireAuth } from '../common/middleware/require-auth';
 import { validateReq } from '../common/middleware/handle-validation';
@@ -21,6 +23,7 @@ import jsonUpload from '../common/config/json-upload.config';
 import { ValidateJsonFile } from '../common/middleware/handle-json-file-validation';
 import { BulkAddMovieZodSchema } from '../common/validation-schema/movie/bulk-add';
 import { handleUpload } from '../common/middleware/handle-upload';
+import { MovieFiltersZodSchema } from '../common/validation-schema/movie/movie-filters';
 
 // initialize router
 const route = Router();
@@ -28,13 +31,19 @@ const route = Router();
 // get all movies
 route.get('/', getAllMovies);
 
+//search a movie by title
+route.get('/search', searchMovies);
+
+//get movies with filters
+route.get('/filter', validateReq(MovieFiltersZodSchema), getMoviesWithFilters);
+
 //get movie by id
 route.get('/:id', getMovieById);
 
 // add a movie
 route.post('/', requireAuth('admin'), validateReq(AddMovieZodSchema), addMovie);
 
-// add bulk movies in json file 
+// add bulk movies in json file
 route.post(
   '/bulk',
   requireAuth('admin'),

@@ -17,6 +17,7 @@ import {
 } from '../common/utils/pagination';
 import { GET_ALL_GAMES_LIMITS } from '../common/constants/config.constants';
 import { UpdateGameZodSchemaType } from '../common/validation-schema/game/update-game';
+import { BulkAddGameZodSchemaType } from '../common/validation-schema/game/bulk-add';
 
 //controller to get all the games
 export const getAllGames = async (req: ValidatedRequest<{}>, res: Response) => {
@@ -195,7 +196,6 @@ export const updateGameById = async (
       data: updatedGame,
       message: 'Game updated successfully',
     });
-
   } catch (err) {
     // handle unexpected error
     handleError(res, {
@@ -204,5 +204,32 @@ export const updateGameById = async (
   }
 };
 
-//@TODO controller to bulk update games by taking json
+//controller to bulk add games by taking json
+export const bulkAddGames = async (
+  req: ValidatedRequest<BulkAddGameZodSchemaType>,
+  res: Response
+) => {
+  try {
+    // add all games
+    const games = await Game.insertMany(req.validatedData!);
+
+    // return the added games
+    res.status(200).json({
+      success: true,
+      data: games,
+      message: 'Games added successfully',
+    });
+    
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+      message: isDuplicateKeyError(err)
+        ? 'One of the game already exists'
+        : 'Server down please try again later',
+    });
+  }
+};
 //@TODO controller to bulk delete games by taking ids
+//@TODO controller for search
+//@TODO controller for filter

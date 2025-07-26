@@ -11,9 +11,13 @@ import {
   getPaginationParams,
   getPaginationResponse,
 } from '../common/utils/pagination';
-import { GET_ALL_MOVIES_LIMITS } from '../common/constants/config.constants';
+import {
+  GET_ALL_MOVIES_LIMITS,
+  MOVIE_SEARCH_INDEX,
+} from '../common/constants/config.constants';
 import { BulkDeleteMovieZodSchemaType } from '../common/validation-schema/movie/bulk-delete';
 import { BulkAddMovieZodSchemaType } from '../common/validation-schema/movie/bulk-add';
+import { MovieFiltersZodType } from '../common/validation-schema/movie/movie-filters';
 
 // controller to add a new movie
 export const addMovie = async (
@@ -240,9 +244,217 @@ export const addBulkMovies = async (
     // handle unexpected error
     handleError(res, {
       error: err,
+      message: isDuplicateKeyError(err)
+        ? 'One of the movie already exists'
+        : 'Server down please try again later',
     });
   }
 };
 
-//@TODO search functionality
-//@TODO get movies with filters
+//@TODO try out cursor based search (in this case its fine since we are dealing with small amount can be used in filters)
+//search functionality
+export const searchMovies = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get query from params
+    const { text } = req.query;
+
+    // get pagination params
+    const { limit, start } = getPaginationParams(
+      req.query,
+      GET_ALL_MOVIES_LIMITS
+    );
+
+    //search pipeline (atlas search)
+    const pipeline = [
+      {
+        $search: {
+          index: MOVIE_SEARCH_INDEX,
+          text: {
+            query: text,
+            path: ['title'],
+          },
+        },
+      },
+    ];
+
+    // search for movies
+    const movies = await Movie.aggregate(pipeline).limit(limit).skip(start);
+
+    // return the movies
+    res.status(200).json({
+      success: true,
+      data: {
+        movies,
+        pagination: {
+          limit,
+          start,
+        },
+      },
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//get movies with filters
+
+export const getMoviesWithFilters = async (
+  req: ValidatedRequest<MovieFiltersZodType>,
+  res: Response
+) => {
+  try {
+    // destructure the filters from validated data
+    const {
+      languages,
+      page,
+      limit,
+      status,
+      genre,
+      tags,
+      averageRating,
+      ageRating,
+      runTime,
+      releaseDate
+    } = req.validatedData!;
+
+    //define filters and pipeline
+    const filters: any[] = [];
+    const pipeline: any[] = [];
+
+    //@TODO mandate to store all the languages in lower case for better search
+    //check if languages is defined
+    if (languages) {
+      //push language filter to filters
+      filters.push({
+        in: {
+          value: languages,
+          path: 'languages',
+        },
+      });
+    }
+
+    //check if status is defined
+    if (status) {
+      //push status filter to filters
+      filters.push({
+        in: {
+          value: status,
+          path: 'status',
+        },
+      });
+    }
+
+    //if genre is defined
+    if (genre) {
+      //push genre filter to filters
+      filters.push({
+        in: {
+          value: genre,
+          path: 'genre',
+        },
+      });
+    }
+
+    //if tags is defined
+    if (tags) {
+      //push tags filter to filters
+      filters.push({
+        in: {
+          value: tags,
+          path: 'tags',
+        },
+      });
+    }
+
+    if (runTime) {
+      //push run time filter to filters
+      filters.push({
+        range: {
+          path: 'runTime',
+          ...runTime,
+        },
+      });
+    }
+
+    //if average rating is present
+    if (averageRating) {
+      //push average rating filter to filters
+      filters.push({
+        range: {
+          path: 'averageRating',
+          gte: averageRating,
+        },
+      });
+    }
+
+    //if age rating is present
+    if (ageRating) {
+      //push age rating filter to filters
+      filters.push({
+        range: {
+          path: 'ageRating',
+          ...ageRating,
+        },
+      });
+    }
+
+    //if releaseDate is present
+    if (releaseDate) {
+      //push release date filter to filters
+      filters.push({
+        range: {
+          path: 'releaseDate',
+          ...releaseDate,
+        },
+      });
+    }
+
+    // build pipeline if filters are defined
+    if (filters.length > 0) {
+      pipeline.push({
+        $search: {
+          index: 'movie_filters',
+          compound: {
+            filter: filters,
+          },
+        },
+      });
+    }
+    //Use $facet to get both paginated data and total count in one query
+    const skip = (page - 1) * limit;
+    pipeline.push({
+      $facet: {
+        data: [{ $skip: skip }, { $limit: limit }],
+        totalCount: [{ $count: 'total' }],
+      },
+    });
+
+    //get the data from db
+    const result = await Movie.aggregate(pipeline);
+
+    // extract the data , total count and pagination details
+    const data = result[0]?.data || [];
+    const totalCount = result[0]?.totalCount[0]?.total || 0;
+    const pagination = getPaginationResponse(totalCount, limit, skip);
+
+    // return the data
+    res.status(200).json({
+      success: true,
+      data: {
+        movies: data,
+        pagination,
+      },
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};

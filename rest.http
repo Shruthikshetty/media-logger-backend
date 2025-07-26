@@ -86,22 +86,19 @@ Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "title": "The Dark Knight",
-  "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-  "averageRating": 9.0,
-  "cast": ["Christian Bale", "Heath Ledger", "Aaron Eckhart"],
-  "directors": ["Christopher Nolan"],
-  "runTime": 152,
-  "languages": ["English"],
-  "posterUrl": "https://example.com/darkknight-poster.jpg",
-  "backdropUrl": "https://example.com/darkknight-backdrop.jpg",
+  "title": "Journey to Self",
+  "description": "A young protagonist's path to maturity in a changing world.",
+  "averageRating": 8.2,
+  "cast": ["Youth Protagonist", "Mentor Figure"],
+  "directors": ["Growth Storyteller"],
+  "runTime": 105,
+  "languages": ["english", "hindi"],
+  "backdropUrl": "https://example.com/backdrops/journey-to-self.jpg",
   "isActive": true,
-  "status": "released",
-  "tags": [],
-  "ageRating": 13,
-  "trailerYoutubeUrl": "https://www.youtube.com/watch?v=EXeTwQWrcwY",
-  "releaseDate": "2008-07-18T00:00:00.000Z",
-  "genre": ["Action", "Crime", "Drama"]
+  "tags": ["Coming of Age", "Character-driven", "Feel-Good"],
+  "ageRating": 12,
+  "trailerYoutubeUrl": "https://youtube.com/watch?v=journey-trailer",
+  "releaseDate": "2025-05-01T00:00:00.000Z"
 }
 
 ### delete movie by id 
@@ -109,12 +106,12 @@ DELETE {{baseUrl}}/api/movie/68775607854576d14ca6a8de
 Authorization: {{authToken}}
 
 ### update movie by id 
-PATCH {{baseUrl}}/api/movie/6877504915e1dac22aff59d7
+PATCH {{baseUrl}}/api/movie/68846ce94f03fdce95913727
 Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "description": "2 imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."
+  "averageRating": 8.2
 }
 
 ### bulk delete movies 
@@ -130,6 +127,47 @@ Content-Type: application/json
 ### use post man to do this file key movieDataFile
 POST {{baseUrl}}/api/movie/bulk
 
+### search movies by title (there are default limits applied like prev endpoints)
+GET {{baseUrl}}/api/movie/search?text=Dark Knight
+
+### search movies by title  with pagination
+GET {{baseUrl}}/api/movie/search?text=Dark Knight&limit=20&start=0
+
+### get movies by filter (default pagination 20 at a time only page based pagination here )
+### all the fields are optional here , additional field means additional checks
+GET {{baseUrl}}/api/movie/filter
+Content-Type: application/json
+
+{
+  "languages" : "english",
+  "status" : "released",
+  "genre": ["Action"],
+  "tags": ["Binge-worthy" , "Serialized"],
+  "averageRating": 5,
+  "ageRating":{
+    "gte": 12,
+    "lte": 18
+  },
+  "runTime": {
+    "gte":90,
+    "lte":120
+  },
+  "releaseDate":{
+    "gte":"2024-05-20T00:00:00.000Z",
+    "lte":"2024-07-20T00:00:00.000Z"
+  }
+}
+
+### filters with limits 
+GET {{baseUrl}}/api/movie/filter
+Content-Type: application/json
+
+{
+  "languages" : "english",
+  "limit": 2,
+  "page": 1
+}
+
 ##----------------------------------------------------GAMES----------------------------------------------------
 
 ### Add a new game 
@@ -140,7 +178,7 @@ Content-Type: application/json
 {
   "title": "Apex Legends Season 20",
   "description": "Squad up and drop into the arena in this free-to-play battle royale where legendary characters fight for glory",
-  "genre": "Battle Royale",
+  "genre": ["Battle Royale"],
   "releaseDate": "2024-02-13T00:00:00.000Z",
   "posterUrl": "https://example.com/apex-poster.jpg",
   "backdropUrl": "https://example.com/apex-backdrop.jpg",
@@ -152,6 +190,10 @@ Content-Type: application/json
   "ageRating": 16,
   "trailerYoutubeUrl": "https://www.youtube.com/watch?v=example6"
 }
+
+### Bulk add games by sending a json file 
+### use postman to do this file key gameDataFile
+POST {{baseUrl}}/api/game/bulk
 
 ### get all games(20 games at a time) max is 50
 GET {{baseUrl}}/api/game

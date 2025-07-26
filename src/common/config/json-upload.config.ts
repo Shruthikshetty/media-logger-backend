@@ -32,7 +32,7 @@ const jsonStorage = multer.diskStorage({
    * This prevents file name collisions.
    */
   filename: (
-    req: Request,
+    _req: Request,
     // eslint-disable-next-line no-undef
     file: Express.Multer.File,
     // eslint-disable-next-line no-unused-vars
