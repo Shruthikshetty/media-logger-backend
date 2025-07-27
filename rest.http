@@ -207,6 +207,9 @@ GET {{baseUrl}}/api/game?limit=20&start=0
 ### get a game by id 
 GET {{baseUrl}}/api/game/6884ebdc9c0f28bdf8671744
 
+### search games by title (default limits 20 at time  , start , limit based for infinite scroll)
+GET {{baseUrl}}/api/game/search?text=Kingdom
+
 ### delete a game buy id 
 DELETE {{baseUrl}}/api/game/6877c2ff3f23959890faae31
 Authorization: {{authToken}}

@@ -15,7 +15,10 @@ import {
   getPaginationParams,
   getPaginationResponse,
 } from '../common/utils/pagination';
-import { GET_ALL_GAMES_LIMITS } from '../common/constants/config.constants';
+import {
+  GAME_SEARCH_INDEX,
+  GET_ALL_GAMES_LIMITS,
+} from '../common/constants/config.constants';
 import { UpdateGameZodSchemaType } from '../common/validation-schema/game/update-game';
 import { BulkAddGameZodSchemaType } from '../common/validation-schema/game/bulk-add';
 import { BulkDeleteGameZodType } from '../common/validation-schema/game/bulk-delete';
@@ -257,5 +260,55 @@ export const bulkDeleteGames = async (
   }
 };
 
-//@TODO controller for search
+//controller for search title
+export const searchGame = async (req: ValidatedRequest<{}>, res: Response) => {
+  try {
+    // get query from params
+    const { text } = req.query;
+    console.log(text)
+
+    //get pagination params
+    const { limit, start } = getPaginationParams(
+      req.query,
+      GET_ALL_GAMES_LIMITS
+    );
+
+    //search pipeline (atlas search)
+    const pipeline = [
+      {
+        $search: {
+          index: GAME_SEARCH_INDEX,
+          text: {
+            query: text,
+            path: ['title'],
+          },
+        },
+      },
+    ];
+
+    // get the games
+    const games = await Game.aggregate(pipeline)
+      .limit(limit)
+      .skip(start)
+      .exec();
+
+    //send response
+    res.status(200).json({
+      success: true,
+      data: {
+        games,
+        pagination: {
+          limit,
+          start,
+        },
+      },
+    });
+
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
 //@TODO controller for filter

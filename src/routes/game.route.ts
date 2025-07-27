@@ -10,7 +10,8 @@ import {
   getGameById,
   updateGameById,
   bulkDeleteGames,
-  bulkAddGames
+  bulkAddGames,
+  searchGame,
 } from '../controllers/game.controller';
 import { validateReq } from '../common/middleware/handle-validation';
 import { AddGameZodSchema } from '../common/validation-schema/game/add-game';
@@ -27,6 +28,9 @@ const route = Router();
 
 // Route to get all games
 route.get('/', getAllGames);
+
+// Route to search games
+route.get('/search', searchGame);
 
 // Route to get a game by id
 route.get('/:id', getGameById);
@@ -51,9 +55,9 @@ route.delete(
   bulkDeleteGames
 );
 
-route.delete("/bulk" , (req , res) => {
- res.send("hello bulk end point")
-})
+route.delete('/bulk', (req, res) => {
+  res.send('hello bulk end point');
+});
 
 // Route to delete a game by id
 route.delete('/:id', requireAuth('admin'), deleteGameById);
