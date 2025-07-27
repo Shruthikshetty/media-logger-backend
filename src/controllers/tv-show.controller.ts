@@ -255,3 +255,81 @@ export const updateTvShowById = async (
     handleError(res, { error: error });
   }
 };
+
+// controller to delete tv show by id
+export const deleteTvShowById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  //initialize transaction session
+  const session = await startSession();
+  //start transaction
+  session.startTransaction();
+  try {
+    // destructure id
+    const { id } = req.params;
+
+    //check if the id is a valid mongo id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid tv show id', statusCode: 400 });
+      return;
+    }
+
+    //find and delete all the seasons by tv tv id
+    const seasons = await Season.find({ tvShow: id }).lean().exec();
+
+    let episodeDeleteCount = 0;
+    let seasonDeleteCount = 0;
+
+    if (seasons.length > 0) {
+      //delete all the episodes by season id
+      for (const season of seasons) {
+        const deletedEpisodes = await Episode.deleteMany(
+          { season: season._id },
+          { session }
+        );
+        episodeDeleteCount += deletedEpisodes.deletedCount;
+      }
+
+      //delete all the seasons by tv show id
+      const deletedSeason = await Season.deleteMany(
+        { tvShow: id },
+        { session }
+      );
+      seasonDeleteCount = deletedSeason.deletedCount;
+    }
+
+    //delete the tv show by id
+    const deletedTvShow = await TVShow.findByIdAndDelete(id, { session })
+      .lean()
+      .exec();
+
+    // in case tv show is not deleted
+    if (!deletedTvShow) {
+      handleError(res, { message: 'Tv show not found', statusCode: 404 });
+      return;
+    }
+
+    //commit the transaction
+    await session.commitTransaction();
+
+    // return the deleted tv show count
+    res.status(200).json({
+      success: true,
+      data: {
+        deletedCount: {
+          tvShow: 1,
+          seasons: seasonDeleteCount,
+          episodes: episodeDeleteCount,
+        },
+      },
+      message: 'Tv show deleted successfully',
+    });
+  } catch (err) {
+    session.abortTransaction();
+    //handle unexpected error
+    handleError(res, { error: err });
+  } finally {
+    session.endSession();
+  }
+};

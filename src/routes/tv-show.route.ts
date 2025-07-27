@@ -6,7 +6,13 @@ import { Router } from 'express';
 import { requireAuth } from '../common/middleware/require-auth';
 import { validateReq } from '../common/middleware/handle-validation';
 import { AddTvShowZodSchema } from '../common/validation-schema/tv-show/add-tv-show';
-import { addTvShow, getAllTvShows, getTvShowById, updateTvShowById } from '../controllers/tv-show.controller';
+import {
+  addTvShow,
+  getAllTvShows,
+  getTvShowById,
+  updateTvShowById,
+  deleteTvShowById,
+} from '../controllers/tv-show.controller';
 import {
   addSeason,
   getSeasonById,
@@ -56,7 +62,7 @@ route.post(
 //get all the tv shows
 route.get('/', getAllTvShows);
 
-//Route to get tv show by id 
+//Route to get tv show by id
 route.get('/:id', getTvShowById);
 
 //Route to update a tv show by id
@@ -110,6 +116,9 @@ route.patch(
 
 //Route to delete season by id (this will delete all the episodes as well)
 route.delete('/season/:id', requireAuth('admin'), deleteSeasonById);
+
+// Route to delete a tv show by id
+route.delete('/:id', requireAuth('admin'), deleteTvShowById);
 
 //export all the routes
 export default route;

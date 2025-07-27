@@ -345,6 +345,10 @@ Content-Type: application/json
   "description": "A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy."
 }
 
+### delete a tv show (this will remove all the associated seasons and episodes)
+DELETE  {{baseUrl}}/api/tv-show/688652b87df1e1aaaf9cc1cc
+Authorization: {{authToken}}
+
 ### add a season to a tv show (you can provide the episodes as well)
 POST {{baseUrl}}/api/tv-show/season
 Authorization: {{authToken}}
@@ -428,5 +432,5 @@ Content-Type: application/json
 }
 
 ### delete the season by id (all the associated episodes will also be deleted)
-DELETE {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c
+DELETE {{baseUrl}}/api/tv-show/season/688650616452857ec142d164
 Authorization: {{authToken}}
