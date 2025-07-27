@@ -419,7 +419,7 @@ export const getMoviesWithFilters = async (
     if (filters.length > 0) {
       pipeline.push({
         $search: {
-          index: 'movie_filters',
+          index: MOVIE_SEARCH_INDEX,
           compound: {
             filter: filters,
           },

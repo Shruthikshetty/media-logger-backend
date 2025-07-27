@@ -1,22 +1,49 @@
 /**
- * This file contains the validation schema for movie filters
+ * @file contains the validation schema for game filters
  */
 
 import z from 'zod';
-import { GET_ALL_MOVIES_LIMITS } from '../../constants/config.constants';
+import { GET_ALL_GAMES_LIMITS } from '../../constants/config.constants';
 import { omit } from 'lodash';
 
-export const MovieFiltersZodSchema = z
+//schema
+export const GamesFilterZodSchema = z
   .object({
     averageRating: z
       .number({
         message: 'Average rating must be number',
+      })
+      .min(0, {
+        message: 'Average rating must be greater than or equal to 0',
+      })
+      .max(10, {
+        message: 'Average rating must be less than or equal to 10',
       })
       .optional(),
 
     genre: z
       .array(z.string({ message: 'Genre must be string' }), {
         message: 'Genre must be an array of strings',
+      })
+      .optional(),
+
+    ageRating: z
+      .object({
+        gte: z
+          .number({
+            message: 'Age rating gte must be number',
+          })
+          .min(0)
+          .optional(),
+        lte: z
+          .number({
+            message: 'Age rating lte must be number',
+          })
+          .min(0)
+          .optional(),
+      })
+      .refine((data) => data.gte !== undefined || data.lte !== undefined, {
+        message: 'Age rating must include at least one of gte or lte',
       })
       .optional(),
 
@@ -48,39 +75,6 @@ export const MovieFiltersZodSchema = z
       })
       .optional(),
 
-    runTime: z
-      .object({
-        gte: z
-          .number({
-            message: 'Run time gte must be number',
-          })
-          .min(0)
-          .optional(),
-        lte: z
-          .number({
-            message: 'Run time lte must be number',
-          })
-          .min(0)
-          .optional(),
-      })
-      .refine((data) => data.gte !== undefined || data.lte !== undefined, {
-        message: 'Run time must include at least one of gte or lte',
-      })
-      .optional(),
-
-    languages: z
-      .string({
-        message: 'Languages must be string',
-      })
-      .transform((val) => val.toLocaleLowerCase())
-      .optional(),
-
-    tags: z
-      .array(z.string({ message: 'Tags must be string' }), {
-        message: 'Tags must be an array of strings',
-      })
-      .optional(),
-
     status: z
       .string({
         required_error: 'Status is required',
@@ -88,23 +82,29 @@ export const MovieFiltersZodSchema = z
       })
       .optional(),
 
-    ageRating: z
+    platforms: z
+      .array(z.string({ message: 'Platforms must be string' }), {
+        message: 'Platforms must be an array of strings',
+      })
+      .optional(),
+
+    avgPlaytime: z
       .object({
         gte: z
           .number({
-            message: 'Age rating gte must be number',
+            message: 'Average playtime gte must be number',
           })
           .min(0)
           .optional(),
         lte: z
           .number({
-            message: 'Age rating lte must be number',
+            message: 'Average playtime lte must be number',
           })
           .min(0)
           .optional(),
       })
       .refine((data) => data.gte !== undefined || data.lte !== undefined, {
-        message: 'Age rating must include at least one of gte or lte',
+        message: 'Average playtime must include at least one of gte or lte',
       })
       .optional(),
 
@@ -112,9 +112,9 @@ export const MovieFiltersZodSchema = z
       .number({
         message: 'Limit must be number',
       })
-      .max(GET_ALL_MOVIES_LIMITS.limit.max)
-      .min(GET_ALL_MOVIES_LIMITS.limit.min)
-      .default(GET_ALL_MOVIES_LIMITS.limit.default),
+      .max(GET_ALL_GAMES_LIMITS.limit.max)
+      .min(GET_ALL_GAMES_LIMITS.limit.min)
+      .default(GET_ALL_GAMES_LIMITS.limit.default),
 
     page: z
       .number({
@@ -137,4 +137,4 @@ export const MovieFiltersZodSchema = z
   });
 
 //export type
-export type MovieFiltersZodType = z.infer<typeof MovieFiltersZodSchema>;
+export type GamesFilterZodSchemaType = z.infer<typeof GamesFilterZodSchema>;

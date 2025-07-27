@@ -158,7 +158,7 @@ Content-Type: application/json
   }
 }
 
-### filters with limits 
+### filters with limits (page based)
 GET {{baseUrl}}/api/movie/filter
 Content-Type: application/json
 
@@ -205,19 +205,66 @@ GET {{baseUrl}}/api/game?limit=20&page=1
 GET {{baseUrl}}/api/game?limit=20&start=0
 
 ### get a game by id 
-GET {{baseUrl}}/api/game/6877c2ff3f23959890faae31
+GET {{baseUrl}}/api/game/6884ebdc9c0f28bdf8671744
+
+### search games by title (default limits 20 at time  , start , limit based for infinite scroll)
+GET {{baseUrl}}/api/game/search?text=Kingdom
+
+### get games by filter  (default limit is 20 per page)
+POST {{baseUrl}}/api/game/filter
+Content-Type: application/json
+
+{
+ "platforms":["PlayStation 4"],
+ "genre": ["Battle Royale"],
+ "status": "released",
+ "avgPlaytime":{
+  "gte":100,
+  "lte":200
+ },
+ "averageRating": 5,
+ "releaseDate" : {
+  "gte": "2024-01-13T00:00:00.000Z",
+  "lte": "2024-07-13T00:00:00.000Z"
+ },
+ "ageRating":{
+  "gte": 12,
+  "lte": 18
+ }
+}
+
+### get games with pagination 
+POST {{baseUrl}}/api/game/filter
+Content-Type: application/json
+
+{
+   "status": "released",
+   "page": 1,
+   "limit": 20
+}
 
 ### delete a game buy id 
 DELETE {{baseUrl}}/api/game/6877c2ff3f23959890faae31
 Authorization: {{authToken}}
 
-### update a game by id 
-PATCH {{baseUrl}}/api/game/6877ed5901d671894b2f40e7
+### bulk delete games by id
+DELETE {{baseUrl}}/api/game/bulk
 Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "description": "Squad uupp and drop into the arena in this free-to-play battle royale where legendary characters fight for glory"
+  "gameIds" : [
+    "6884ebdc9c0f28bdf8671744"
+  ]
+}
+
+### update a game by id 
+PATCH {{baseUrl}}/api/game/6884e94dc7634cdb9188e6c1
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "averageRating": 8.5
 }
 
 ##-------------------------------------------------TV-SHOW-----------------------------------------------------------
