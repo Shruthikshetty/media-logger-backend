@@ -346,8 +346,17 @@ Content-Type: application/json
 }
 
 ### delete a tv show (this will remove all the associated seasons and episodes)
-DELETE  {{baseUrl}}/api/tv-show/688652b87df1e1aaaf9cc1cc
+DELETE  {{baseUrl}}/api/tv-show/688658dbbe58cf4bf7ade6ce
 Authorization: {{authToken}}
+
+### bulk delete tv show
+DELETE  {{baseUrl}}/api/tv-show/bulk
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+ "tvShowIds":["68865a1dfecd566edb52c098" , "68865a29fecd566edb52c0a1" , "68865a34fecd566edb52c0aa"]
+}
 
 ### add a season to a tv show (you can provide the episodes as well)
 POST {{baseUrl}}/api/tv-show/season

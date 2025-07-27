@@ -204,7 +204,12 @@ export const deleteSeasonById = async (
     }
 
     // delete all the episodes of the season
-    const deletedEpisodes = await Episode.deleteMany({ season: id }, { session }).lean().exec();
+    const deletedEpisodes = await Episode.deleteMany(
+      { season: id },
+      { session }
+    )
+      .lean()
+      .exec();
 
     // commit the transaction
     await session.commitTransaction();

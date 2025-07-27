@@ -11,6 +11,7 @@ import {
   getAllTvShows,
   getTvShowById,
   updateTvShowById,
+  bulkDeleteTvShow,
   deleteTvShowById,
 } from '../controllers/tv-show.controller';
 import {
@@ -30,6 +31,7 @@ import { AddEpisodeZodSchema } from '../common/validation-schema/tv-show/add-epi
 import { UpdateEpisodeZodSchema } from '../common/validation-schema/tv-show/update-episode';
 import { UpdateSeasonZodSchema } from '../common/validation-schema/tv-show/update-season';
 import { UpdateTvShowZodSchema } from '../common/validation-schema/tv-show/update-tv-show';
+import { BulkDeleteTvShowZodSchema } from '../common/validation-schema/tv-show/bulk-delete-tv-show';
 
 //initialize router
 const route = Router();
@@ -116,6 +118,14 @@ route.patch(
 
 //Route to delete season by id (this will delete all the episodes as well)
 route.delete('/season/:id', requireAuth('admin'), deleteSeasonById);
+
+//Route to bulk delete tv shows
+route.delete(
+  '/bulk',
+  requireAuth('admin'),
+  validateReq(BulkDeleteTvShowZodSchema),
+  bulkDeleteTvShow
+);
 
 // Route to delete a tv show by id
 route.delete('/:id', requireAuth('admin'), deleteTvShowById);

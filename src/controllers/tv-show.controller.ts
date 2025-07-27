@@ -24,6 +24,8 @@ import {
   getSeasonsWithEpisodes,
 } from '../common/utils/get-tv-show';
 import { UpdateTvShowZodType } from '../common/validation-schema/tv-show/update-tv-show';
+import { BulkDeleteTvShowZodSchemaType } from '../common/validation-schema/tv-show/bulk-delete-tv-show';
+import { deleteTvShow } from '../common/utils/delete-tv-show';
 
 // controller to add a new tv show
 export const addTvShow = async (
@@ -275,40 +277,8 @@ export const deleteTvShowById = async (
       return;
     }
 
-    //find and delete all the seasons by tv tv id
-    const seasons = await Season.find({ tvShow: id }).lean().exec();
-
-    let episodeDeleteCount = 0;
-    let seasonDeleteCount = 0;
-
-    if (seasons.length > 0) {
-      //delete all the episodes by season id
-      for (const season of seasons) {
-        const deletedEpisodes = await Episode.deleteMany(
-          { season: season._id },
-          { session }
-        );
-        episodeDeleteCount += deletedEpisodes.deletedCount;
-      }
-
-      //delete all the seasons by tv show id
-      const deletedSeason = await Season.deleteMany(
-        { tvShow: id },
-        { session }
-      );
-      seasonDeleteCount = deletedSeason.deletedCount;
-    }
-
-    //delete the tv show by id
-    const deletedTvShow = await TVShow.findByIdAndDelete(id, { session })
-      .lean()
-      .exec();
-
-    // in case tv show is not deleted
-    if (!deletedTvShow) {
-      handleError(res, { message: 'Tv show not found', statusCode: 404 });
-      return;
-    }
+    // delete tv show
+    const { deletedCount } = await deleteTvShow(id, session);
 
     //commit the transaction
     await session.commitTransaction();
@@ -317,19 +287,78 @@ export const deleteTvShowById = async (
     res.status(200).json({
       success: true,
       data: {
-        deletedCount: {
-          tvShow: 1,
-          seasons: seasonDeleteCount,
-          episodes: episodeDeleteCount,
-        },
+        deletedCount,
       },
       message: 'Tv show deleted successfully',
     });
-  } catch (err) {
+  } catch (err: any) {
     session.abortTransaction();
     //handle unexpected error
-    handleError(res, { error: err });
+    handleError(res, {
+      error: err,
+      statusCode: err?.statusCode,
+      message: err?.message,
+    });
   } finally {
     session.endSession();
   }
 };
+
+//controller to bulk delete tv show
+export const bulkDeleteTvShow = async (
+  req: ValidatedRequest<BulkDeleteTvShowZodSchemaType>,
+  res: Response
+) => {
+  // create a mongo transaction session
+  const session = await startSession();
+  //start transaction
+  session.startTransaction();
+  try {
+    // get the ids from validated data
+    const { tvShowIds } = req.validatedData!;
+
+    const deleteCount = {
+      tvShow: 0,
+      seasons: 0,
+      episodes: 0,
+    };
+
+    for (const id of tvShowIds) {
+      // delete tv show
+      const { deletedCount: receivedDeletedCount } = await deleteTvShow(
+        id,
+        session
+      );
+      //update count
+      deleteCount.tvShow += receivedDeletedCount.tvShow;
+      deleteCount.seasons += receivedDeletedCount.seasons;
+      deleteCount.episodes += receivedDeletedCount.episodes;
+    }
+    //commit the transaction
+    await session.commitTransaction();
+
+    // return the deleted tv show count
+    res.status(200).json({
+      success: true,
+      data: {
+        deleteCount,
+      },
+      message: 'Tv show\'s deleted successfully',
+    });
+  } catch (err: any) {
+    session.abortTransaction();
+    //handle unexpected error
+    handleError(res, {
+      error: err,
+      statusCode: err?.statusCode,
+      message: err?.message,
+    });
+  } finally {
+    //end session
+    await session.endSession();
+  }
+};
+
+//@TODO controller to bulk add tv show
+//@TODO controller for search tv show
+//@TODO controller for filter tv show
