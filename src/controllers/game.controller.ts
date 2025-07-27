@@ -22,6 +22,7 @@ import {
 import { UpdateGameZodSchemaType } from '../common/validation-schema/game/update-game';
 import { BulkAddGameZodSchemaType } from '../common/validation-schema/game/bulk-add';
 import { BulkDeleteGameZodType } from '../common/validation-schema/game/bulk-delete';
+import { GamesFilterZodSchemaType } from '../common/validation-schema/game/games-filter';
 
 //controller to get all the games
 export const getAllGames = async (req: ValidatedRequest<{}>, res: Response) => {
@@ -265,7 +266,7 @@ export const searchGame = async (req: ValidatedRequest<{}>, res: Response) => {
   try {
     // get query from params
     const { text } = req.query;
-    console.log(text)
+    console.log(text);
 
     //get pagination params
     const { limit, start } = getPaginationParams(
@@ -303,7 +304,6 @@ export const searchGame = async (req: ValidatedRequest<{}>, res: Response) => {
         },
       },
     });
-
   } catch (err) {
     // handle unexpected error
     handleError(res, {
@@ -311,4 +311,140 @@ export const searchGame = async (req: ValidatedRequest<{}>, res: Response) => {
     });
   }
 };
-//@TODO controller for filter
+
+//controller for games filter
+export const filterGames = async (
+  req: ValidatedRequest<GamesFilterZodSchemaType>,
+  res: Response
+) => {
+  try {
+    //destructure the filters from validated data
+    const {
+      genre,
+      platforms,
+      status,
+      avgPlaytime,
+      releaseDate,
+      averageRating,
+      page,
+      ageRating,
+      limit,
+    } = req.validatedData!;
+    //define filters and pipeline
+    const filters: any[] = [];
+    const pipeline: any[] = [];
+
+    // if genre is defined
+    if (genre) {
+      filters.push({
+        in: {
+          path: 'genre',
+          value: genre,
+        },
+      });
+    }
+
+    //if platform is defined
+    if (platforms) {
+      filters.push({
+        in: {
+          path: 'platforms',
+          value: platforms,
+        },
+      });
+    }
+
+    //if status is defined
+    if (status) {
+      filters.push({
+        in: {
+          path: 'status',
+          value: status,
+        },
+      });
+    }
+
+    //if avgPlaytime is defined
+    if (avgPlaytime) {
+      filters.push({
+        range: {
+          path: 'avgPlaytime',
+          ...avgPlaytime,
+        },
+      });
+    }
+
+    //if releaseDate is defined
+    if (releaseDate) {
+      filters.push({
+        range: {
+          path: 'releaseDate',
+          ...releaseDate,
+        },
+      });
+    }
+    
+    //if ageRating is defined
+    if (ageRating) {
+      filters.push({
+        range: {
+          path: 'ageRating',
+          ...ageRating,
+        },
+      });
+    }
+
+    //if averageRating is defined
+    if (averageRating) {
+      filters.push({
+        range: {
+          path: 'averageRating',
+          gte: averageRating,
+        },
+      });
+    }
+
+    //if filters are defined
+    if (filters.length > 0) {
+      pipeline.push({
+        $search: {
+          index: GAME_SEARCH_INDEX,
+          compound: {
+            filter: filters,
+          },
+        },
+      });
+    }
+
+    //Use $facet to get both paginated data and total count in one query
+    const skip = (page - 1) * limit;
+    pipeline.push({
+      $facet: {
+        data: [{ $skip: skip }, { $limit: limit }],
+        totalCount: [{ $count: 'total' }],
+      },
+    });
+
+    // get the data from the db
+    const result = await Game.aggregate(pipeline);
+
+    // extract the data , pagination and total count from the result
+    const data = result[0]?.data;
+    const totalCount = result[0]?.totalCount[0]?.total || 0;
+    const pagination = getPaginationResponse(totalCount, limit, skip);
+
+    //send response
+    res.status(200).json({
+      success: true,
+      data: {
+        games: data,
+        pagination,
+      },
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};

@@ -24,6 +24,18 @@ export const AddGameZodSchema = z.object({
     })
     .min(3, 'Description must be at least 3 characters long'),
 
+  averageRating: z
+    .number({
+      message: 'Average rating must be number',
+    })
+    .min(0, {
+      message: 'Average rating must be greater than or equal to 0',
+    })
+    .max(10, {
+      message: 'Average rating must be less than or equal to 10',
+    })
+    .optional(),
+
   genre: z.array(
     z
       .string({
