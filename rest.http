@@ -1,6 +1,5 @@
 @baseUrl = http://localhost:3001
 @authToken = Bearer <token>
-##-------------------------------------------- USER -------------------------------------------------------------
 ### add user
 POST {{baseUrl}}/api/user
 Content-Type: application/json
@@ -284,20 +283,25 @@ GET {{baseUrl}}/api/tv-show?limit=2&page=1&fullDetails=true
 ### get tv-show by id
 GET {{baseUrl}}/api/tv-show/68791c6b786a8844dec84b02
 
+### get tv show by search title (pagination default limit = 20)
+GET {{baseUrl}}/api/tv-show/search?text=Fleabag
+###
+GET {{baseUrl}}/api/tv-show/search?text=Fleabag&limit=1&start=0
+
 ### add a new tv show (this can add all all tv show , seasons , episodes)
 POST {{baseUrl}}/api/tv-show
 Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "title": "Fleabag",
+  "title": "Fleabag small bug",
   "description": "A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy.",
   "averageRating": 8.7,
-  "genre": ["Comedy", "Drama"],
-  "releaseDate": "2016-07-21",
+  "genre": ["Comedy", "Action"],
+  "releaseDate": "2016-01-13T00:00:00.000Z",
   "cast": ["Phoebe Waller-Bridge", "Sian Clifford", "Olivia Colman"],
   "directors": ["Harry Bradbeer"],
-  "runTime": 27,
+  "runTime": 230,
   "languages": ["English"],
   "posterUrl": "https://m.media-amazon.com/images/M/MV5BMjA4ODU3OTEzMl5BMl5BanBnXkFtZTgwMjc4NzA4OTE@._V1_QL75_UX380_CR0,0,380,562_.jpg",
   "backdropUrl": "https://www.themoviedb.org/t/p/original/4FV98Rj42n22I5OQ6dM2p12lT1z.jpg",
@@ -343,6 +347,19 @@ Content-Type: application/json
 
 {
   "description": "A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy."
+}
+
+### delete a tv show (this will remove all the associated seasons and episodes)
+DELETE  {{baseUrl}}/api/tv-show/688658dbbe58cf4bf7ade6ce
+Authorization: {{authToken}}
+
+### bulk delete tv show
+DELETE  {{baseUrl}}/api/tv-show/bulk
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+ "tvShowIds":["68865a1dfecd566edb52c098" , "68865a29fecd566edb52c0a1" , "68865a34fecd566edb52c0aa"]
 }
 
 ### add a season to a tv show (you can provide the episodes as well)
@@ -428,5 +445,5 @@ Content-Type: application/json
 }
 
 ### delete the season by id (all the associated episodes will also be deleted)
-DELETE {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c
+DELETE {{baseUrl}}/api/tv-show/season/688650616452857ec142d164
 Authorization: {{authToken}}

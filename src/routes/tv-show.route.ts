@@ -6,7 +6,15 @@ import { Router } from 'express';
 import { requireAuth } from '../common/middleware/require-auth';
 import { validateReq } from '../common/middleware/handle-validation';
 import { AddTvShowZodSchema } from '../common/validation-schema/tv-show/add-tv-show';
-import { addTvShow, getAllTvShows, getTvShowById, updateTvShowById } from '../controllers/tv-show.controller';
+import {
+  addTvShow,
+  getAllTvShows,
+  getTvShowById,
+  updateTvShowById,
+  bulkDeleteTvShow,
+  deleteTvShowById,
+  searchTvShow,
+} from '../controllers/tv-show.controller';
 import {
   addSeason,
   getSeasonById,
@@ -24,6 +32,7 @@ import { AddEpisodeZodSchema } from '../common/validation-schema/tv-show/add-epi
 import { UpdateEpisodeZodSchema } from '../common/validation-schema/tv-show/update-episode';
 import { UpdateSeasonZodSchema } from '../common/validation-schema/tv-show/update-season';
 import { UpdateTvShowZodSchema } from '../common/validation-schema/tv-show/update-tv-show';
+import { BulkDeleteTvShowZodSchema } from '../common/validation-schema/tv-show/bulk-delete-tv-show';
 
 //initialize router
 const route = Router();
@@ -56,7 +65,10 @@ route.post(
 //get all the tv shows
 route.get('/', getAllTvShows);
 
-//Route to get tv show by id 
+//get tv show by search text
+route.get('/search', searchTvShow);
+
+//Route to get tv show by id
 route.get('/:id', getTvShowById);
 
 //Route to update a tv show by id
@@ -110,6 +122,17 @@ route.patch(
 
 //Route to delete season by id (this will delete all the episodes as well)
 route.delete('/season/:id', requireAuth('admin'), deleteSeasonById);
+
+//Route to bulk delete tv shows
+route.delete(
+  '/bulk',
+  requireAuth('admin'),
+  validateReq(BulkDeleteTvShowZodSchema),
+  bulkDeleteTvShow
+);
+
+// Route to delete a tv show by id
+route.delete('/:id', requireAuth('admin'), deleteTvShowById);
 
 //export all the routes
 export default route;

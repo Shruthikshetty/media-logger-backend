@@ -47,10 +47,16 @@ export const AddTvShowZodSchema = z.object({
     }
   ),
 
-  releaseDate: z.string({
-    required_error: 'Release date is required',
-    message: 'Release date must be string',
-  }),
+  releaseDate: z
+    .string({
+      required_error: 'Release date is required',
+      message: 'Release date must be string',
+    })
+    .datetime({
+      message:
+        'Release date must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)',
+    })
+    .transform((val) => new Date(val)),
 
   cast: z
     .array(z.string({ message: 'Cast must be string' }), {
@@ -68,9 +74,14 @@ export const AddTvShowZodSchema = z.object({
   }),
 
   languages: z
-    .array(z.string({ message: 'Languages must be string' }), {
-      message: 'Languages must be an array of strings',
-    })
+    .array(
+      z
+        .string({ message: 'Languages must be string' })
+        .transform((val) => val.toLowerCase()),
+      {
+        message: 'Languages must be an array of strings',
+      }
+    )
     .optional(),
 
   posterUrl: z

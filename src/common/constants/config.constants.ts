@@ -12,9 +12,11 @@ export const ADMIN = 'admin';
 
 export const JSON_FILE_SIZE = 1024 * 1024 * 15; // Set a 15 MB file size limit for JSON data files
 
-export const MOVIE_SEARCH_INDEX = "movie_filters"
+export const MOVIE_SEARCH_INDEX = 'movie_filters';
 
-export const GAME_SEARCH_INDEX = "games_filter"
+export const GAME_SEARCH_INDEX = 'games_filter';
+
+export const TV_SHOW_SEARCH_INDEX = 'tv-filter';
 
 export const GET_ALL_USER_LIMITS = {
   limit: {

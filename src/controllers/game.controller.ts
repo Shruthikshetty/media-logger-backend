@@ -266,7 +266,6 @@ export const searchGame = async (req: ValidatedRequest<{}>, res: Response) => {
   try {
     // get query from params
     const { text } = req.query;
-    console.log(text);
 
     //get pagination params
     const { limit, start } = getPaginationParams(

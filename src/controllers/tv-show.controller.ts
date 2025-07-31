@@ -18,12 +18,17 @@ import {
   getPaginationParams,
   getPaginationResponse,
 } from '../common/utils/pagination';
-import { GET_ALL_TV_SHOW_LIMITS } from '../common/constants/config.constants';
+import {
+  GET_ALL_TV_SHOW_LIMITS,
+  TV_SHOW_SEARCH_INDEX,
+} from '../common/constants/config.constants';
 import {
   getTvShowDetails,
   getSeasonsWithEpisodes,
 } from '../common/utils/get-tv-show';
 import { UpdateTvShowZodType } from '../common/validation-schema/tv-show/update-tv-show';
+import { BulkDeleteTvShowZodSchemaType } from '../common/validation-schema/tv-show/bulk-delete-tv-show';
+import { deleteTvShow } from '../common/utils/delete-tv-show';
 
 // controller to add a new tv show
 export const addTvShow = async (
@@ -255,3 +260,153 @@ export const updateTvShowById = async (
     handleError(res, { error: error });
   }
 };
+
+// controller to delete tv show by id
+export const deleteTvShowById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  //initialize transaction session
+  const session = await startSession();
+  //start transaction
+  session.startTransaction();
+  try {
+    // destructure id
+    const { id } = req.params;
+
+    //check if the id is a valid mongo id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid tv show id', statusCode: 400 });
+      return;
+    }
+
+    // delete tv show
+    const { deletedCount } = await deleteTvShow(id, session);
+
+    //commit the transaction
+    await session.commitTransaction();
+
+    // return the deleted tv show count
+    res.status(200).json({
+      success: true,
+      data: {
+        deletedCount,
+      },
+      message: 'Tv show deleted successfully',
+    });
+  } catch (err: any) {
+    session.abortTransaction();
+    //handle unexpected error
+    handleError(res, {
+      error: err,
+      statusCode: err?.statusCode,
+      message: err?.message,
+    });
+  } finally {
+    session.endSession();
+  }
+};
+
+//controller to bulk delete tv show
+export const bulkDeleteTvShow = async (
+  req: ValidatedRequest<BulkDeleteTvShowZodSchemaType>,
+  res: Response
+) => {
+  // create a mongo transaction session
+  const session = await startSession();
+  //start transaction
+  session.startTransaction();
+  try {
+    // get the ids from validated data
+    const { tvShowIds } = req.validatedData!;
+
+    const deleteCount = {
+      tvShow: 0,
+      seasons: 0,
+      episodes: 0,
+    };
+
+    for (const id of tvShowIds) {
+      // delete tv show
+      const { deletedCount: receivedDeletedCount } = await deleteTvShow(
+        id,
+        session
+      );
+      //update count
+      deleteCount.tvShow += receivedDeletedCount.tvShow;
+      deleteCount.seasons += receivedDeletedCount.seasons;
+      deleteCount.episodes += receivedDeletedCount.episodes;
+    }
+    //commit the transaction
+    await session.commitTransaction();
+
+    // return the deleted tv show count
+    res.status(200).json({
+      success: true,
+      data: {
+        deleteCount,
+      },
+      message: "Tv show's deleted successfully",
+    });
+  } catch (err: any) {
+    session.abortTransaction();
+    //handle unexpected error
+    handleError(res, {
+      error: err,
+      statusCode: err?.statusCode,
+      message: err?.message,
+    });
+  } finally {
+    //end session
+    await session.endSession();
+  }
+};
+
+//controller for search tv show
+export const searchTvShow = async (req: ValidatedRequest<{}>, res: Response) => {
+  try {
+    //get the search text from query params
+    const { text } = req.query;
+
+    //get pagination params
+    const { limit, start } = getPaginationParams(
+      req.query,
+      GET_ALL_TV_SHOW_LIMITS
+    );
+
+    //search pipe line
+    const pipeline = [
+      {
+        $search: {
+          index: TV_SHOW_SEARCH_INDEX,
+          text: {
+            query: text,
+            path: ['title'],
+          },
+        },
+      },
+    ];
+
+    //get the tv shows
+    const tvShows = await TVShow.aggregate(pipeline)
+      .limit(limit)
+      .skip(start)
+      .exec();
+
+    //send response
+    res.status(200).json({
+      success: true,
+      data: {
+        tvShows,
+      },
+    });
+
+
+  } catch (error) {
+    // handle unexpected error
+    handleError(res, { error: error });
+  }
+};
+
+//@TODO controller for filter tv show
+//@TODO controller to bulk add tv show
