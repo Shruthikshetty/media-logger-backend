@@ -30,6 +30,7 @@ import { UpdateTvShowZodType } from '../common/validation-schema/tv-show/update-
 import { BulkDeleteTvShowZodSchemaType } from '../common/validation-schema/tv-show/bulk-delete-tv-show';
 import { deleteTvShow } from '../common/utils/delete-tv-show';
 import { FilterTvShowZodType } from '../common/validation-schema/tv-show/tv-show-filter';
+import { addSingleTvShow } from '../common/utils/add-tv-show';
 
 // controller to add a new tv show
 export const addTvShow = async (
@@ -41,61 +42,8 @@ export const addTvShow = async (
   session.startTransaction();
 
   try {
-    //get validated data
-    const { seasons, ...restTvDetails } = req.validatedData!;
-
-    // create a new tv show
-    const newTvShow = new TVShow(restTvDetails);
-
     // save the tv show
-    const saveTvShow = await newTvShow.save({ session });
-
-    // in case tv show is not saved
-    if (!saveTvShow) {
-      throw new Error('Tv show creation failed');
-    }
-
-    // in case there are seasons
-    let savedSeasons: ISeason[] = [];
-    let savedEpisodes: IEpisode[] = [];
-
-    if (seasons && seasons.length > 0) {
-      for (const seasonData of seasons) {
-        // extract episodes
-        const { episodes, ...seasonDetails } = seasonData;
-        // create a new season
-        const newSeason = new Season({
-          tvShow: saveTvShow._id,
-          ...seasonDetails,
-        });
-        // save the season
-        const savedSeason = await newSeason.save({ session });
-
-        // in case season is not saved
-        if (!savedSeason) {
-          throw new Error(`${seasonData.title} creation failed`);
-        }
-
-        savedSeasons.push(savedSeason);
-
-        // in case there are episodes
-        if (episodes && episodes.length > 0) {
-          for (const episodeData of episodes) {
-            // create a new episode
-            const newEpisode = new Episode({
-              season: savedSeason._id,
-              ...episodeData,
-            });
-            // save the episode
-            const savedEpisode = await newEpisode.save({ session });
-            if (!savedEpisode) {
-              throw new Error(`${episodeData.title} creation failed`);
-            }
-            savedEpisodes.push(savedEpisode);
-          }
-        }
-      }
-    }
+    const savedTvShow = await addSingleTvShow(req.validatedData!, session);
 
     // If all operations were successful, commit the transaction
     await session.commitTransaction();
@@ -103,31 +51,7 @@ export const addTvShow = async (
     // return the saved tv show
     res.status(200).json({
       success: true,
-      data: {
-        /**
-         * return the saved tv show with seasons and episodes
-         * tvShow:{
-         *  ...,
-         *  seasons:[
-         *    {
-         *    ...,
-         *    episodes:[
-         *      ...
-         *    }
-         *  ]
-         * }
-         */
-        tvShow: {
-          ...saveTvShow.toObject(),
-          seasons: savedSeasons.map((season) => ({
-            ...season.toObject(),
-            episodes: savedEpisodes.filter(
-              (episode) =>
-                episode.season.toString() === season.toObject()._id.toString()
-            ),
-          })),
-        },
-      },
+      data: savedTvShow,
       message: 'Tv show created successfully',
     });
   } catch (error: any) {
@@ -506,7 +430,7 @@ export const filterTvShow = async (
         },
       });
     }
-    
+
     //check if totalSeasons is defined
     if (totalSeasons) {
       filters.push({
