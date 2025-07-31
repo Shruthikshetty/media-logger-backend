@@ -13,6 +13,8 @@ import {
   updateTvShowById,
   bulkDeleteTvShow,
   deleteTvShowById,
+  filterTvShow,
+  bulkAddTvShow,
   searchTvShow,
 } from '../controllers/tv-show.controller';
 import {
@@ -33,6 +35,11 @@ import { UpdateEpisodeZodSchema } from '../common/validation-schema/tv-show/upda
 import { UpdateSeasonZodSchema } from '../common/validation-schema/tv-show/update-season';
 import { UpdateTvShowZodSchema } from '../common/validation-schema/tv-show/update-tv-show';
 import { BulkDeleteTvShowZodSchema } from '../common/validation-schema/tv-show/bulk-delete-tv-show';
+import { FilterTvShowZodSchema } from '../common/validation-schema/tv-show/tv-show-filter';
+import { BulkAddTvShowZodSchema } from '../common/validation-schema/tv-show/bulk-add-tv-show';
+import { ValidateJsonFile } from '../common/middleware/handle-json-file-validation';
+import { handleUpload } from '../common/middleware/handle-upload';
+import jsonUpload from '../common/config/json-upload.config';
 
 //initialize router
 const route = Router();
@@ -62,11 +69,22 @@ route.post(
   addTvShow
 );
 
+// route to bulk add tv shows
+route.post(
+  '/bulk',
+  requireAuth('admin'),
+  handleUpload(jsonUpload, 'tvShowDataFile'),
+  ValidateJsonFile(BulkAddTvShowZodSchema),
+  bulkAddTvShow
+);
 //get all the tv shows
 route.get('/', getAllTvShows);
 
 //get tv show by search text
 route.get('/search', searchTvShow);
+
+//get tv show by filters
+route.post('/filter', validateReq(FilterTvShowZodSchema), filterTvShow);
 
 //Route to get tv show by id
 route.get('/:id', getTvShowById);

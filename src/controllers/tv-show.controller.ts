@@ -7,8 +7,6 @@ import { Response } from 'express';
 import { ValidatedRequest } from '../types/custom-types';
 import { AddTvShowZodType } from '../common/validation-schema/tv-show/add-tv-show';
 import TVShow, { ITVShow } from '../models/tv-show.mode';
-import Season, { ISeason } from '../models/tv-season';
-import Episode, { IEpisode } from '../models/tv-episode';
 import { startSession } from 'mongoose';
 import {
   isDuplicateKeyError,
@@ -29,6 +27,10 @@ import {
 import { UpdateTvShowZodType } from '../common/validation-schema/tv-show/update-tv-show';
 import { BulkDeleteTvShowZodSchemaType } from '../common/validation-schema/tv-show/bulk-delete-tv-show';
 import { deleteTvShow } from '../common/utils/delete-tv-show';
+import { FilterTvShowZodType } from '../common/validation-schema/tv-show/tv-show-filter';
+import { addSingleTvShow } from '../common/utils/add-tv-show';
+import { BulkAddTvShowZodSchemaType } from '../common/validation-schema/tv-show/bulk-add-tv-show';
+import { ISeason } from '../models/tv-season';
 
 // controller to add a new tv show
 export const addTvShow = async (
@@ -40,61 +42,8 @@ export const addTvShow = async (
   session.startTransaction();
 
   try {
-    //get validated data
-    const { seasons, ...restTvDetails } = req.validatedData!;
-
-    // create a new tv show
-    const newTvShow = new TVShow(restTvDetails);
-
     // save the tv show
-    const saveTvShow = await newTvShow.save({ session });
-
-    // in case tv show is not saved
-    if (!saveTvShow) {
-      throw new Error('Tv show creation failed');
-    }
-
-    // in case there are seasons
-    let savedSeasons: ISeason[] = [];
-    let savedEpisodes: IEpisode[] = [];
-
-    if (seasons && seasons.length > 0) {
-      for (const seasonData of seasons) {
-        // extract episodes
-        const { episodes, ...seasonDetails } = seasonData;
-        // create a new season
-        const newSeason = new Season({
-          tvShow: saveTvShow._id,
-          ...seasonDetails,
-        });
-        // save the season
-        const savedSeason = await newSeason.save({ session });
-
-        // in case season is not saved
-        if (!savedSeason) {
-          throw new Error(`${seasonData.title} creation failed`);
-        }
-
-        savedSeasons.push(savedSeason);
-
-        // in case there are episodes
-        if (episodes && episodes.length > 0) {
-          for (const episodeData of episodes) {
-            // create a new episode
-            const newEpisode = new Episode({
-              season: savedSeason._id,
-              ...episodeData,
-            });
-            // save the episode
-            const savedEpisode = await newEpisode.save({ session });
-            if (!savedEpisode) {
-              throw new Error(`${episodeData.title} creation failed`);
-            }
-            savedEpisodes.push(savedEpisode);
-          }
-        }
-      }
-    }
+    const savedTvShow = await addSingleTvShow(req.validatedData!, session);
 
     // If all operations were successful, commit the transaction
     await session.commitTransaction();
@@ -102,31 +51,7 @@ export const addTvShow = async (
     // return the saved tv show
     res.status(200).json({
       success: true,
-      data: {
-        /**
-         * return the saved tv show with seasons and episodes
-         * tvShow:{
-         *  ...,
-         *  seasons:[
-         *    {
-         *    ...,
-         *    episodes:[
-         *      ...
-         *    }
-         *  ]
-         * }
-         */
-        tvShow: {
-          ...saveTvShow.toObject(),
-          seasons: savedSeasons.map((season) => ({
-            ...season.toObject(),
-            episodes: savedEpisodes.filter(
-              (episode) =>
-                episode.season.toString() === season.toObject()._id.toString()
-            ),
-          })),
-        },
-      },
+      data: savedTvShow,
       message: 'Tv show created successfully',
     });
   } catch (error: any) {
@@ -189,10 +114,10 @@ export const getTvShowById = async (
   try {
     // get id from params
     const { id } = req.params;
-    console.log(id);
+
     // get the tv show details
     const tvShow = await TVShow.findById(id).lean<ITVShow>().exec();
-    console.log(tvShow);
+
     // in case tv show is not found
     if (!tvShow) {
       handleError(res, { message: 'Tv show not found', statusCode: 404 });
@@ -363,7 +288,10 @@ export const bulkDeleteTvShow = async (
 };
 
 //controller for search tv show
-export const searchTvShow = async (req: ValidatedRequest<{}>, res: Response) => {
+export const searchTvShow = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
   try {
     //get the search text from query params
     const { text } = req.query;
@@ -400,13 +328,212 @@ export const searchTvShow = async (req: ValidatedRequest<{}>, res: Response) => 
         tvShows,
       },
     });
-
-
   } catch (error) {
     // handle unexpected error
     handleError(res, { error: error });
   }
 };
 
-//@TODO controller for filter tv show
-//@TODO controller to bulk add tv show
+//controller for filter tv show
+export const filterTvShow = async (
+  req: ValidatedRequest<FilterTvShowZodType>,
+  res: Response
+) => {
+  try {
+    //destructure validated data
+    const {
+      genre,
+      limit,
+      page,
+      languages,
+      status,
+      averageRating,
+      releaseDate,
+      runTime,
+      tags,
+      totalEpisodes,
+      totalSeasons,
+    } = req.validatedData!;
+
+    //define filters and pipeline
+    const filters: any[] = [];
+    const pipeline: any[] = [];
+
+    //check if genre is defined
+    if (genre) {
+      filters.push({
+        in: {
+          path: 'genre',
+          value: genre,
+        },
+      });
+    }
+
+    //check if tags is defined
+    if (tags) {
+      filters.push({
+        in: {
+          path: 'tags',
+          value: tags,
+        },
+      });
+    }
+
+    //check if status is defined
+    if (status) {
+      filters.push({
+        in: {
+          path: 'status',
+          value: status,
+        },
+      });
+    }
+
+    //check if averageRating is defined
+    if (averageRating) {
+      filters.push({
+        range: {
+          path: 'averageRating',
+          gte: averageRating,
+        },
+      });
+    }
+
+    //check if releaseDate is defined
+    if (releaseDate) {
+      filters.push({
+        range: {
+          path: 'releaseDate',
+          ...releaseDate,
+        },
+      });
+    }
+
+    //check if runTime is defined
+    if (runTime) {
+      filters.push({
+        range: {
+          path: 'runTime',
+          ...runTime,
+        },
+      });
+    }
+
+    //check if totalEpisodes is defined
+    if (totalEpisodes) {
+      filters.push({
+        range: {
+          path: 'totalEpisodes',
+          ...totalEpisodes,
+        },
+      });
+    }
+
+    //check if totalSeasons is defined
+    if (totalSeasons) {
+      filters.push({
+        range: {
+          path: 'totalSeasons',
+          ...totalSeasons,
+        },
+      });
+    }
+
+    //check if languages is defined
+    if (languages) {
+      //push language filter to filters
+      filters.push({
+        in: {
+          value: languages,
+          path: 'languages',
+        },
+      });
+    }
+
+    //if filters are defined
+    if (filters.length > 0) {
+      pipeline.push({
+        $search: {
+          index: TV_SHOW_SEARCH_INDEX,
+          compound: {
+            filter: filters,
+          },
+        },
+      });
+    }
+
+    //Use $facet to get both paginated data and total count in one query
+    const skip = (page - 1) * limit;
+    pipeline.push({
+      $facet: {
+        data: [{ $skip: skip }, { $limit: limit }],
+        totalCount: [{ $count: 'total' }],
+      },
+    });
+
+    // get the data from db
+    const result = await TVShow.aggregate(pipeline);
+
+    // extract the data , pagination and total count from the result
+    const data = result[0]?.data;
+    const totalCount = result[0]?.totalCount[0]?.total || 0;
+    const pagination = getPaginationResponse(totalCount, limit, skip);
+
+    //send response
+    res.status(200).json({
+      success: true,
+      data: {
+        tvShows: data,
+        pagination,
+      },
+    });
+  } catch (error) {
+    // handle unexpected error
+    handleError(res, { error: error });
+  }
+};
+
+//controller to bulk add tv show
+export const bulkAddTvShow = async (
+  req: ValidatedRequest<BulkAddTvShowZodSchemaType>,
+  res: Response
+) => {
+  //start a mongoose transaction session
+  const session = await startSession();
+  //start transaction
+  session.startTransaction();
+  try {
+    //destructure validated data
+    const tvShows = req.validatedData!;
+    const savedTvShows: (Partial<ITVShow> & { seasons: ISeason[] })[] = [];
+
+    //add all the tv shows to the db
+    for (const tvShow of tvShows) {
+      //save the tv show
+      const savedTvShow = await addSingleTvShow(tvShow, session);
+      savedTvShows.push(savedTvShow);
+    }
+
+    //commit the transaction if all the tv shows are saved
+    await session.commitTransaction();
+    //send response
+
+    res.status(200).json({
+      success: true,
+      data: savedTvShows,
+      message: 'Tv shows created successfully',
+    });
+  } catch (error: any) {
+    // handle unexpected error
+    handleError(res, {
+      error: error,
+      message:
+        error?.message || isDuplicateKeyError(error)
+          ? 'One of the tv show already exists'
+          : 'Server down please try again later',
+    });
+  } finally {
+    //end the session
+    session.endSession();
+  }
+};

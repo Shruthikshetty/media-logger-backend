@@ -1,5 +1,6 @@
 @baseUrl = http://localhost:3001
 @authToken = Bearer <token>
+##-------------------------------------------- USER -------------------------------------------------------------
 ### add user
 POST {{baseUrl}}/api/user
 Content-Type: application/json
@@ -288,6 +289,36 @@ GET {{baseUrl}}/api/tv-show/search?text=Fleabag
 ###
 GET {{baseUrl}}/api/tv-show/search?text=Fleabag&limit=1&start=0
 
+### get tv show by filter (page based pagination , default 20 per page )
+POST {{baseUrl}}/api/tv-show/filter
+Content-Type: application/json
+
+{
+  "genre": ["Comedy"],
+  "languages": ["English"],
+  "tags": ["Award-winning"],
+  "status": "released",
+  "averageRating": 8,
+  "releaseDate":{
+    "gte": "2016-01-13T00:00:00.000Z",
+    "lte": "2017-01-13T00:00:00.000Z"
+  },
+  "runTime":{
+    "gte": 200,
+    "lte": 300
+  },
+  "totalEpisodes":{
+    "gte": 5,
+    "lte": 16
+  },
+    "totalSeasons":{
+    "gte": 1,
+    "lte": 3
+  },
+  "page": 1,
+  "limit": 20
+}
+
 ### add a new tv show (this can add all all tv show , seasons , episodes)
 POST {{baseUrl}}/api/tv-show
 Authorization: {{authToken}}
@@ -339,6 +370,10 @@ Content-Type: application/json
     }
   ]
 }
+
+### bulk add tv show using json 
+### use post man pass file name as tvShowDataFile
+POST {{baseUrl}}/api/tv-show/bulk
 
 ### update a tv show details (only meta data can be updated )
 PATCH {{baseUrl}}/api/tv-show/68791c6b786a8844dec84b02

@@ -1,13 +1,13 @@
 /**
- * @file contains the validation schema for game filters
+ * @file This file contains the validation schema for filtering TV shows
  */
-
 import z from 'zod';
-import { GET_ALL_GAMES_LIMITS } from '../../constants/config.constants';
+import { GET_ALL_TV_SHOW_LIMITS } from '../../constants/config.constants';
 import { omit } from 'lodash';
 
+//@TODO handle lte > gte
 //schema
-export const GamesFilterZodSchema = z
+export const FilterTvShowZodSchema = z
   .object({
     averageRating: z
       .number({
@@ -24,26 +24,6 @@ export const GamesFilterZodSchema = z
     genre: z
       .array(z.string({ message: 'Genre must be string' }), {
         message: 'Genre must be an array of strings',
-      })
-      .optional(),
-
-    ageRating: z
-      .object({
-        gte: z
-          .number({
-            message: 'Age rating gte must be number',
-          })
-          .min(0)
-          .optional(),
-        lte: z
-          .number({
-            message: 'Age rating lte must be number',
-          })
-          .min(0)
-          .optional(),
-      })
-      .refine((data) => data.gte !== undefined || data.lte !== undefined, {
-        message: 'Age rating must include at least one of gte or lte',
       })
       .optional(),
 
@@ -75,6 +55,46 @@ export const GamesFilterZodSchema = z
       })
       .optional(),
 
+    totalEpisodes: z
+      .object({
+        gte: z
+          .number({
+            message: 'Total episodes gte must be number',
+          })
+          .min(0)
+          .optional(),
+        lte: z
+          .number({
+            message: 'Total episodes lte must be number',
+          })
+          .min(0)
+          .optional(),
+      })
+      .refine((data) => data.gte !== undefined || data.lte !== undefined, {
+        message: 'Total episodes must include at least one of gte or lte',
+      })
+      .optional(),
+
+    runTime: z
+      .object({
+        gte: z
+          .number({
+            message: 'Run time gte must be number',
+          })
+          .min(0)
+          .optional(),
+        lte: z
+          .number({
+            message: 'Run time lte must be number',
+          })
+          .min(0)
+          .optional(),
+      })
+      .refine((data) => data.gte !== undefined || data.lte !== undefined, {
+        message: 'Run time must include at least one of gte or lte',
+      })
+      .optional(),
+
     status: z
       .string({
         required_error: 'Status is required',
@@ -82,29 +102,46 @@ export const GamesFilterZodSchema = z
       })
       .optional(),
 
-    platforms: z
-      .array(z.string({ message: 'Platforms must be string' }), {
-        message: 'Platforms must be an array of strings',
+    languages: z
+      .array(
+        z
+          .string({
+            message: 'Languages must be string',
+          })
+          .transform((val) => val.toLowerCase()),
+        {
+          message: 'Languages must be an array of strings',
+        }
+      )
+      .refine((data) => data.length > 0, {
+        message:
+          'Languages must be an array of strings with at least one value',
       })
       .optional(),
 
-    avgPlaytime: z
+    tags: z
+      .array(z.string({ message: 'Tags must be string' }), {
+        message: 'Tags must be an array of strings',
+      })
+      .optional(),
+
+    totalSeasons: z
       .object({
         gte: z
           .number({
-            message: 'Average playtime gte must be number',
+            message: 'Total seasons gte must be number',
           })
           .min(0)
           .optional(),
         lte: z
           .number({
-            message: 'Average playtime lte must be number',
+            message: 'Total seasons lte must be number',
           })
           .min(0)
           .optional(),
       })
       .refine((data) => data.gte !== undefined || data.lte !== undefined, {
-        message: 'Average playtime must include at least one of gte or lte',
+        message: 'Total seasons must include at least one of gte or lte',
       })
       .optional(),
 
@@ -112,9 +149,9 @@ export const GamesFilterZodSchema = z
       .number({
         message: 'Limit must be number',
       })
-      .max(GET_ALL_GAMES_LIMITS.limit.max)
-      .min(GET_ALL_GAMES_LIMITS.limit.min)
-      .default(GET_ALL_GAMES_LIMITS.limit.default),
+      .max(GET_ALL_TV_SHOW_LIMITS.limit.max)
+      .min(GET_ALL_TV_SHOW_LIMITS.limit.min)
+      .default(GET_ALL_TV_SHOW_LIMITS.limit.default),
 
     page: z
       .number({
@@ -136,5 +173,5 @@ export const GamesFilterZodSchema = z
     }
   });
 
-//export type
-export type GamesFilterZodSchemaType = z.infer<typeof GamesFilterZodSchema>;
+// export the type
+export type FilterTvShowZodType = z.infer<typeof FilterTvShowZodSchema>;
