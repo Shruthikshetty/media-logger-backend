@@ -1,5 +1,6 @@
 @baseUrl = http://localhost:3001
 @authToken = Bearer <token>
+##-------------------------------------------- USER -------------------------------------------------------------
 ### add user
 POST {{baseUrl}}/api/user
 Content-Type: application/json
@@ -287,6 +288,15 @@ GET {{baseUrl}}/api/tv-show/68791c6b786a8844dec84b02
 GET {{baseUrl}}/api/tv-show/search?text=Fleabag
 ###
 GET {{baseUrl}}/api/tv-show/search?text=Fleabag&limit=1&start=0
+
+### get tv show by filter (page based pagination , default 20 per page )
+POST {{baseUrl}}/api/tv-show/filter
+Content-Type: application/json
+
+{
+  "genre":["Comedy"],
+  "languages":["English"]
+}
 
 ### add a new tv show (this can add all all tv show , seasons , episodes)
 POST {{baseUrl}}/api/tv-show

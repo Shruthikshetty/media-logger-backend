@@ -13,6 +13,7 @@ import {
   updateTvShowById,
   bulkDeleteTvShow,
   deleteTvShowById,
+  filterTvShow,
   searchTvShow,
 } from '../controllers/tv-show.controller';
 import {
@@ -33,6 +34,7 @@ import { UpdateEpisodeZodSchema } from '../common/validation-schema/tv-show/upda
 import { UpdateSeasonZodSchema } from '../common/validation-schema/tv-show/update-season';
 import { UpdateTvShowZodSchema } from '../common/validation-schema/tv-show/update-tv-show';
 import { BulkDeleteTvShowZodSchema } from '../common/validation-schema/tv-show/bulk-delete-tv-show';
+import { FilterTvShowZodSchema } from '../common/validation-schema/tv-show/tv-show-filter';
 
 //initialize router
 const route = Router();
@@ -67,6 +69,9 @@ route.get('/', getAllTvShows);
 
 //get tv show by search text
 route.get('/search', searchTvShow);
+
+//get tv show by filters
+route.post('/filter', validateReq(FilterTvShowZodSchema), filterTvShow);
 
 //Route to get tv show by id
 route.get('/:id', getTvShowById);

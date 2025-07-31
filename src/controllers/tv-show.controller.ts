@@ -29,6 +29,7 @@ import {
 import { UpdateTvShowZodType } from '../common/validation-schema/tv-show/update-tv-show';
 import { BulkDeleteTvShowZodSchemaType } from '../common/validation-schema/tv-show/bulk-delete-tv-show';
 import { deleteTvShow } from '../common/utils/delete-tv-show';
+import { FilterTvShowZodType } from '../common/validation-schema/tv-show/tv-show-filter';
 
 // controller to add a new tv show
 export const addTvShow = async (
@@ -363,7 +364,10 @@ export const bulkDeleteTvShow = async (
 };
 
 //controller for search tv show
-export const searchTvShow = async (req: ValidatedRequest<{}>, res: Response) => {
+export const searchTvShow = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
   try {
     //get the search text from query params
     const { text } = req.query;
@@ -400,13 +404,89 @@ export const searchTvShow = async (req: ValidatedRequest<{}>, res: Response) => 
         tvShows,
       },
     });
-
-
   } catch (error) {
     // handle unexpected error
     handleError(res, { error: error });
   }
 };
 
-//@TODO controller for filter tv show
+//controller for filter tv show
+export const filterTvShow = async (
+  req: ValidatedRequest<FilterTvShowZodType>,
+  res: Response
+) => {
+  try {
+    //destructure validated data
+    const { genre, limit, page , languages } = req.validatedData!;
+
+    console.log(languages)
+
+    //define filters and pipeline
+    const filters: any[] = [];
+    const pipeline: any[] = [];
+
+    //check if genre is defined
+    if (genre) {
+      filters.push({
+        in: {
+          path: 'genre',
+          value: genre,
+        },
+      });
+    }
+
+    //check if languages is defined
+    if (languages) {
+      //push language filter to filters
+      filters.push({
+        in: {
+          value: languages,
+          path: 'languages',
+        },
+      });
+    }
+
+    //if filters are defined
+    if (filters.length > 0) {
+      pipeline.push({
+        $search: {
+          index: TV_SHOW_SEARCH_INDEX,
+          compound: {
+            filter: filters,
+          },
+        },
+      });
+    }
+
+    //Use $facet to get both paginated data and total count in one query
+    const skip = (page - 1) * limit;
+    pipeline.push({
+      $facet: {
+        data: [{ $skip: skip }, { $limit: limit }],
+        totalCount: [{ $count: 'total' }],
+      },
+    });
+
+    // get the data from db
+    const result = await TVShow.aggregate(pipeline);
+
+    // extract the data , pagination and total count from the result
+    const data = result[0]?.data;
+    const totalCount = result[0]?.totalCount[0]?.total || 0;
+    const pagination = getPaginationResponse(totalCount, limit, skip);
+
+    //send response
+    res.status(200).json({
+      success: true,
+      data: {
+        tvShows: data,
+        pagination,
+      },
+    });
+  } catch (error) {
+    // handle unexpected error
+    handleError(res, { error: error });
+  }
+};
+
 //@TODO controller to bulk add tv show
