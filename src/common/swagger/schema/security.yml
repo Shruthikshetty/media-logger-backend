@@ -6,3 +6,4 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+      description: "JWT token for authenticated requests"
