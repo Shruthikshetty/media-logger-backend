@@ -327,7 +327,6 @@ export const getMoviesWithFilters = async (
     const filters: any[] = [];
     const pipeline: any[] = [];
 
-    //@TODO mandate to store all the languages in lower case for better search
     //check if languages is defined
     if (languages) {
       //push language filter to filters

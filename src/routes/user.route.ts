@@ -1,7 +1,6 @@
 /**
  * @file contains all the routes related to a user
  */
-//@TODO in progress
 import { Router } from 'express';
 import {
   addUser,
