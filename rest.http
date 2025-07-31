@@ -294,8 +294,29 @@ POST {{baseUrl}}/api/tv-show/filter
 Content-Type: application/json
 
 {
-  "genre":["Comedy"],
-  "languages":["English"]
+  "genre": ["Comedy"],
+  "languages": ["English"],
+  "tags": ["Award-winning"],
+  "status": "released",
+  "averageRating": 8,
+  "releaseDate":{
+    "gte": "2016-01-13T00:00:00.000Z",
+    "lte": "2017-01-13T00:00:00.000Z"
+  },
+  "runTime":{
+    "gte": 200,
+    "lte": 300
+  },
+  "totalEpisodes":{
+    "gte": 5,
+    "lte": 16
+  },
+    "totalSeasons":{
+    "gte": 1,
+    "lte": 3
+  },
+  "page": 1,
+  "limit": 20
 }
 
 ### add a new tv show (this can add all all tv show , seasons , episodes)

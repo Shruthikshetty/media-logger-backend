@@ -5,6 +5,7 @@ import z from 'zod';
 import { GET_ALL_TV_SHOW_LIMITS } from '../../constants/config.constants';
 import { omit } from 'lodash';
 
+//@TODO handle lte > gte
 //schema
 export const FilterTvShowZodSchema = z
   .object({

@@ -417,9 +417,21 @@ export const filterTvShow = async (
 ) => {
   try {
     //destructure validated data
-    const { genre, limit, page , languages } = req.validatedData!;
+    const {
+      genre,
+      limit,
+      page,
+      languages,
+      status,
+      averageRating,
+      releaseDate,
+      runTime,
+      tags,
+      totalEpisodes,
+      totalSeasons,
+    } = req.validatedData!;
 
-    console.log(languages)
+    console.log(languages);
 
     //define filters and pipeline
     const filters: any[] = [];
@@ -431,6 +443,76 @@ export const filterTvShow = async (
         in: {
           path: 'genre',
           value: genre,
+        },
+      });
+    }
+
+    //check if tags is defined
+    if (tags) {
+      filters.push({
+        in: {
+          path: 'tags',
+          value: tags,
+        },
+      });
+    }
+
+    //check if status is defined
+    if (status) {
+      filters.push({
+        in: {
+          path: 'status',
+          value: status,
+        },
+      });
+    }
+
+    //check if averageRating is defined
+    if (averageRating) {
+      filters.push({
+        range: {
+          path: 'averageRating',
+          gte: averageRating,
+        },
+      });
+    }
+
+    //check if releaseDate is defined
+    if (releaseDate) {
+      filters.push({
+        range: {
+          path: 'releaseDate',
+          ...releaseDate,
+        },
+      });
+    }
+
+    //check if runTime is defined
+    if (runTime) {
+      filters.push({
+        range: {
+          path: 'runTime',
+          ...runTime,
+        },
+      });
+    }
+
+    //check if totalEpisodes is defined
+    if (totalEpisodes) {
+      filters.push({
+        range: {
+          path: 'totalEpisodes',
+          ...totalEpisodes,
+        },
+      });
+    }
+    
+    //check if totalSeasons is defined
+    if (totalSeasons) {
+      filters.push({
+        range: {
+          path: 'totalSeasons',
+          ...totalSeasons,
         },
       });
     }
