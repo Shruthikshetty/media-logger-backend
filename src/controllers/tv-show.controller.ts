@@ -7,8 +7,6 @@ import { Response } from 'express';
 import { ValidatedRequest } from '../types/custom-types';
 import { AddTvShowZodType } from '../common/validation-schema/tv-show/add-tv-show';
 import TVShow, { ITVShow } from '../models/tv-show.mode';
-import Season, { ISeason } from '../models/tv-season';
-import Episode, { IEpisode } from '../models/tv-episode';
 import { startSession } from 'mongoose';
 import {
   isDuplicateKeyError,
@@ -31,6 +29,8 @@ import { BulkDeleteTvShowZodSchemaType } from '../common/validation-schema/tv-sh
 import { deleteTvShow } from '../common/utils/delete-tv-show';
 import { FilterTvShowZodType } from '../common/validation-schema/tv-show/tv-show-filter';
 import { addSingleTvShow } from '../common/utils/add-tv-show';
+import { BulkAddTvShowZodSchemaType } from '../common/validation-schema/tv-show/bulk-add-tv-show';
+import { ISeason } from '../models/tv-season';
 
 // controller to add a new tv show
 export const addTvShow = async (
@@ -114,10 +114,10 @@ export const getTvShowById = async (
   try {
     // get id from params
     const { id } = req.params;
-    console.log(id);
+
     // get the tv show details
     const tvShow = await TVShow.findById(id).lean<ITVShow>().exec();
-    console.log(tvShow);
+
     // in case tv show is not found
     if (!tvShow) {
       handleError(res, { message: 'Tv show not found', statusCode: 404 });
@@ -355,8 +355,6 @@ export const filterTvShow = async (
       totalSeasons,
     } = req.validatedData!;
 
-    console.log(languages);
-
     //define filters and pipeline
     const filters: any[] = [];
     const pipeline: any[] = [];
@@ -495,4 +493,47 @@ export const filterTvShow = async (
   }
 };
 
-//@TODO controller to bulk add tv show
+//controller to bulk add tv show
+export const bulkAddTvShow = async (
+  req: ValidatedRequest<BulkAddTvShowZodSchemaType>,
+  res: Response
+) => {
+  //start a mongoose transaction session
+  const session = await startSession();
+  //start transaction
+  session.startTransaction();
+  try {
+    //destructure validated data
+    const tvShows = req.validatedData!;
+    const savedTvShows: (Partial<ITVShow> & { seasons: ISeason[] })[] = [];
+
+    //add all the tv shows to the db
+    for (const tvShow of tvShows) {
+      //save the tv show
+      const savedTvShow = await addSingleTvShow(tvShow, session);
+      savedTvShows.push(savedTvShow);
+    }
+
+    //commit the transaction if all the tv shows are saved
+    await session.commitTransaction();
+    //send response
+
+    res.status(200).json({
+      success: true,
+      data: savedTvShows,
+      message: 'Tv shows created successfully',
+    });
+  } catch (error: any) {
+    // handle unexpected error
+    handleError(res, {
+      error: error,
+      message:
+        error?.message || isDuplicateKeyError(error)
+          ? 'One of the tv show already exists'
+          : 'Server down please try again later',
+    });
+  } finally {
+    //end the session
+    session.endSession();
+  }
+};

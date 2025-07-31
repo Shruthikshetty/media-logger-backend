@@ -371,6 +371,10 @@ Content-Type: application/json
   ]
 }
 
+### bulk add tv show using json 
+### use post man pass file name as tvShowDataFile
+POST {{baseUrl}}/api/tv-show/bulk
+
 ### update a tv show details (only meta data can be updated )
 PATCH {{baseUrl}}/api/tv-show/68791c6b786a8844dec84b02
 Authorization: {{authToken}}
