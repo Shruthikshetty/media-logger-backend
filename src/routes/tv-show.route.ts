@@ -13,6 +13,7 @@ import {
   updateTvShowById,
   bulkDeleteTvShow,
   deleteTvShowById,
+  searchTvShow,
 } from '../controllers/tv-show.controller';
 import {
   addSeason,
@@ -63,6 +64,9 @@ route.post(
 
 //get all the tv shows
 route.get('/', getAllTvShows);
+
+//get tv show by search text
+route.get('/search', searchTvShow);
 
 //Route to get tv show by id
 route.get('/:id', getTvShowById);

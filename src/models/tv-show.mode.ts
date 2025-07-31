@@ -15,7 +15,7 @@ export interface ITVShow extends Document {
   description: string;
   averageRating: number;
   genre: string[];
-  releaseDate: string;
+  releaseDate: Date;
   cast: string[];
   directors: string[];
   runTime: number;
@@ -53,7 +53,7 @@ const TVShowSchema: Schema = new Schema(
       enum: GENRE_MOVIE_TV,
     },
     releaseDate: {
-      type: String,
+      type: Date,
       required: true,
     },
     cast: {

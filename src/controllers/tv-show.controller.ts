@@ -18,7 +18,10 @@ import {
   getPaginationParams,
   getPaginationResponse,
 } from '../common/utils/pagination';
-import { GET_ALL_TV_SHOW_LIMITS } from '../common/constants/config.constants';
+import {
+  GET_ALL_TV_SHOW_LIMITS,
+  TV_SHOW_SEARCH_INDEX,
+} from '../common/constants/config.constants';
 import {
   getTvShowDetails,
   getSeasonsWithEpisodes,
@@ -343,7 +346,7 @@ export const bulkDeleteTvShow = async (
       data: {
         deleteCount,
       },
-      message: 'Tv show\'s deleted successfully',
+      message: "Tv show's deleted successfully",
     });
   } catch (err: any) {
     session.abortTransaction();
@@ -359,6 +362,51 @@ export const bulkDeleteTvShow = async (
   }
 };
 
-//@TODO controller to bulk add tv show
-//@TODO controller for search tv show
+//controller for search tv show
+export const searchTvShow = async (req: ValidatedRequest<{}>, res: Response) => {
+  try {
+    //get the search text from query params
+    const { text } = req.query;
+
+    //get pagination params
+    const { limit, start } = getPaginationParams(
+      req.query,
+      GET_ALL_TV_SHOW_LIMITS
+    );
+
+    //search pipe line
+    const pipeline = [
+      {
+        $search: {
+          index: TV_SHOW_SEARCH_INDEX,
+          text: {
+            query: text,
+            path: ['title'],
+          },
+        },
+      },
+    ];
+
+    //get the tv shows
+    const tvShows = await TVShow.aggregate(pipeline)
+      .limit(limit)
+      .skip(start)
+      .exec();
+
+    //send response
+    res.status(200).json({
+      success: true,
+      data: {
+        tvShows,
+      },
+    });
+
+
+  } catch (error) {
+    // handle unexpected error
+    handleError(res, { error: error });
+  }
+};
+
 //@TODO controller for filter tv show
+//@TODO controller to bulk add tv show
