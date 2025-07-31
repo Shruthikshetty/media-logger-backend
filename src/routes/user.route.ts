@@ -20,7 +20,22 @@ import { UpdateRoleZodSchema } from '../common/validation-schema/user/update-rol
 // initialize router
 const route = Router();
 
-//Route to create a user (register)
+/**
+ * @swagger
+ * /api/user:
+ *   post:
+ *     summary: Add a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/AddUserRequest'
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/AddUserSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post('/', validateReq(AddUserZodSchema), addUser);
 
 //Route to get all users
