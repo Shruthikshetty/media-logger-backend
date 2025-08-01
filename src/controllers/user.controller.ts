@@ -51,6 +51,7 @@ export const addUser = async (
         ? 'User already exists'
         : 'User creation failed',
       error: err,
+      statusCode: isDuplicateKeyError(err) ? 409 : 500,
     });
   }
 };

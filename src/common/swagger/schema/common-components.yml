@@ -54,3 +54,16 @@ components:
               message:
                 type: string
                 example: 'A Record with same details exists.(Note :- description will we change according to endpoint)'
+    BadRequest:
+      description: The request was invalid or missing required fields.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 'Validation errors.(Note :- description will we change according to endpoint)'

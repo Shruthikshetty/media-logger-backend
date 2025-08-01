@@ -3,9 +3,6 @@
  */
 
 import swaggerJSDoc from 'swagger-jsdoc';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const options: swaggerJSDoc.Options = {
   // basic swagger info
@@ -22,10 +19,13 @@ const options: swaggerJSDoc.Options = {
     },
     servers: [
       {
-        url: process.env.BASE_URL,
+        url: 'http://localhost:3001',
         description: 'Local Server',
       },
-      // live server is not mentioned for security reasons
+      {
+        url: "",
+        description: 'Production Server',
+      },
     ],
   },
 
