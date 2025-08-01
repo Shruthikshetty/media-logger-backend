@@ -4,7 +4,6 @@
 
 import swaggerJSDoc from 'swagger-jsdoc';
 
-
 const options: swaggerJSDoc.Options = {
   // basic swagger info
   definition: {
@@ -18,19 +17,20 @@ const options: swaggerJSDoc.Options = {
         email: 'github.com/shruthikshetty',
       },
     },
-      servers: [
-    {
-      url: 'http://localhost:3001',
-      description: 'Local Server',
-    },
-    // live server is not mentioned for security reasons
-  ],
+    servers: [
+      {
+        url: 'http://localhost:3001',
+        description: 'Local Server',
+      },
+      {
+        url: "",
+        description: 'Production Server',
+      },
+    ],
   },
 
   // Path to the API docs files
-  apis: ['./src/routes/**/*.ts', './src/common/swagger/schema/**/*.yml']
-
-, // pattern to find all route files
+  apis: ['./src/routes/**/*.ts', './src/common/swagger/schema/**/*.yml'], // pattern to find all route files
 };
 
 // generate the swagger spec

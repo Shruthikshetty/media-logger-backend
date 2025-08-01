@@ -1,7 +1,6 @@
 /**
  * @file contains all the routes related to a user
  */
-//@TODO in progress
 import { Router } from 'express';
 import {
   addUser,
@@ -21,25 +20,156 @@ import { UpdateRoleZodSchema } from '../common/validation-schema/user/update-rol
 // initialize router
 const route = Router();
 
-//Route to create a user (register)
+/**
+ * @swagger
+ * /api/user:
+ *   post:
+ *     summary: Add a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/AddUserRequest'
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/AddUserSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '409':
+ *         $ref: '#/components/responses/Conflict'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post('/', validateReq(AddUserZodSchema), addUser);
 
-//Route to get all users
-route.get('/all', requireAuth('admin'), getAllUsers);
-
-//Route to get a user detail
+/**
+ * @swagger
+ * /api/user:
+ *   get:
+ *     summary: Get logged in user detail
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetUserDetailSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ */
 route.get('/', requireAuth(), getUserDetail);
 
-// delete user by id
+/**
+ * @swagger
+ * /api/user/all:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllUsersSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+route.get('/all', requireAuth('admin'), getAllUsers);
+
+/**
+ * @swagger
+ * /api/user:
+ *   delete:
+ *     summary: Delete logged in user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteUserSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete('/', requireAuth(), deleteUser);
 
-//delete user by id
+/**
+ * @swagger
+ * /api/user/{id}:
+ *   delete:
+ *     summary: Delete user by id requires admin access
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteUserSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete('/:id', requireAuth('admin'), deleteUserById);
 
-//update user
+/**
+ * @swagger
+ * /api/user:
+ *   patch:
+ *     summary: Update logged in user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/UpdateUserRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/UpdateUserSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.patch('/', requireAuth(), validateReq(UpdateUserZodSchema), updateUser);
 
-//update role by id
+/**
+ * @swagger
+ * /api/user/role/{id}:
+ *   put:
+ *     summary: Update user role by id requires admin access
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/UpdateRoleRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/UpdateUserSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.put(
   '/role/:id',
   requireAuth('admin'),

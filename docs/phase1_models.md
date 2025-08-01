@@ -27,7 +27,7 @@ The following is a description of the database models used in the application ph
 | description   | string        | TV show description                     |
 | averageRating | number        | TV show average rating                  |
 | genre         | array[string] | TV show genres (enum: `GENRE_MOVIE_TV`) |
-| releaseDate   | string        | TV show release date                    |
+| releaseDate   | date          | TV show release date                    |
 | cast          | array[string] | TV show cast                            |
 | directors     | array[string] | TV show directors                       |
 | runTime       | number        | TV show run time                        |
@@ -44,7 +44,7 @@ The following is a description of the database models used in the application ph
 | seasonNumber      | number    | Season number                         |
 | title             | string    | Season title                          |
 | description       | string    | Season description                    |
-| releaseDate       | string    | Season release date                   |
+| releaseDate       | date      | Season release date                   |
 | noOfEpisodes      | number    | Number of episodes                    |
 | posterUrl         | string    | Season poster URL                     |
 | seasonRating      | number    | Season rating                         |
@@ -61,7 +61,7 @@ The following is a description of the database models used in the application ph
 | title         | string    | Episode title              |
 | description   | string    | Episode description        |
 | episodeNumber | number    | Episode number             |
-| releaseDate   | string    | Episode release date       |
+| releaseDate   | date      | Episode release date       |
 | runTime       | number    | Episode run time           |
 
 ### Movie Model

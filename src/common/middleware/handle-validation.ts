@@ -27,7 +27,11 @@ export const validateReq = (schema: z.ZodSchema<any>) => {
       // get all the error's
       const errorMessage = Object.values(combinedErrors).flat().join(' | ');
 
-      handleError(res, { message: errorMessage, error: combinedErrors });
+      handleError(res, {
+        message: errorMessage,
+        error: combinedErrors,
+        statusCode: 400,
+      });
       return;
     }
 

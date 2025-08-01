@@ -51,6 +51,7 @@ export const addUser = async (
         ? 'User already exists'
         : 'User creation failed',
       error: err,
+      statusCode: isDuplicateKeyError(err) ? 409 : 500,
     });
   }
 };
@@ -167,7 +168,7 @@ export const deleteUserById = async (
 
     // in case user is not deleted
     if (!deletedUser) {
-      handleError(res, { message: 'User deletion failed' });
+      handleError(res, { message: 'User not found' , statusCode: 404});
       return;
     }
 
@@ -259,7 +260,7 @@ export const updateRoleById = async (
 
     // in case role is not updated
     if (!updatedRole) {
-      handleError(res, { message: 'User not found' });
+      handleError(res, { message: 'User not found'  , statusCode: 404});
       return;
     }
 

@@ -72,7 +72,7 @@ export const MovieFiltersZodSchema = z
       .string({
         message: 'Languages must be string',
       })
-      .transform((val) => val.toLocaleLowerCase())
+      .transform((val) => val.toLowerCase())
       .optional(),
 
     tags: z
