@@ -27,7 +27,7 @@ components:
                 example: false
               message:
                 type: string
-                example: 'Resource not found'
+                example: 'Resource not found (Note :- description will we change according to endpoint)'
     Unauthorized:
       description: Unauthorized access. Missing or invalid token.
       content:
@@ -40,4 +40,17 @@ components:
                 example: false
               message:
                 type: string
-                example: 'Unauthorized access. Missing or invalid token.'
+                example: 'Unauthorized access. Missing or invalid token.(Note :- description will we change according to access required)'
+    Conflict:
+      description: The request could not be completed due to a conflict, such as a duplicate entry.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 'A Record with same details exists.(Note :- description will we change according to endpoint)'
