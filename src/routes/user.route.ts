@@ -42,7 +42,20 @@ const route = Router();
  */
 route.post('/', validateReq(AddUserZodSchema), addUser);
 
-//Route to get all users
+/**
+ * @swagger
+ * /api/user/all:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllUsersSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/all', requireAuth('admin'), getAllUsers);
 
 //Route to get a user detail

@@ -145,3 +145,16 @@ components:
                 example: true
               data:
                 $ref: '#/components/schemas/User'
+    GetAllUsersSuccessResponse:
+      description: All users are returned
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              users:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+              pagination:
+                $ref: '#/components/schemas/pagination'
