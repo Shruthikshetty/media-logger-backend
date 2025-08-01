@@ -122,10 +122,54 @@ route.delete('/', requireAuth(), deleteUser);
  */
 route.delete('/:id', requireAuth('admin'), deleteUserById);
 
-//update user
+/**
+ * @swagger
+ * /api/user:
+ *   patch:
+ *     summary: Update logged in user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/UpdateUserRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/UpdateUserSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.patch('/', requireAuth(), validateReq(UpdateUserZodSchema), updateUser);
 
-//update role by id
+/**
+ * @swagger
+ * /api/user/role/{id}:
+ *   put:
+ *     summary: Update user role by id requires admin access
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/UpdateRoleRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/UpdateUserSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.put(
   '/role/:id',
   requireAuth('admin'),

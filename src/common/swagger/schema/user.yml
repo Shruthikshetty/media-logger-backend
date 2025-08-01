@@ -131,7 +131,21 @@ components:
                 format: uri
               xp:
                 type: number
-
+    UpdateRoleRequest:
+      description: request body for updating user role
+      type: object
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - role
+            properties:
+              role:
+                type: string
+                enum:
+                  - user
+                  - admin
   responses:
     AddUserSuccessResponse:
       description: Added user is returned
@@ -181,3 +195,20 @@ components:
               message:
                 type: string
                 example: 'User deleted successfully'
+    UpdateUserSuccessResponse:
+      description: Updated user is returned
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - success
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/User'
+              message:
+                type: string
+                example: 'User updated successfully'

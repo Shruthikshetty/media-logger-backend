@@ -260,7 +260,7 @@ export const updateRoleById = async (
 
     // in case role is not updated
     if (!updatedRole) {
-      handleError(res, { message: 'User not found' });
+      handleError(res, { message: 'User not found'  , statusCode: 404});
       return;
     }
 
