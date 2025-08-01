@@ -164,3 +164,20 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/User'
+    DeleteUserSuccessResponse:
+      description: User is deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - success
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/User'
+              message:
+                type: string
+                example: 'User deleted successfully'

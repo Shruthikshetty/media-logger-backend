@@ -78,10 +78,48 @@ route.get('/', requireAuth(), getUserDetail);
  */
 route.get('/all', requireAuth('admin'), getAllUsers);
 
-// delete user by id
+/**
+ * @swagger
+ * /api/user:
+ *   delete:
+ *     summary: Delete logged in user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteUserSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete('/', requireAuth(), deleteUser);
 
-//delete user by id
+/**
+ * @swagger
+ * /api/user/{id}:
+ *   delete:
+ *     summary: Delete user by id requires admin access
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteUserSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete('/:id', requireAuth('admin'), deleteUserById);
 
 //update user

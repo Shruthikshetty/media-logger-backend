@@ -168,7 +168,7 @@ export const deleteUserById = async (
 
     // in case user is not deleted
     if (!deletedUser) {
-      handleError(res, { message: 'User deletion failed' });
+      handleError(res, { message: 'User not found' , statusCode: 404});
       return;
     }
 
