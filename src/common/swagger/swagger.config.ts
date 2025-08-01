@@ -3,6 +3,10 @@
  */
 
 import swaggerJSDoc from 'swagger-jsdoc';
+import dotenv from 'dotenv';
+
+// configure .env
+dotenv.config();
 
 const options: swaggerJSDoc.Options = {
   // basic swagger info
@@ -23,7 +27,7 @@ const options: swaggerJSDoc.Options = {
         description: 'Local Server',
       },
       {
-        url: "",
+        url: process.env.PROD_URL,
         description: 'Production Server',
       },
     ],
