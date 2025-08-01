@@ -44,6 +44,24 @@ route.post('/', validateReq(AddUserZodSchema), addUser);
 
 /**
  * @swagger
+ * /api/user:
+ *   get:
+ *     summary: Get logged in user detail
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetUserDetailSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ */
+route.get('/', requireAuth(), getUserDetail);
+
+/**
+ * @swagger
  * /api/user/all:
  *   get:
  *     summary: Get all users
@@ -53,13 +71,12 @@ route.post('/', validateReq(AddUserZodSchema), addUser);
  *     responses:
  *       '200':
  *         $ref: '#/components/responses/GetAllUsersSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
 route.get('/all', requireAuth('admin'), getAllUsers);
-
-//Route to get a user detail
-route.get('/', requireAuth(), getUserDetail);
 
 // delete user by id
 route.delete('/', requireAuth(), deleteUser);

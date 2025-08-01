@@ -158,3 +158,9 @@ components:
                   $ref: '#/components/schemas/User'
               pagination:
                 $ref: '#/components/schemas/pagination'
+    GetUserDetailSuccessResponse:
+      description: User details are returned
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
