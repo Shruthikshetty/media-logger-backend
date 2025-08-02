@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { app } from '../index';
 import User from '../models/user.model';
-import { mockTestUsers } from '../__mocks__/mock-users';
+import { mockTestUsers } from '../__mocks__/mock-data';
 import { omit } from 'lodash';
 
 describe('User API E2E: DELETE /api/user/:id', () => {

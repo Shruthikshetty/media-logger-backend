@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { app } from '../index';
 import User from '../models/user.model';
-import { mockTestUsers } from '../__mocks__/mock-users';
+import { mockTestUsers } from '../__mocks__/mock-data';
 
 describe('Auth API E2E: POST /api/auth/login', () => {
   let mongoServer: MongoMemoryServer;
