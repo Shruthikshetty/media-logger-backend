@@ -3,7 +3,11 @@ import mongoose from 'mongoose';
 import supertest from 'supertest';
 import { app } from '..';
 import User from '../models/user.model';
-import { mockTestGamesSet2, mockTestUsers } from '../__mocks__/mock-data';
+import {
+  invalidGames,
+  mockTestGamesSet2,
+  mockTestUsers,
+} from '../__mocks__/mock-data';
 import path from 'path';
 import { writeFileSync, unlinkSync } from 'fs';
 
@@ -88,7 +92,7 @@ describe('Game creation POST /api/game', () => {
     it('should create multiple games successfully', async () => {
       //log in as admin
       await loginUser();
-      
+
       // Construct the file path to your mock JSON data
       const filePath = path.join(__dirname, 'temp-games.json');
       writeFileSync(filePath, JSON.stringify(mockTestGamesSet2), 'utf-8');
@@ -108,6 +112,52 @@ describe('Game creation POST /api/game', () => {
         //clean up
         unlinkSync(filePath);
       }
+    });
+
+    it('should throw 400 for invalid validation error', async () => {
+      //log in as admin
+      await loginUser();
+      // Construct the file path to your mock JSON data
+      const filePath = path.join(__dirname, 'temp-games.json');
+      writeFileSync(filePath, JSON.stringify(invalidGames), 'utf-8');
+
+      try {
+        //call endpoint
+        const res = await supertest(app)
+          .post('/api/game/bulk')
+          .attach('gameDataFile', filePath, 'temp-games.json')
+          .set('Authorization', `Bearer ${token}`);
+
+        console.log(res.body);
+
+        //assertions
+        expect(res.status).toBe(400);
+        expect(res.body.success).toBe(false);
+        expect(res.body.message).toMatch(/Genre must be/);
+      } finally {
+        //clean up
+        unlinkSync(filePath);
+      }
+    });
+
+    it('should return 401 for unauthenticated user', async () => {
+      const res = await supertest(app).post('/api/game/bulk').send({});
+      expect(res.status).toBe(401);
+      expect(res.body.success).toBe(false);
+      expect(res.body.message).toMatch(/Unauthorized/);
+    });
+
+    it('should show No file uploaded. Please upload a JSON file', async () => {
+      //log in as admin
+      await loginUser();
+      const res = await supertest(app)
+        .post('/api/game/bulk')
+        .set('Authorization', `Bearer ${token}`);
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+      expect(res.body.message).toMatch(
+        /No file uploaded. Please upload a JSON file/
+      );
     });
   });
 });

@@ -75,10 +75,35 @@ export const mockTestGamesSet2 = Array.from({ length: 5 }).map((_, i) => ({
     'PlayStation 4',
     'Xbox Series X',
     'Xbox One',
-    'Nintendo Switch'
+    'Nintendo Switch',
   ],
   avgPlaytime: 100 + i * 10,
   developer: 'Respawn Entertainment',
   ageRating: 16,
   trailerYoutubeUrl: `https://www.youtube.com/watch?v=example${i + 6}`,
 }));
+
+export const invalidGames = [
+  {
+    title: 'Apex Legends Season 20',
+    description:
+      'Squad up and drop into the arena in this free-to-play battle royale where legendary characters fight for glory',
+    genre: ['Battle Royale'  , "invalid genre"],
+    releaseDate: new Date().toISOString(),
+    posterUrl: 'https://example.com/apex-poster.jpg',
+    backdropUrl: 'https://example.com/apex-backdrop.jpg',
+    isActive: true,
+    status: 'released',
+    platforms: [
+      'PC',
+      'PlayStation 5',
+      'PlayStation 4',
+      'Xbox Series X',
+      'Xbox One',
+      'Nintendo Switch',
+    ],
+    avgPlaytime: 100,
+    developer: 'Respawn Entertainment',
+    ageRating: 16,
+  },
+];
