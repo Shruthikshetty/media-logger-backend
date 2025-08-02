@@ -4,7 +4,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { app } from '../index';
 import User from '../models/user.model';
 import { GET_ALL_USER_LIMITS } from '../common/constants/config.constants';
-import { mockTestUsers } from '../__mocks__/mock-users';
+import { mockTestUsers } from '../__mocks__/mock-data';
 
 describe('User API Integration Tests', () => {
   let mongoServer: MongoMemoryServer;

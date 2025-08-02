@@ -57,7 +57,11 @@ export const ValidateJsonFile = (schema: z.ZodSchema<any>) => {
         // get all the error's
         const errorMessage = Object.values(uniqueErrors).flat().join(' | ');
         unlinkFile(filePath);
-        handleError(res, { message: errorMessage, error: uniqueErrors });
+        handleError(res, {
+          message: errorMessage,
+          error: uniqueErrors,
+          statusCode: 400,
+        });
         return;
       }
 

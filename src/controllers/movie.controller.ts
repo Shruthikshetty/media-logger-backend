@@ -6,7 +6,7 @@ import { ValidatedRequest } from '../types/custom-types';
 import { handleError } from '../common/utils/handle-error';
 import { AddMovieZodSchemaType } from '../common/validation-schema/movie/add-movie';
 import Movie from '../models/movie.model';
-import { isDuplicateKeyError } from '../common/utils/mongo-errors';
+import { isDuplicateKeyError, isMongoIdValid } from '../common/utils/mongo-errors';
 import {
   getPaginationParams,
   getPaginationResponse,
@@ -60,6 +60,12 @@ export const getMovieById = async (
   try {
     // get id from params
     const { id } = req.params;
+
+    // validate id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid movie id', statusCode: 400 });
+      return;
+    }
 
     // get the movie
     const movie = await Movie.findById(id).lean().exec();

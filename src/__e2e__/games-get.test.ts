@@ -1,7 +1,7 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import Game from '../models/game.model';
-import { mockTestGames } from '../__mocks__/mock-users';
+import { mockTestGames } from '../__mocks__/mock-data';
 import supertest from 'supertest';
 import { app } from '..';
 
