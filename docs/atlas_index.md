@@ -1,5 +1,5 @@
-
 ## Movie index
+
 ```json
 {
   "mappings": {
@@ -44,6 +44,7 @@
 ```
 
 ## Games index
+
 ```json
 {
   "mappings": {
@@ -88,6 +89,7 @@
 ```
 
 ## Tv show index
+
 ```json
 {
   "mappings": {

@@ -168,7 +168,7 @@ export const deleteUserById = async (
 
     // in case user is not deleted
     if (!deletedUser) {
-      handleError(res, { message: 'User not found' , statusCode: 404});
+      handleError(res, { message: 'User not found', statusCode: 404 });
       return;
     }
 
@@ -260,7 +260,7 @@ export const updateRoleById = async (
 
     // in case role is not updated
     if (!updatedRole) {
-      handleError(res, { message: 'User not found'  , statusCode: 404});
+      handleError(res, { message: 'User not found', statusCode: 404 });
       return;
     }
 
