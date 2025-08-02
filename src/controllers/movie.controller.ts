@@ -36,7 +36,7 @@ export const addMovie = async (
       return;
     }
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       data: savedMovie,
       message: 'Movie created successfully',

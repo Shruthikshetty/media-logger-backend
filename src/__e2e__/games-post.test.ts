@@ -60,8 +60,6 @@ describe('Game creation POST /api/game', () => {
         .send(payload)
         .set('Authorization', `Bearer ${token}`);
 
-      console.log(res.body);
-
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
       expect(res.body.data.title).toBe(payload.title);
@@ -127,8 +125,6 @@ describe('Game creation POST /api/game', () => {
           .post('/api/game/bulk')
           .attach('gameDataFile', filePath, 'temp-games.json')
           .set('Authorization', `Bearer ${token}`);
-
-        console.log(res.body);
 
         //assertions
         expect(res.status).toBe(400);
