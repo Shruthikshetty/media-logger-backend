@@ -59,8 +59,12 @@ describe('User API Integration Tests', () => {
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
       expect(response.body.data.users.length).toBe(3);
-      expect(response.body.data.pagination.limit).toBe(GET_ALL_USER_LIMITS.limit.default);  //default limit
-      expect(response.body.data.pagination.start).toBe(GET_ALL_USER_LIMITS.start.default); //default start
+      expect(response.body.data.pagination.limit).toBe(
+        GET_ALL_USER_LIMITS.limit.default
+      ); //default limit
+      expect(response.body.data.pagination.start).toBe(
+        GET_ALL_USER_LIMITS.start.default
+      ); //default start
     });
   });
 });

@@ -65,7 +65,6 @@ export const getValidatedStart = (
   return Math.max(0, Number(start) || defaultStart);
 };
 
-
 /**
  * Extracts and validates pagination parameters from a query object.
  *

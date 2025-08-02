@@ -8,7 +8,9 @@ import TVShow, { ITVShow } from '../../models/tv-show.mode';
  * @param {ObjectId} tvShowId - The ID of the TV show
  * @returns {Promise<Array>} An array of seasons with nested episodes
  */
-export const getSeasonsWithEpisodes = async (tvShowId: mongoose.Types.ObjectId) => {
+export const getSeasonsWithEpisodes = async (
+  tvShowId: mongoose.Types.ObjectId
+) => {
   // Find all seasons for this TV show
   const seasons = await Season.find({ tvShow: tvShowId }).lean().exec();
 

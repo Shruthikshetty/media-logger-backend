@@ -320,7 +320,7 @@ export const getMoviesWithFilters = async (
       averageRating,
       ageRating,
       runTime,
-      releaseDate
+      releaseDate,
     } = req.validatedData!;
 
     //define filters and pipeline
