@@ -382,7 +382,7 @@ export const filterGames = async (
         },
       });
     }
-    
+
     //if ageRating is defined
     if (ageRating) {
       filters.push({

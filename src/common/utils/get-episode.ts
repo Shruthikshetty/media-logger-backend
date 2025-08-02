@@ -15,7 +15,7 @@ export const getEpisodeDetailsById = async (
 ) => {
   // check if id is a valid mongo id
   if (!isMongoIdValid(episodeId)) {
-   throw new ApiError(400, 'Invalid episode id');
+    throw new ApiError(400, 'Invalid episode id');
   }
 
   switch (fullDetails) {

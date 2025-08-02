@@ -54,5 +54,3 @@ export const UpdateUserZodSchema = z
 
 //export type
 export type UpdateUserZodSchemaType = z.infer<typeof UpdateUserZodSchema>;
-
-

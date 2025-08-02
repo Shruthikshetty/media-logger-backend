@@ -3,12 +3,11 @@
  * @this starts the server and connect to the database
  */
 import { app } from './index';
-import { connectDB } from './common/config/db-connection.config'; 
+import { connectDB } from './common/config/db-connection.config';
 import { devLogger } from './common/utils/logger';
 
 // This function starts the application
 const startServer = async () => {
-
   // Connect to the database then start server
   connectDB()
     .then(() => {
