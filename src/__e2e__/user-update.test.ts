@@ -7,7 +7,7 @@ import { mockTestUsers } from '../__mocks__/mock-users';
 
 describe('User API E2E: PUT/PATCH /api/user', () => {
   let mongoServer: MongoMemoryServer;
-  let userId: string;
+  let user2: string;
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
@@ -22,7 +22,7 @@ describe('User API E2E: PUT/PATCH /api/user', () => {
   beforeEach(async () => {
     await User.deleteMany({});
     const users: any = await User.create(mockTestUsers);
-    userId = users[0]._id.toString();
+    user2 = users[1]._id.toString();
   });
 
   describe('update logged in user PATCH ', () => {
@@ -55,6 +55,29 @@ describe('User API E2E: PUT/PATCH /api/user', () => {
       expect(res.status).toBe(401);
       expect(res.body.success).toBe(false);
       expect(res.body.message).toMatch(/Unauthorized/);
+    });
+  });
+
+  describe('update role only by admin', () => {
+    it('should allow admin to update role', async () => {
+      // Admin login
+      const loginRes = await supertest(app)
+        .post('/api/auth/login')
+        .send({ email: 'Admin@example.com', password: 'password123' });
+      const token = loginRes.body.data.token;
+
+      // Update payload
+      const updatePayload = { role: 'admin' };
+
+      const res = await supertest(app)
+        .put(`/api/user/role/${user2}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(updatePayload);
+
+      // Assertions
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.role).toBe('admin');
     });
   });
 });
