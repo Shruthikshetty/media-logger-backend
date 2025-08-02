@@ -7,6 +7,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
+const dotenv_1 = __importDefault(require("dotenv"));
+// configure .env
+dotenv_1.default.config();
 const options = {
     // basic swagger info
     definition: {
@@ -26,7 +29,7 @@ const options = {
                 description: 'Local Server',
             },
             {
-                url: "",
+                url: process.env.PROD_URL,
                 description: 'Production Server',
             },
         ],

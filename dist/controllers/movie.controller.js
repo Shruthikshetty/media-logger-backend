@@ -264,7 +264,7 @@ const getMoviesWithFilters = (req, res) => __awaiter(void 0, void 0, void 0, fun
     var _a, _b, _c;
     try {
         // destructure the filters from validated data
-        const { languages, page, limit, status, genre, tags, averageRating, ageRating, runTime, releaseDate } = req.validatedData;
+        const { languages, page, limit, status, genre, tags, averageRating, ageRating, runTime, releaseDate, } = req.validatedData;
         //define filters and pipeline
         const filters = [];
         const pipeline = [];
