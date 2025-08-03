@@ -29,7 +29,7 @@ const addMovie = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             (0, handle_error_1.handleError)(res, { message: 'Movie creation failed' });
             return;
         }
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             data: savedMovie,
             message: 'Movie created successfully',
@@ -51,6 +51,11 @@ const getMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         // get id from params
         const { id } = req.params;
+        // validate id
+        if (!(0, mongo_errors_1.isMongoIdValid)(id)) {
+            (0, handle_error_1.handleError)(res, { message: 'Invalid movie id', statusCode: 400 });
+            return;
+        }
         // get the movie
         const movie = yield movie_model_1.default.findById(id).lean().exec();
         // in case movie is not found

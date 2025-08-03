@@ -13,12 +13,16 @@ const request_logger_1 = require("./common/middleware/request-logger");
 const index_1 = __importDefault(require("./routes/index"));
 const swagger_config_1 = __importDefault(require("./common/swagger/swagger.config"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const cors_1 = __importDefault(require("cors"));
+const cors_config_1 = require("./common/config/cors.config");
 // configure .env
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 exports.app = app;
 // Middleware for parsing JSON request bodies
 app.use(express_1.default.json());
+//cors policy middleware
+app.use((0, cors_1.default)(cors_config_1.corsOptions));
 // Middleware to log all requests
 app.use(request_logger_1.requestLogger);
 // Middleware for serving Swagger UI

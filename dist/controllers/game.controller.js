@@ -99,7 +99,7 @@ const addGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         // return the saved game
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             data: savedGame,
             message: 'Game created successfully',
@@ -190,7 +190,7 @@ const bulkAddGames = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // add all games
         const games = yield game_model_1.default.insertMany(req.validatedData);
         // return the added games
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             data: games,
             message: 'Games added successfully',

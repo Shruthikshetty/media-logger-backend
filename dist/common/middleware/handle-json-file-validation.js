@@ -53,7 +53,11 @@ const ValidateJsonFile = (schema) => {
                 // get all the error's
                 const errorMessage = Object.values(uniqueErrors).flat().join(' | ');
                 unlinkFile(filePath);
-                (0, handle_error_1.handleError)(res, { message: errorMessage, error: uniqueErrors });
+                (0, handle_error_1.handleError)(res, {
+                    message: errorMessage,
+                    error: uniqueErrors,
+                    statusCode: 400,
+                });
                 return;
             }
             // attach validated data
