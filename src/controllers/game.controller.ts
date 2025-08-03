@@ -113,7 +113,7 @@ export const addGame = async (
     }
 
     // return the saved game
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       data: savedGame,
       message: 'Game created successfully',
@@ -219,7 +219,7 @@ export const bulkAddGames = async (
     const games = await Game.insertMany(req.validatedData!);
 
     // return the added games
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       data: games,
       message: 'Games added successfully',

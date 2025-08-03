@@ -62,6 +62,7 @@ To run this project, you will need to add the following environment variables to
 - `MONGO_URI`: Your MongoDB connection string.
 - `JWT_SECRET`: A secret key for signing JSON Web Tokens.
 - `NODE_ENV`: The application environment (`development` or `production`)
+- `PROD_URL`: Live server url
 
 ## Testing
 
