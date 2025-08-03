@@ -1,0 +1,168 @@
+#
+# This file contains the swagger  , req and response bodies for game
+#
+
+components:
+  schemas:
+    GamePlatformEnum:
+      type: string
+      description: Game platforms (Note:- this may not be up to date)
+      enum:
+        - PC
+        - PlayStation 5
+        - PlayStation 4
+        - PlayStation 3
+        - Xbox Series X
+        - Xbox One
+        - Xbox 360
+        - Nintendo Switch
+        - Nintendo Wii U
+        - Nintendo 3DS
+        - Android
+        - iOS
+        - Google Stadia
+        - Amazon Luna
+        - VR
+    gameGenreEnum:
+      type: string
+      description: Game genres (Note:- this may not be up to date)
+      enum:
+        - Action
+        - Adventure
+        - RPG
+        - Shooter
+        - Puzzle
+        - Racing
+        - Sports
+        - Strategy
+        - Simulation
+        - Fighting
+        - Stealth
+        - Survival
+        - MMORPG
+        - Indie
+        - Sandbox
+        - Horror
+        - Open World
+        - Rhythm
+        - Card Game
+        - Board Game
+        - Battle Royale
+        - Visual Novel
+        - Metroidvania
+        - Roguelike
+        - Tactical
+        - Point-and-Click
+    Game:
+      type: object
+      required:
+        - title
+        - description
+        - genre
+        - releaseDate
+        - status
+        - platforms
+      properties:
+        _id:
+          type: integer
+          example: 630f06f6f80f0c456d5d3e11
+          readOnly: true
+          description: Unique game identifier
+        title:
+          type: string
+          example: 'The Witcher 3: Wild Hunt'
+          description: Game title
+        description:
+          type: string
+          example: 'The Witcher 3: Wild Hunt is an action role-playing video game developed by CD Projekt RED and published by CD Projekt.'
+          description: Game description
+        averageRating:
+          type: number
+          example: 9.5
+          description: Game average rating
+        genre:
+          type: array
+          items:
+            $ref: '#/components/schemas/gameGenreEnum'
+          example: ['Action', 'Adventure']
+          description: Game genres
+        releaseDate:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00.000Z'
+          description: Game release date
+        posterUrl:
+          type: string
+          format: uri
+          example: 'https://example.com/poster.jpg'
+          description: Game poster URL
+        backdropUrl:
+          type: string
+          format: uri
+          example: 'https://example.com/backdrop.jpg'
+          description: Game backdrop URL
+        isActive:
+          type: boolean
+          example: true
+          description: Game active status
+          readOnly: true
+        status:
+          type: string
+          example: 'released'
+          description: Game status
+        platforms:
+          type: array
+          items:
+            $ref: '#/components/schemas/GamePlatformEnum'
+          example: ['PC', 'Xbox', 'PlayStation 4']
+          description: Game platforms
+        avgPlaytime:
+          type: number
+          example: 60
+          description: Game average playtime in minutes
+        developer:
+          type: string
+          example: 'CD Projekt RED'
+          description: Game developer
+        ageRating:
+          type: number
+          example: 18
+          description: Game age rating
+        trailerYoutubeUrl:
+          type: string
+          format: uri
+          example: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+          description: Game trailer YouTube URL
+        createdAt:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00.000Z'
+          readOnly: true
+          description: Game creation date
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00.000Z'
+          readOnly: true
+          description: Game last update date
+
+  responses:
+    GetAllGamesSuccessResponse:
+      description: Success response for getting all games
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  games:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'

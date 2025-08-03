@@ -57,8 +57,6 @@ describe('POST /api/movie', () => {
         .send(movieData)
         .set('Authorization', `Bearer ${token}`);
 
-      console.log(response.body);
-
       // Check that the response body contains the created movie data
       expect(response.status).toBe(201);
       expect(response.body.data).toBeTruthy();

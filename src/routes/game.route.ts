@@ -28,7 +28,37 @@ import { GamesFilterZodSchema } from '../common/validation-schema/game/games-fil
 //initialize router
 const route = Router();
 
-// Route to get all games
+/**
+ * @swagger
+ * /api/game:
+ *   get:
+ *     summary: Get all games with pagination and sorting
+ *     tags: [Games]
+ *     parameters:
+ *       - name: limit
+ *         in: query
+ *         default: 20
+ *         schema:
+ *           type: integer
+ *         required: false
+ *       - name: page
+ *         in: query
+ *         default: 1
+ *         schema:
+ *           type: integer
+ *         required: false
+ *       - name: start
+ *         default: 0
+ *         in: query
+ *         schema:
+ *           type: integer
+ *         required: false
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllGamesSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/', getAllGames);
 
 // Route to search games
