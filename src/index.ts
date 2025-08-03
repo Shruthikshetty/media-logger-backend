@@ -7,6 +7,8 @@ import { requestLogger } from './common/middleware/request-logger';
 import allRoutes from './routes/index';
 import swaggerSpec from './common/swagger/swagger.config';
 import swaggerUi from 'swagger-ui-express';
+import cors from 'cors';
+import { corsOptions } from './common/config/cors.config';
 
 // configure .env
 dotenv.config();
@@ -14,6 +16,9 @@ const app = express();
 
 // Middleware for parsing JSON request bodies
 app.use(express.json());
+
+//cors policy middleware
+app.use(cors(corsOptions));
 
 // Middleware to log all requests
 app.use(requestLogger);
