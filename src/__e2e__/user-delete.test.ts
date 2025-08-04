@@ -63,7 +63,9 @@ describe('User API E2E: DELETE /api/user/:id', () => {
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.message).toMatch(/deleted successfully/i);
-    expect(res.body.data).toEqual(expect.objectContaining(omit(mockTestUsers[0], ['password'])));
+    expect(res.body.data).toEqual(
+      expect.objectContaining(omit(mockTestUsers[0], ['password']))
+    );
   });
 
   it('should reject deletion when unauthenticated', async () => {

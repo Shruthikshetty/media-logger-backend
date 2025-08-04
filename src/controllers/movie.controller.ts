@@ -6,7 +6,10 @@ import { ValidatedRequest } from '../types/custom-types';
 import { handleError } from '../common/utils/handle-error';
 import { AddMovieZodSchemaType } from '../common/validation-schema/movie/add-movie';
 import Movie from '../models/movie.model';
-import { isDuplicateKeyError, isMongoIdValid } from '../common/utils/mongo-errors';
+import {
+  isDuplicateKeyError,
+  isMongoIdValid,
+} from '../common/utils/mongo-errors';
 import {
   getPaginationParams,
   getPaginationResponse,

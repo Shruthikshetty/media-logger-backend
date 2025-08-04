@@ -57,7 +57,7 @@ components:
                 type: string
                 example: 'Invalid password'
     LoginNotFound:
-      description: User not found by email 
+      description: User not found by email
       content:
         application/json:
           schema:
