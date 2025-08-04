@@ -1,0 +1,71 @@
+#
+# contains the login schema for request  , response
+#
+
+components:
+  requestBodies:
+    LoginRequest:
+      description: request body for login
+      required:
+        - email
+        - password
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                format: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                description: User email
+                example: 'Admin@example.com'
+              password:
+                type: string
+                example: 'SecurePass123!'
+
+  responses:
+    LoginSuccessResponse:
+      description: Login success response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token
+              message:
+                type: string
+                example: 'Login successful'
+    LoginUnauthorizedResponse:
+      description: Login invalid password
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 'Invalid password'
+    LoginNotFound:
+      description: User not found by email 
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: 'User not found verify email'
