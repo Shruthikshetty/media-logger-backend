@@ -83,6 +83,6 @@ describe('Auth API E2E: POST /api/auth/login', () => {
 
     expect(res.status).toBe(400);
     expect(res.body.success).toBe(false);
-    expect(res.body.message).toMatch("Password must be string");
+    expect(res.body.message).toMatch('Password must be string');
   });
 });

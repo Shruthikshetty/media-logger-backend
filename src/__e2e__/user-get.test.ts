@@ -93,9 +93,7 @@ describe('User API Integration Tests', () => {
       const response = await supertest(app).get('/api/user');
       expect(response.status).toBe(401);
       expect(response.body.success).toBe(false);
-      expect(response.body.message).toBe(
-        'Unauthorized login is required'
-      );
-    })
+      expect(response.body.message).toBe('Unauthorized login is required');
+    });
   });
 });
