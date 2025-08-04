@@ -30,7 +30,7 @@ describe('User API E2E: POST /api/user', () => {
     password: 'password123',
   };
 
-  it('should allow  to create a new user', async () => {
+  it('should create a new user', async () => {
     // Perform POST
     const res = await supertest(app).post('/api/user').send(newUser);
 
