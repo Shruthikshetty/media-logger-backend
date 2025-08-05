@@ -61,7 +61,36 @@ const route = Router();
  */
 route.get('/', getAllGames);
 
-// Route to search games
+/**
+ * @swagger
+ * /api/game/search:
+ *   get:
+ *     summary: Search games by title
+ *     tags: [Games]
+ *     parameters:
+ *       - name: text
+ *         in: query
+ *         required: true
+ *         type: string
+ *         example: "The Legend of Zelda"
+ *       - name: limit
+ *         in: query
+ *         default: 20
+ *         schema:
+ *           type: integer
+ *         required: false
+ *       - name: start
+ *         default: 0
+ *         in: query
+ *         schema:
+ *           type: integer
+ *         required: false
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllGamesSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/search', searchGame);
 
 // Route to get a game by id
