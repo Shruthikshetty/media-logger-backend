@@ -93,7 +93,26 @@ route.get('/', getAllGames);
  */
 route.get('/search', searchGame);
 
-// Route to get a game by id
+/**
+ * @swagger
+ * /api/game/{id}:
+ *   get:
+ *     summary: Get game by id
+ *     tags: [Games]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetGameSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *  */
 route.get('/:id', getGameById);
 
 // Route to add a game

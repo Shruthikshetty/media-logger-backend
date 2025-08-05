@@ -166,3 +166,15 @@ components:
                       $ref: '#/components/schemas/Game'
                   pagination:
                     $ref: '#/components/schemas/pagination'
+    GetGameSuccessResponse:
+      description: Success response for getting a single game
+      content:  
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Game'
