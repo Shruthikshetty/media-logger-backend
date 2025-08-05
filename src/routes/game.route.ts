@@ -143,7 +143,7 @@ route.post('/', requireAuth('admin'), validateReq(AddGameZodSchema), addGame);
  * @swagger
  * /api/game/filter:
  *   post:
- *     summary: Filter games
+ *     summary: Get games by filters
  *     tags: [Games]
  *     requestBody:
  *       $ref: '#/components/requestBodies/GamesFilterRequest'
@@ -174,7 +174,30 @@ route.delete(
   bulkDeleteGames
 );
 
-// Route to delete a game by id
+/**
+ * @swagger
+ * /api/game/{id}:
+ *   delete:
+ *     summary: Delete game by id
+ *     tags: [Games]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteGameSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete('/:id', requireAuth('admin'), deleteGameById);
 
 // Route to update a game by id

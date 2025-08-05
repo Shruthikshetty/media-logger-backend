@@ -297,3 +297,18 @@ components:
               message:
                 type: string
                 example: 'Game created successfully'
+    DeleteGameSuccessResponse:
+      description: Success response for deleting a game
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Game'
+              message:
+                type: string
+                example: 'Game deleted successfully'
