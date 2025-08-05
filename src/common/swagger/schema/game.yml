@@ -154,7 +154,102 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Game'
+    GamesFilterRequest:
+      description: Request body for filtering games
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              averageRating:
+                type: number
+                description: Filter by average game rating
+                minimum: 0
+                maximum: 10
+                example: 8.5
 
+              genre:
+                type: array
+                items:
+                  type: string
+                description: Array of genres to filter
+                example: ['Action', 'Adventure']
+
+              ageRating:
+                type: object
+                description: Filter games by age rating range
+                properties:
+                  gte:
+                    type: number
+                    minimum: 0
+                    description: Minimum age rating (inclusive)
+                    example: 12
+                  lte:
+                    type: number
+                    minimum: 0
+                    description: Maximum age rating (inclusive)
+                    example: 18
+                example: { 'gte': 12, 'lte': 18 }
+
+              releaseDate:
+                type: object
+                description: Filter by release date range
+                properties:
+                  gte:
+                    type: string
+                    format: date-time
+                    description: Earliest release date (inclusive, ISO 8601)
+                    example: '2021-01-01T00:00:00.000Z'
+                  lte:
+                    type: string
+                    format: date-time
+                    description: Latest release date (inclusive, ISO 8601)
+                    example: '2023-12-31T23:59:59.000Z'
+                example:
+                  {
+                    'gte': '2021-01-01T00:00:00.000Z',
+                    'lte': '2023-12-31T23:59:59.000Z',
+                  }
+
+              status:
+                type: string
+                description: Status of the game (e.g., released, upcoming)
+                example: 'released'
+
+              platforms:
+                type: array
+                items:
+                  type: string
+                description: Array of platforms to filter
+                example: ['PC', 'PlayStation 5']
+
+              avgPlaytime:
+                type: object
+                description: Filter by average playtime (in minutes)
+                properties:
+                  gte:
+                    type: number
+                    minimum: 0
+                    description: Minimum average playtime
+                    example: 30
+                  lte:
+                    type: number
+                    minimum: 0
+                    description: Maximum average playtime
+                    example: 180
+                example: { 'gte': 30, 'lte': 180 }
+
+              limit:
+                type: number
+                description: Number of results per page
+                example: 10
+
+              page:
+                type: number
+                description: Page number for pagination (1-based)
+                example: 1
+            required: []
   responses:
     GetAllGamesSuccessResponse:
       description: Success response for getting all games

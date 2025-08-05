@@ -139,7 +139,22 @@ route.get('/:id', getGameById);
  */
 route.post('/', requireAuth('admin'), validateReq(AddGameZodSchema), addGame);
 
-// Route to get games by filter
+/**
+ * @swagger
+ * /api/game/filter:
+ *   post:
+ *     summary: Filter games
+ *     tags: [Games]
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/GamesFilterRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllGamesSuccessResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post('/filter', validateReq(GamesFilterZodSchema), filterGames);
 
 // Route to bulk add games
