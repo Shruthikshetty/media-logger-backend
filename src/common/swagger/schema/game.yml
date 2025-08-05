@@ -114,7 +114,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GamePlatformEnum'
-          example: ['PC', 'Xbox', 'PlayStation 4']
+          example: ['PC', 'Xbox One', 'PlayStation 4']
           description: Game platforms
         avgPlaytime:
           type: number
@@ -146,6 +146,15 @@ components:
           readOnly: true
           description: Game last update date
 
+  requestBodies:
+    AddGameRequest:
+      description: Request body for adding a game
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Game'
+
   responses:
     GetAllGamesSuccessResponse:
       description: Success response for getting all games
@@ -168,7 +177,7 @@ components:
                     $ref: '#/components/schemas/pagination'
     GetGameSuccessResponse:
       description: Success response for getting a single game
-      content:  
+      content:
         application/json:
           schema:
             type: object
@@ -178,3 +187,18 @@ components:
                 example: true
               data:
                 $ref: '#/components/schemas/Game'
+    AddGameSuccessResponse:
+      description: Success response for adding a game
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Game'
+              message:
+                type: string
+                example: 'Game created successfully'

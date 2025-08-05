@@ -119,12 +119,12 @@ export const addGame = async (
       message: 'Game created successfully',
     });
   } catch (err) {
+    const isDuplicate = isDuplicateKeyError(err);
     // handle unexpected error
     handleError(res, {
       error: err,
-      message: isDuplicateKeyError(err)
-        ? 'Game already exists'
-        : 'Game creation failed',
+      message: isDuplicate ? 'Game already exists' : 'Game creation failed',
+      statusCode: isDuplicate ? 409 : 500,
     });
   }
 };

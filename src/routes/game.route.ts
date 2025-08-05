@@ -115,7 +115,28 @@ route.get('/search', searchGame);
  *  */
 route.get('/:id', getGameById);
 
-// Route to add a game
+/**
+ * @swagger
+ * /api/game:
+ *   post:
+ *     summary: Add game
+ *     tags: [Games]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/AddGameRequest'
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/AddGameSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '409':
+ *         $ref: '#/components/responses/Conflict'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post('/', requireAuth('admin'), validateReq(AddGameZodSchema), addGame);
 
 // Route to get games by filter
