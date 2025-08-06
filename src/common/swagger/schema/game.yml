@@ -145,7 +145,57 @@ components:
           example: '2022-01-01T00:00:00.000Z'
           readOnly: true
           description: Game last update date
-
+    UpdateGame:
+      type: object
+      description: Game object for updates—any/all fields optional; at least one required at runtime.
+      properties:
+        title:
+          type: string
+          example: 'The Witcher 3: Wild Hunt'
+        description:
+          type: string
+          example: 'The Witcher 3: Wild Hunt is an action role-playing video game...'
+        averageRating:
+          type: number
+          example: 9.5
+        genre:
+          type: array
+          items:
+            type: string
+          example: ['Action', 'Adventure']
+        releaseDate:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00.000Z'
+        posterUrl:
+          type: string
+          format: uri
+          example: 'https://example.com/poster.jpg'
+        backdropUrl:
+          type: string
+          format: uri
+          example: 'https://example.com/backdrop.jpg'
+        status:
+          type: string
+          example: 'released'
+        platforms:
+          type: array
+          items:
+            type: string
+          example: ['PC', 'Xbox One', 'PlayStation 4']
+        avgPlaytime:
+          type: number
+          example: 60
+        developer:
+          type: string
+          example: 'CD Projekt RED'
+        ageRating:
+          type: number
+          example: 18
+        trailerYoutubeUrl:
+          type: string
+          format: uri
+          example: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
   requestBodies:
     AddGameRequest:
       description: Request body for adding a game
@@ -265,6 +315,17 @@ components:
                 description: Array of game IDs to delete
                 example:
                   ['630f06f6f80f0c456d5d3e11', '630f06f6f80f0c456d5d3e12']
+    UpdateGameRequest:
+      description: Request body for updating a game. At least one field must be provided.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateGame'
+        example:
+          title: 'The Witcher 3: Wild Hunt'
+          averageRating: 9.5
+          genre: ['Action', 'RPG']
 
   responses:
     GetAllGamesSuccessResponse:
@@ -347,3 +408,21 @@ components:
                   deletedCount:
                     type: number
                     example: 2
+    UpdateGameSuccessResponse:
+      description: Updated game is returned
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - success
+              - data
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/UpdateGame'
+              message:
+                type: string
+                example: 'Game updated successfully'

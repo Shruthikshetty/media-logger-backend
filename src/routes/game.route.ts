@@ -222,7 +222,32 @@ route.delete(
  */
 route.delete('/:id', requireAuth('admin'), deleteGameById);
 
-// Route to update a game by id
+/**
+ * @swagger
+ * /api/game/{id}:
+ *   patch:
+ *     summary: Update game by id requires admin access
+ *     tags: [Games]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/UpdateGameRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/UpdateGameSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.patch(
   '/:id',
   requireAuth('admin'),

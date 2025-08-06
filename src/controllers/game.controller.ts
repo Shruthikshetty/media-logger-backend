@@ -191,7 +191,7 @@ export const updateGameById = async (
 
     // in case game is not updated
     if (!updatedGame) {
-      handleError(res, { message: 'Game not found' });
+      handleError(res, { message: 'Game not found'  , statusCode: 404 });
       return;
     }
 
