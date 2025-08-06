@@ -156,8 +156,41 @@ route.post('/', requireAuth('admin'), validateReq(AddGameZodSchema), addGame);
  *         $ref: '#/components/responses/InternalServerError'
  */
 route.post('/filter', validateReq(GamesFilterZodSchema), filterGames);
-
-// Route to bulk add games
+/**
+ * @swagger
+ * /api/game/bulk:
+ *   post:
+ *     summary: Bulk add games from uploaded JSON file
+ *     tags:
+ *       - Games
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               gameDataFile:
+ *                 type: string
+ *                 format: binary
+ *                 description: JSON file containing an array of games
+ *           encoding:
+ *             gameDataFile:
+ *               contentType: application/json
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/BulkAddGameSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '409':
+ *         $ref: '#/components/responses/Conflict'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post(
   '/bulk',
   requireAuth('admin'),
@@ -165,7 +198,6 @@ route.post(
   ValidateJsonFile(BulkAddGameZodSchema),
   bulkAddGames
 );
-
 
 /**
  * @swagger

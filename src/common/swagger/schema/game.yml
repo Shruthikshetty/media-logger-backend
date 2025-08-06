@@ -426,3 +426,20 @@ components:
               message:
                 type: string
                 example: 'Game updated successfully'
+    BulkAddGameSuccessResponse:
+      description: Success response for bulk adding games
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Games added successfully'
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
