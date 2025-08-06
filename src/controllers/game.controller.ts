@@ -245,6 +245,15 @@ export const bulkDeleteGames = async (
       _id: { $in: req.validatedData!.gameIds },
     });
 
+    // in case game is not found
+    if (games.deletedCount === 0) {
+      handleError(res, {
+        message: 'no games found',
+        statusCode: 404,
+      });
+      return;
+    }
+
     // return the deleted games
     res.status(200).json({
       success: true,

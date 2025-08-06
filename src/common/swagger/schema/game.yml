@@ -250,6 +250,22 @@ components:
                 description: Page number for pagination (1-based)
                 example: 1
             required: []
+    BulkDeleteGameRequest:
+      description: Request body for bulk deleting games
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              gameIds:
+                type: array
+                items:
+                  type: string
+                description: Array of game IDs to delete
+                example:
+                  ['630f06f6f80f0c456d5d3e11', '630f06f6f80f0c456d5d3e12']
+
   responses:
     GetAllGamesSuccessResponse:
       description: Success response for getting all games
@@ -312,3 +328,22 @@ components:
               message:
                 type: string
                 example: 'Game deleted successfully'
+    DeleteBulkGameSuccessResponse:
+      description: Success response for bulk deleting games
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Games deleted successfully'
+              data:
+                type: object
+                properties:
+                  deletedCount:
+                    type: number
+                    example: 2

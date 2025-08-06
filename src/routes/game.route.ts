@@ -166,7 +166,29 @@ route.post(
   bulkAddGames
 );
 
-//Route to bulk delete games
+
+/**
+ * @swagger
+ * /api/game/bulk:
+ *   delete:
+ *     summary: Bulk delete games by ids
+ *     tags: [Games]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/BulkDeleteGameRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteBulkGameSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete(
   '/bulk',
   requireAuth('admin'),
