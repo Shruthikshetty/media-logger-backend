@@ -148,7 +148,7 @@ export const deleteGameById = async (
 
     // in case game is not deleted
     if (!deletedGame) {
-      handleError(res, { message: 'Game dose not exist', statusCode: 404 });
+      handleError(res, { message: 'Game does not exist', statusCode: 404 });
       return;
     }
 
@@ -191,7 +191,7 @@ export const updateGameById = async (
 
     // in case game is not updated
     if (!updatedGame) {
-      handleError(res, { message: 'Game not found'  , statusCode: 404 });
+      handleError(res, { message: 'Game not found', statusCode: 404 });
       return;
     }
 
