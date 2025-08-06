@@ -179,8 +179,7 @@ components:
         platforms:
           type: array
           items:
-            type: string
-          example: ['PC', 'Xbox One', 'PlayStation 4']
+            $ref: '#/components/schemas/GamePlatformEnum'
         avgPlaytime:
           type: number
           example: 60
