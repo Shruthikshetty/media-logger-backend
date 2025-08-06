@@ -119,12 +119,12 @@ export const addGame = async (
       message: 'Game created successfully',
     });
   } catch (err) {
+    const isDuplicate = isDuplicateKeyError(err);
     // handle unexpected error
     handleError(res, {
       error: err,
-      message: isDuplicateKeyError(err)
-        ? 'Game already exists'
-        : 'Game creation failed',
+      message: isDuplicate ? 'Game already exists' : 'Game creation failed',
+      statusCode: isDuplicate ? 409 : 500,
     });
   }
 };
@@ -148,7 +148,7 @@ export const deleteGameById = async (
 
     // in case game is not deleted
     if (!deletedGame) {
-      handleError(res, { message: 'Game dose not exist' });
+      handleError(res, { message: 'Game does not exist', statusCode: 404 });
       return;
     }
 
@@ -191,7 +191,7 @@ export const updateGameById = async (
 
     // in case game is not updated
     if (!updatedGame) {
-      handleError(res, { message: 'Game not found' });
+      handleError(res, { message: 'Game not found', statusCode: 404 });
       return;
     }
 
@@ -244,6 +244,15 @@ export const bulkDeleteGames = async (
     const games = await Game.deleteMany({
       _id: { $in: req.validatedData!.gameIds },
     });
+
+    // in case game is not found
+    if (games.deletedCount === 0) {
+      handleError(res, {
+        message: 'no games found',
+        statusCode: 404,
+      });
+      return;
+    }
 
     // return the deleted games
     res.status(200).json({
