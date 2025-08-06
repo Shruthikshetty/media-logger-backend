@@ -114,7 +114,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GamePlatformEnum'
-          example: ['PC', 'Xbox One', 'PlayStation 4']
           description: Game platforms
         avgPlaytime:
           type: number
@@ -161,8 +160,7 @@ components:
         genre:
           type: array
           items:
-            type: string
-          example: ['Action', 'Adventure']
+            $ref: '#/components/schemas/gameGenreEnum'
         releaseDate:
           type: string
           format: date-time
@@ -322,10 +320,10 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/UpdateGame'
-        example:
-          title: 'The Witcher 3: Wild Hunt'
-          averageRating: 9.5
-          genre: ['Action', 'RPG']
+          example:
+            title: 'The Witcher 3: Wild Hunt'
+            averageRating: 9.5
+            genre: ['Action', 'RPG']
 
   responses:
     GetAllGamesSuccessResponse:
@@ -422,7 +420,7 @@ components:
                 type: boolean
                 example: true
               data:
-                $ref: '#/components/schemas/UpdateGame'
+                $ref: '#/components/schemas/Game'
               message:
                 type: string
                 example: 'Game updated successfully'
