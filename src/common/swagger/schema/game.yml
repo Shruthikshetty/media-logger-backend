@@ -216,13 +216,10 @@ components:
                 minimum: 0
                 maximum: 10
                 example: 8.5
-
               genre:
                 type: array
                 items:
-                  type: string
-                description: Array of genres to filter
-                example: ['Action', 'Adventure']
+                  $ref: '#/components/schemas/gameGenreEnum'
 
               ageRating:
                 type: object
@@ -268,7 +265,7 @@ components:
               platforms:
                 type: array
                 items:
-                  type: string
+                  $ref: '#/components/schemas/GamePlatformEnum'
                 description: Array of platforms to filter
                 example: ['PC', 'PlayStation 5']
 
