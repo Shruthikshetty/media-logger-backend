@@ -1,0 +1,101 @@
+#
+# This file contains the swagger schema and req and response bodies for movie
+#
+
+components:
+  schemas:
+    MovieStatusEnum:
+      type: string
+      description: Movie status
+      enum:
+        - released
+        - upcoming
+    Movie:
+      type: object
+      required:
+        - title
+        - description
+        - genre
+        - releaseDate
+        - runTime
+        - languages
+      properties:
+        title:
+          type: string
+          uniqueItems: true
+        description:
+          type: string
+        averageRating:
+          type: number
+          maximum: 10
+        genre:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenreMovieTvEnum'
+          example: ['Action', 'Adventure']
+        releaseDate:
+          type: string
+          format: date-time
+        cast:
+          type: array
+          items:
+            type: string
+          default: []
+        directors:
+          type: array
+          items:
+            type: string
+          default: []
+        runTime:
+          type: number
+        languages:
+          type: array
+          items:
+            type: string
+        posterUrl:
+          type: string
+          default: ''
+        backdropUrl:
+          type: string
+          default: ''
+        isActive:
+          type: boolean
+          default: true
+        status:
+          $ref: '#/components/schemas/MovieStatusEnum'
+          default: released
+          example: released
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagsMovieTvEnum'
+          example: ['Based on True Story', 'Cult Classic']
+        ageRating:
+          type: number
+        trailerYoutubeUrl:
+          type: string
+          default: ''
+
+  responses:
+    GetAllMoviesSuccessResponse:
+      description: Success response for getting all movies
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Movie'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'

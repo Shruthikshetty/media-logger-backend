@@ -28,7 +28,37 @@ import { MovieFiltersZodSchema } from '../common/validation-schema/movie/movie-f
 // initialize router
 const route = Router();
 
-// get all movies
+/**
+ * @swagger
+ * /api/movie:
+ *   get:
+ *     summary: Get all movies
+ *     tags: [Movies]
+ *     query:
+ *       - name: limit
+ *         in: query
+ *         default: 20
+ *         schema:
+ *           type: integer
+ *         required: false
+ *       - name: page
+ *         in: query
+ *         default: 1
+ *         schema:
+ *           type: integer
+ *         required: false
+ *       - name: start
+ *         default: 0
+ *         in: query
+ *         schema:
+ *           type: integer
+ *         required: false
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllMoviesSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/', getAllMovies);
 
 //search a movie by title
