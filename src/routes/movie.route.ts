@@ -96,7 +96,26 @@ route.get('/search', searchMovies);
 //get movies with filters
 route.get('/filter', validateReq(MovieFiltersZodSchema), getMoviesWithFilters);
 
-//get movie by id
+/**
+ * @swagger
+ * /api/movie/{id}:
+ *   get:
+ *     summary: Get movie by id
+ *     tags: [Movies]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetMovieSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ */
 route.get('/:id', getMovieById);
 
 // add a movie
