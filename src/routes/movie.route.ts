@@ -93,8 +93,23 @@ route.get('/', getAllMovies);
  */
 route.get('/search', searchMovies);
 
-//get movies with filters
-route.get('/filter', validateReq(MovieFiltersZodSchema), getMoviesWithFilters);
+/**
+ * @swagger
+ * /api/movie/filter:
+ *   post:
+ *     summary: Get movies by filters (supports page based pagination only )
+ *     tags: [Movies]
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/MoviesFilterRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllMoviesSuccessResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+route.post('/filter', validateReq(MovieFiltersZodSchema), getMoviesWithFilters);
 
 /**
  * @swagger

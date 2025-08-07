@@ -81,6 +81,120 @@ components:
           type: string
           default: ''
 
+  requestBodies:
+    AddMovieRequest:
+      description: Request body for adding a movie
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Movie'
+
+    MoviesFilterRequest:
+      description: Request body for filtering movies
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              averageRating:
+                type: number
+                description: Filter by minimum average movie rating
+                minimum: 0
+                maximum: 10
+                example: 8.5
+              genre:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenreMovieTvEnum'
+                description: Array of genres to filter by
+                example: ['Action', 'Drama']
+
+              languages:
+                type: array
+                items:
+                  type: string
+                description: Array of languages to filter by
+                example: ['English', 'Spanish']
+
+              status:
+                type: string
+                items:
+                  $ref: '#/components/schemas/MovieStatusEnum'
+                description: Array of movie statuses to filter
+                example: 'released'
+
+              tags:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagsMovieTvEnum'
+                description: Array of tags to filter by
+                example: ['Based on True Story', 'Award-winning']
+
+              ageRating:
+                type: object
+                description: Filter movies by age rating range
+                properties:
+                  gte:
+                    type: number
+                    minimum: 0
+                    description: Minimum age rating (inclusive)
+                    example: 12
+                  lte:
+                    type: number
+                    minimum: 0
+                    description: Maximum age rating (inclusive)
+                    example: 18
+                example: { 'gte': 12, 'lte': 18 }
+
+              releaseDate:
+                type: object
+                description: Filter by release date range
+                properties:
+                  gte:
+                    type: string
+                    format: date-time
+                    description: Earliest release date (inclusive, ISO 8601)
+                    example: '2008-01-01T00:00:00.000Z'
+                  lte:
+                    type: string
+                    format: date-time
+                    description: Latest release date (inclusive, ISO 8601)
+                    example: '2023-12-31T23:59:59.000Z'
+                example:
+                  {
+                    'gte': '2008-01-01T00:00:00.000Z',
+                    'lte': '2023-12-31T23:59:59.000Z',
+                  }
+
+              runTime:
+                type: object
+                description: Filter by runtime (in minutes)
+                properties:
+                  gte:
+                    type: number
+                    minimum: 0
+                    description: Minimum runtime
+                    example: 90
+                  lte:
+                    type: number
+                    minimum: 0
+                    description: Maximum runtime
+                    example: 180
+                example: { 'gte': 90, 'lte': 180 }
+
+              limit:
+                type: number
+                description: Number of results per page
+                example: 10
+
+              page:
+                type: number
+                description: Page number for pagination (1-based)
+                example: 1
+            required: []
+
   responses:
     GetAllMoviesSuccessResponse:
       description: Success response for getting all movies
@@ -95,10 +209,7 @@ components:
               data:
                 type: object
                 properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
+                  movies:
                     type: array
                     items:
                       $ref: '#/components/schemas/Movie'

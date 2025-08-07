@@ -135,7 +135,7 @@ GET {{baseUrl}}/api/movie/search?text=Dark Knight&limit=20&start=0
 
 ### get movies by filter (default pagination 20 at a time only page based pagination here )
 ### all the fields are optional here , additional field means additional checks
-GET {{baseUrl}}/api/movie/filter
+POST {{baseUrl}}/api/movie/filter
 Content-Type: application/json
 
 {
