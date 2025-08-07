@@ -28,11 +28,15 @@ components:
         title:
           type: string
           uniqueItems: true
+          example: 'The Dark Knight'
         description:
           type: string
+          example: 'When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.'
         averageRating:
           type: number
           maximum: 10
+          minimum: 0
+          example: 9
         genre:
           type: array
           items:
@@ -251,3 +255,18 @@ components:
                 example: true
               data:
                 $ref: '#/components/schemas/Movie'
+    AddMovieSuccessResponse:
+      description: Success response for adding a movie
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Movie'
+              message:
+                type: string
+                example: 'Movie created successfully'

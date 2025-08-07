@@ -133,7 +133,28 @@ route.post('/filter', validateReq(MovieFiltersZodSchema), getMoviesWithFilters);
  */
 route.get('/:id', getMovieById);
 
-// add a movie
+/**
+ * @swagger
+ * /api/movie:
+ *   post:
+ *     summary: Add movie
+ *     tags: [Movies]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/AddMovieRequest'
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/AddMovieSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '409':
+ *         $ref: '#/components/responses/Conflict'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post('/', requireAuth('admin'), validateReq(AddMovieZodSchema), addMovie);
 
 // add bulk movies in json file
