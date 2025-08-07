@@ -157,7 +157,41 @@ route.get('/:id', getMovieById);
  */
 route.post('/', requireAuth('admin'), validateReq(AddMovieZodSchema), addMovie);
 
-// add bulk movies in json file
+/**
+ * @swagger
+ * /api/movie/bulk:
+ *   post:
+ *     summary: Bulk add movies from uploaded JSON file
+ *     tags:
+ *       - Movies
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               movieDataFile:
+ *                 type: string
+ *                 format: binary
+ *                 description: JSON file containing an array of movies
+ *           encoding:
+ *             movieDataFile:
+ *               contentType: application/json
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/BulkAddMovieSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '409':
+ *         $ref: '#/components/responses/Conflict'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post(
   '/bulk',
   requireAuth('admin'),
