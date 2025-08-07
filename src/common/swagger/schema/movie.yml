@@ -99,3 +99,27 @@ components:
                       $ref: '#/components/schemas/Movie'
                   pagination:
                     $ref: '#/components/schemas/pagination'
+    GetMoviesSearchSuccessResponse:
+      description: Success response for getting movies by search
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  movies:
+                    $ref: '#/components/schemas/Movie'
+                  pagination:
+                    type: object
+                    properties:
+                      start:
+                        type: number
+                        example: 0
+                      limit:
+                        type: number
+                        example: 10

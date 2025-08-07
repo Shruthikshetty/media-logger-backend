@@ -34,7 +34,7 @@ const route = Router();
  *   get:
  *     summary: Get all movies
  *     tags: [Movies]
- *     query:
+ *     parameters:
  *       - name: limit
  *         in: query
  *         default: 20
@@ -61,7 +61,36 @@ const route = Router();
  */
 route.get('/', getAllMovies);
 
-//search a movie by title
+/**
+ * @swagger
+ * /api/movie/search:
+ *   get:
+ *     summary: Search movies by title (this has infinite scroll based pagination only use start and limit)
+ *     tags: [Movies]
+ *     parameters:
+ *       - name: text
+ *         in: query
+ *         required: true
+ *         type: string
+ *         example: "Rush Hour"
+ *       - name: limit
+ *         in: query
+ *         default: 20
+ *         schema:
+ *           type: integer
+ *         required: false
+ *       - name: start
+ *         default: 0
+ *         in: query
+ *         schema:
+ *           type: integer
+ *         required: false
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetMoviesSearchSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/search', searchMovies);
 
 //get movies with filters
