@@ -27,8 +27,8 @@ components:
           description: Unique movie identifier
         title:
           type: string
-          uniqueItems: true
           example: 'The Dark Knight'
+          description: Movie title (should be unique)
         description:
           type: string
           example: 'When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.'
@@ -56,7 +56,9 @@ components:
             type: string
           default: []
         runTime:
-          type: number
+          type: integer
+          minimum: 0
+          description: Movie runtime in minutes
         languages:
           type: array
           items:
@@ -123,10 +125,7 @@ components:
                 example: ['English', 'Spanish']
 
               status:
-                type: string
-                items:
-                  $ref: '#/components/schemas/MovieStatusEnum'
-                description: Array of movie statuses to filter
+                $ref: '#/components/schemas/MovieStatusEnum'
                 example: 'released'
 
               tags:
@@ -249,7 +248,9 @@ components:
                 type: object
                 properties:
                   movies:
-                    $ref: '#/components/schemas/Movie'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Movie'
                   pagination:
                     type: object
                     properties:
