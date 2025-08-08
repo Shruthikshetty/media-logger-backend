@@ -255,10 +255,10 @@ components:
                     type: object
                     properties:
                       start:
-                        type: number
+                        type: integer
                         example: 0
                       limit:
-                        type: number
+                        type: integer
                         example: 10
     GetMovieSuccessResponse:
       description: Success response for getting a single movie
