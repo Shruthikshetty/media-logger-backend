@@ -5,7 +5,7 @@ const mockResponse: any = {
   json: jest.fn(),
 };
 
-// Define user data 
+// Define user data
 const mockUserData = {
   name: 'John Doe',
   email: 'johndoe@example.com',

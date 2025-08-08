@@ -27,11 +27,11 @@ components:
           type: boolean
           example: false
         nextPage:
-          type: integer | null
+          type: integer
           nullable: true
           example: null
         previousPage:
-          type: integer | null
+          type: integer
           nullable: true
           example: null
     GenreMovieTvEnum:
