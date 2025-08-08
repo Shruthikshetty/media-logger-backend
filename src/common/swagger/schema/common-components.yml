@@ -2,6 +2,38 @@
 
 components:
   schemas:
+    pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 7
+        start:
+          type: integer
+          example: 0
+        limit:
+          type: integer
+          example: 20
+        currentPage:
+          type: integer
+          example: 1
+        totalPages:
+          type: integer
+          example: 1
+        hasMore:
+          type: boolean
+          example: false
+        hasPrevious:
+          type: boolean
+          example: false
+        nextPage:
+          type: integer
+          nullable: true
+          example: null
+        previousPage:
+          type: integer
+          nullable: true
+          example: null
     GenreMovieTvEnum:
       type: string
       enum:

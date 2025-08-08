@@ -41,7 +41,7 @@ export const addUser = async (
     // return the saved user
     res.status(201).json({
       success: true,
-      data: saveUser,
+      data: omit(saveUser.toObject(), 'password'), //return saved user without password
       message: 'User created successfully',
     });
   } catch (err) {
