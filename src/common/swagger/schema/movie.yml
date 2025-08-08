@@ -1,0 +1,342 @@
+#
+# This file contains the swagger schema and req and response bodies for movie
+#
+
+components:
+  schemas:
+    MovieStatusEnum:
+      type: string
+      description: Movie status
+      enum:
+        - released
+        - upcoming
+    Movie:
+      type: object
+      required:
+        - title
+        - description
+        - genre
+        - releaseDate
+        - runTime
+        - languages
+      properties:
+        _id:
+          type: string
+          example: 630f06f6f80f0c456d5d3e11
+          readOnly: true
+          description: Unique movie identifier
+        title:
+          type: string
+          example: 'The Dark Knight'
+          description: Movie title (should be unique)
+        description:
+          type: string
+          example: 'When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.'
+        averageRating:
+          type: number
+          maximum: 10
+          minimum: 0
+          example: 9
+        genre:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenreMovieTvEnum'
+          example: ['Action', 'Adventure']
+        releaseDate:
+          type: string
+          format: date-time
+        cast:
+          type: array
+          items:
+            type: string
+          default: []
+        directors:
+          type: array
+          items:
+            type: string
+          default: []
+        runTime:
+          type: integer
+          minimum: 0
+          description: Movie runtime in minutes
+        languages:
+          type: array
+          items:
+            type: string
+        posterUrl:
+          type: string
+          default: ''
+        backdropUrl:
+          type: string
+          default: ''
+        isActive:
+          type: boolean
+          default: true
+        status:
+          $ref: '#/components/schemas/MovieStatusEnum'
+          default: released
+          example: released
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagsMovieTvEnum'
+          example: ['Based on True Story', 'Cult Classic']
+        ageRating:
+          type: number
+        trailerYoutubeUrl:
+          type: string
+          default: ''
+
+  requestBodies:
+    AddMovieRequest:
+      description: Request body for adding a movie
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Movie'
+
+    MoviesFilterRequest:
+      description: Request body for filtering movies
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              averageRating:
+                type: number
+                description: Filter by minimum average movie rating
+                minimum: 0
+                maximum: 10
+                example: 8.5
+              genre:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenreMovieTvEnum'
+                description: Array of genres to filter by
+                example: ['Action', 'Drama']
+
+              languages:
+                type: array
+                items:
+                  type: string
+                description: Array of languages to filter by
+                example: ['English', 'Spanish']
+
+              status:
+                $ref: '#/components/schemas/MovieStatusEnum'
+                example: 'released'
+
+              tags:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagsMovieTvEnum'
+                description: Array of tags to filter by
+                example: ['Based on True Story', 'Award-winning']
+
+              ageRating:
+                type: object
+                description: Filter movies by age rating range
+                properties:
+                  gte:
+                    type: number
+                    minimum: 0
+                    description: Minimum age rating (inclusive)
+                    example: 12
+                  lte:
+                    type: number
+                    minimum: 0
+                    description: Maximum age rating (inclusive)
+                    example: 18
+                example: { 'gte': 12, 'lte': 18 }
+
+              releaseDate:
+                type: object
+                description: Filter by release date range
+                properties:
+                  gte:
+                    type: string
+                    format: date-time
+                    description: Earliest release date (inclusive, ISO 8601)
+                    example: '2008-01-01T00:00:00.000Z'
+                  lte:
+                    type: string
+                    format: date-time
+                    description: Latest release date (inclusive, ISO 8601)
+                    example: '2023-12-31T23:59:59.000Z'
+                example:
+                  {
+                    'gte': '2008-01-01T00:00:00.000Z',
+                    'lte': '2023-12-31T23:59:59.000Z',
+                  }
+
+              runTime:
+                type: object
+                description: Filter by runtime (in minutes)
+                properties:
+                  gte:
+                    type: number
+                    minimum: 0
+                    description: Minimum runtime
+                    example: 90
+                  lte:
+                    type: number
+                    minimum: 0
+                    description: Maximum runtime
+                    example: 180
+                example: { 'gte': 90, 'lte': 180 }
+
+              limit:
+                type: number
+                description: Number of results per page
+                example: 10
+
+              page:
+                type: number
+                description: Page number for pagination (1-based)
+                example: 1
+            required: []
+
+    BulkDeleteMovieRequest:
+      description: Request body for bulk deleting movies
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              movieIds:
+                type: array
+                items:
+                  type: string
+                description: Array of movie IDs to delete
+                example:
+                  ['630f06f6f80f0c456d5d3e11', '630f06f6f80f0c456d5d3e12']
+
+  responses:
+    GetAllMoviesSuccessResponse:
+      description: Success response for getting all movies
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  movies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Movie'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+    GetMoviesSearchSuccessResponse:
+      description: Success response for getting movies by search
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  movies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Movie'
+                  pagination:
+                    type: object
+                    properties:
+                      start:
+                        type: number
+                        example: 0
+                      limit:
+                        type: number
+                        example: 10
+    GetMovieSuccessResponse:
+      description: Success response for getting a single movie
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Movie'
+    AddMovieSuccessResponse:
+      description: Success response for adding a movie
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Movie'
+              message:
+                type: string
+                example: 'Movie created successfully'
+    BulkAddMovieSuccessResponse:
+      description: Success response for bulk adding movies
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Movies added successfully'
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+
+    DeleteMovieSuccessResponse:
+      description: Success response for deleting a movie
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Movie'
+              message:
+                type: string
+                example: 'Movie deleted successfully'
+
+    DeleteBulkMovieSuccessResponse:
+      description: Success response for bulk deleting movies
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Movies deleted successfully'
+              data:
+                type: object
+                properties:
+                  deletedCount:
+                    type: number
+                    example: 2

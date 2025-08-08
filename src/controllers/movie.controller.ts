@@ -146,12 +146,18 @@ export const deleteMovieById = async (
     // get id from params
     const { id } = req.params;
 
+    // validate id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid movie id', statusCode: 400 });
+      return;
+    }
+
     // delete the movie
     const deletedMovie = await Movie.findByIdAndDelete(id).lean().exec();
 
     // in case movie is not deleted
     if (!deletedMovie) {
-      handleError(res, { message: 'movie dose not exist' });
+      handleError(res, { message: 'movie dose not exist', statusCode: 404 });
       return;
     }
 

@@ -146,6 +146,7 @@ components:
           description: Game last update date
     UpdateGame:
       type: object
+      minProperties: 1
       description: Game object for updates—any/all fields optional; at least one required at runtime.
       properties:
         title:
