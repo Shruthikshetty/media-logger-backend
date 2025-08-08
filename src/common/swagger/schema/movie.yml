@@ -199,6 +199,22 @@ components:
                 example: 1
             required: []
 
+    BulkDeleteMovieRequest:
+      description: Request body for bulk deleting movies
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              movieIds:
+                type: array
+                items:
+                  type: string
+                description: Array of movie IDs to delete
+                example:
+                  ['630f06f6f80f0c456d5d3e11', '630f06f6f80f0c456d5d3e12']
+
   responses:
     GetAllMoviesSuccessResponse:
       description: Success response for getting all movies
@@ -287,3 +303,39 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/Movie'
+
+    DeleteMovieSuccessResponse:
+      description: Success response for deleting a movie
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Movie'
+              message:
+                type: string
+                example: 'Movie deleted successfully'
+
+    DeleteBulkMovieSuccessResponse:
+      description: Success response for bulk deleting movies
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Movies deleted successfully'
+              data:
+                type: object
+                properties:
+                  deletedCount:
+                    type: number
+                    example: 2

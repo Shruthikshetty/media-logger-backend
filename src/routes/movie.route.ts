@@ -200,7 +200,28 @@ route.post(
   addBulkMovies
 );
 
-//Route to bulk delete movies
+/**
+ * @swagger
+ * /api/movie/bulk:
+ *   delete:
+ *     summary: Bulk delete movies by ids
+ *     tags: [Movies]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/BulkDeleteMovieRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteBulkMovieSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete(
   '/bulk',
   requireAuth('admin'),
@@ -208,7 +229,30 @@ route.delete(
   bulkDeleteMovies
 );
 
-// delete movie by id
+/**
+ * @swagger
+ * /api/movie/{id}:
+ *   delete:
+ *     summary: Delete movie by id
+ *     tags: [Movies]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteMovieSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete('/:id', requireAuth('admin'), deleteMovieById);
 
 // update a movie by id
