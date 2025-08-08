@@ -71,7 +71,8 @@ route.get('/', getAllMovies);
  *       - name: text
  *         in: query
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
  *         example: "Rush Hour"
  *       - name: limit
  *         in: query
@@ -120,7 +121,10 @@ route.post('/filter', validateReq(MovieFiltersZodSchema), getMoviesWithFilters);
  *     parameters:
  *       - name: id
  *         in: path
- *         required: true
+ *         required: 
+ *         schema:
+ *           type: string
+ *         description: valid mongo id
  *     responses:
  *       '200':
  *         $ref: '#/components/responses/GetMovieSuccessResponse'
@@ -172,6 +176,8 @@ route.post('/', requireAuth('admin'), validateReq(AddMovieZodSchema), addMovie);
  *         multipart/form-data:
  *           schema:
  *             type: object
+ *             required:
+ *               - movieDataFile
  *             properties:
  *               movieDataFile:
  *                 type: string
@@ -241,6 +247,9 @@ route.delete(
  *       - name: id
  *         in: path
  *         required: true
+ *         schema:
+ *           type: string
+ *         description: valid mongo id
  *     responses:
  *       '200':
  *         $ref: '#/components/responses/DeleteMovieSuccessResponse'
