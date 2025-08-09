@@ -312,10 +312,10 @@ components:
                       $ref: '#/components/schemas/Movie'
                   notAdded:
                     type: array
+                    description: this will be empty in case all movies are added
                     items:
                       $ref: '#/components/schemas/Movie'
                       example: []
-                      description: this will be empty in case all movies are added
 
     DeleteMovieSuccessResponse:
       description: Success response for deleting a movie

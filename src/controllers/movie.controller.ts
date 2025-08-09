@@ -284,7 +284,7 @@ export const addBulkMovies = async (
 
     // in case movies are added partially
     if (added.length > 0) {
-      res.status(206).json({
+      res.status(207).json({
         success: true,
         data: {
           added,
