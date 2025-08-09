@@ -33,7 +33,7 @@ export const addEpisode = async (
     const savedEpisode = await newEpisode.save();
 
     //return the saved episode
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       data: savedEpisode,
       message: 'Episode created successfully',

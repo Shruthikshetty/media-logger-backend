@@ -4,46 +4,6 @@
 
 components:
   schemas:
-    Episode:
-      type: object
-      required:
-        - season
-        - title
-        - episodeNumber
-        - runTime
-      properties:
-        season:
-          type: string
-          format: uuid
-          description: MongoDB ObjectId referencing the parent Season.
-          example: '60e9ef67af7b8a0015e3b4bc'
-        title:
-          type: string
-          description: Title of the episode.
-          example: 'Pilot'
-        description:
-          type: string
-          description: Description or summary of the episode.
-          example: 'Walter White, a high school chemistry teacher, learns he has cancer and starts making meth.'
-        episodeNumber:
-          type: integer
-          description: The episode number within the season.
-          example: 1
-        releaseDate:
-          type: string
-          description: Release date (ISO format, e.g., YYYY-MM-DD).
-          example: '2008-01-20'
-        runTime:
-          type: integer
-          description: Duration of the episode in minutes.
-          example: 47
-      example:
-        season: '60e9ef67af7b8a0015e3b4bc'
-        title: 'Pilot'
-        description: 'Walter White, a high school chemistry teacher, learns he has cancer and starts making meth.'
-        episodeNumber: 1
-        releaseDate: '2008-01-20'
-        runTime: 47
     Season:
       type: object
       required:

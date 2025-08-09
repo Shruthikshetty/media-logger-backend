@@ -1,0 +1,71 @@
+#
+# This file contains the swagger schema , req and response bodies for tv episode
+#
+
+components:
+  schemas:
+    Episode:
+      type: object
+      required:
+        - season
+        - title
+        - episodeNumber
+        - runTime
+      properties:
+        _id:
+          type: string
+          format: uuid
+          description: MongoDB ObjectId string reference to the episode.
+          example: '60e9ef67af7b8a0015e3b4bc'
+          readOnly: true
+        season:
+          type: string
+          format: uuid
+          description: MongoDB ObjectId referencing the parent Season.
+          example: '60e9ef67af7b8a0015e3b4bc'
+        title:
+          type: string
+          description: Title of the episode.
+          example: 'Pilot'
+        description:
+          type: string
+          description: Description or summary of the episode.
+          example: 'Walter White, a high school chemistry teacher, learns he has cancer and starts making meth.'
+        episodeNumber:
+          type: integer
+          description: The episode number within the season.
+          example: 1
+        releaseDate:
+          type: string
+          description: Release date (ISO format, e.g., YYYY-MM-DD).
+          example: '2008-01-20'
+        runTime:
+          type: integer
+          description: Duration of the episode in minutes.
+          example: 47
+
+  requestBodies:
+    AddEpisodeRequest:
+      description: Request body for adding an episode
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Episode'
+
+  responses:
+    AddEpisodeSuccessResponse:
+      description: Success response for adding an episode
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Episode'
+              message:
+                type: string
+                example: 'Episode created successfully'

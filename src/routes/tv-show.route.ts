@@ -105,7 +105,26 @@ route.post(
   addSeason
 );
 
-//Route to add a Episode to a season
+/**
+ * @swagger
+ * /api/tv-show/episode:
+ *   post:
+ *     summary: Add an episode to a season
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/AddEpisodeRequest'
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/AddEpisodeSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post(
   '/episode',
   requireAuth('admin'),
