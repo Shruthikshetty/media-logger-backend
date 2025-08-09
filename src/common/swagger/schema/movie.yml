@@ -315,7 +315,7 @@ components:
                     description: this will be empty in case all movies are added
                     items:
                       $ref: '#/components/schemas/Movie'
-                      example: []
+                    example: []
 
     DeleteMovieSuccessResponse:
       description: Success response for deleting a movie
