@@ -195,6 +195,8 @@ route.post('/', requireAuth('admin'), validateReq(AddMovieZodSchema), addMovie);
  *         $ref: '#/components/responses/BadRequest'
  *       '409':
  *         $ref: '#/components/responses/Conflict'
+ *       '206':
+ *         $ref: '#/components/responses/BulkAddMovieSuccessResponse'
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */

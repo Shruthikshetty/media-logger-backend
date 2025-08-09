@@ -258,22 +258,49 @@ export const addBulkMovies = async (
   res: Response
 ) => {
   try {
-    // bulk add all the movies
-    const savedMovies = await Movie.insertMany(req.validatedData!);
+    // continue inserting even if there are errors
+    const savedMovies = await Movie.insertMany(req.validatedData!, {
+      ordered: false,
+      throwOnValidationError: true, // throw error if validation fails
+    });
 
-    // return the saved movies
-    res.status(200).json({
+    // return the added movies
+    res.status(201).json({
       success: true,
-      data: savedMovies,
+      data: {
+        added: savedMovies,
+        notAdded: [],
+      },
       message: 'Movies added successfully',
     });
-  } catch (err) {
-    // handle unexpected error
+  } catch (err: any) {
+    // failed (duplicate) docs
+    const notAdded = err?.writeErrors
+      ? err.writeErrors.map((e: any) => e.err?.op ?? e.err?.doc ?? {})
+      : [];
+
+    // successfully inserted docs
+    const added = err?.insertedDocs || [];
+
+    // in case movies are added partially
+    if (added.length > 0) {
+      res.status(206).json({
+        success: true,
+        data: {
+          added,
+          notAdded,
+        },
+        message: 'Movies partially added successfully',
+      });
+      return;
+    }
+
     handleError(res, {
       error: err,
       message: isDuplicateKeyError(err)
-        ? 'One of the movie already exists'
+        ? 'All movies already exist'
         : 'Server down please try again later',
+      statusCode: isDuplicateKeyError(err) ? 409 : 500,
     });
   }
 };
