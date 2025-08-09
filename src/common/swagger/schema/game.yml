@@ -466,7 +466,7 @@ components:
                   added:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Game' 
+                      $ref: '#/components/schemas/Game'
                   notAdded:
                     type: array
                     items:
