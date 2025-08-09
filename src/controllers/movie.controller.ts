@@ -234,7 +234,7 @@ export const bulkDeleteMovies = async (
     }
 
     // return the deleted movies
-    res.status(409).json({
+    res.status(200).json({
       success: true,
       data: {
         deletedCount: deletedMovies.deletedCount,

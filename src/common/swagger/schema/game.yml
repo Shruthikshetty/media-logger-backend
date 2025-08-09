@@ -447,8 +447,8 @@ components:
                       $ref: '#/components/schemas/Game'
                     example: []
                     description: this will be empty if all games were added
-    BulkAddGameConflictResponse:
-      description: Conflict response for bulk adding games
+    BulkAddGamePartialResponse:
+      description: when some games were not added
       content:
         application/json:
           schema:
@@ -459,7 +459,7 @@ components:
                 example: true
               message:
                 type: string
-                example: 'Games partially added successfully / all games already exists'
+                example: 'Games partially added successfully'
               data:
                 type: object
                 properties:

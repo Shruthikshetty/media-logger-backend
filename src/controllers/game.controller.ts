@@ -216,7 +216,10 @@ export const bulkAddGames = async (
 ) => {
   try {
     // add all games
-    const games = await Game.insertMany(req.validatedData!, { ordered: false }); // continuous insertion in case of error
+    const games = await Game.insertMany(req.validatedData!, {
+      ordered: false, // continuous insertion in case of error
+      throwOnValidationError: true,
+    });
 
     // return the added games
     res.status(201).json({
@@ -239,7 +242,7 @@ export const bulkAddGames = async (
     // in case games are added partially
     if (added.length > 0) {
       // return the added games
-      res.status(409).json({
+      res.status(206).json({
         success: true,
         data: {
           added,
