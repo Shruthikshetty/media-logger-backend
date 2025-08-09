@@ -105,7 +105,7 @@ describe('Game creation POST /api/game', () => {
         //assertions
         expect(res.status).toBe(201);
         expect(res.body.success).toBe(true);
-        expect(res.body.data.length).toBe(5);
+        expect(res.body.data.added.length).toBe(5);
       } finally {
         //clean up
         unlinkSync(filePath);
