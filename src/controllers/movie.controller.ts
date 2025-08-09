@@ -217,20 +217,32 @@ export const bulkDeleteMovies = async (
   res: Response
 ) => {
   try {
+    // get movie ids
+    const movieIds = req.validatedData!.movieIds;
+
     //delete all the movies that are passed
     const deletedMovies = await Movie.deleteMany({
       _id: {
-        $in: req.validatedData!.movieIds,
+        $in: movieIds,
       },
     });
 
+    // in case no movies are deleted
+    if (deletedMovies.deletedCount === 0) {
+      handleError(res, { message: 'No movies found', statusCode: 404 });
+      return;
+    }
+
     // return the deleted movies
-    res.status(200).json({
+    res.status(409).json({
       success: true,
       data: {
         deletedCount: deletedMovies.deletedCount,
       },
-      message: 'Movies deleted successfully',
+      message:
+        deletedMovies.deletedCount === movieIds.length
+          ? 'All movies deleted successfully'
+          : 'Some movies could not be deleted (IDs not found or already deleted)',
     });
   } catch (err) {
     // handle unexpected error

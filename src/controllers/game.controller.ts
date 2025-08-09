@@ -240,9 +240,11 @@ export const bulkDeleteGames = async (
   res: Response
 ) => {
   try {
+    const gameIds = req.validatedData!.gameIds;
+
     // delete all games
     const games = await Game.deleteMany({
-      _id: { $in: req.validatedData!.gameIds },
+      _id: { $in: gameIds },
     });
 
     // in case game is not found
@@ -260,7 +262,10 @@ export const bulkDeleteGames = async (
       data: {
         deleCount: games.deletedCount,
       },
-      message: 'Games deleted successfully',
+      message:
+        games.deletedCount === gameIds.length
+          ? 'All games deleted successfully'
+          : 'Some games could not be deleted (IDs not found or already deleted)',
     });
   } catch (err) {
     // handle unexpected error
