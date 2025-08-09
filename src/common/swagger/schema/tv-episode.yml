@@ -7,7 +7,6 @@ components:
     Episode:
       type: object
       required:
-        - season
         - title
         - episodeNumber
         - runTime
@@ -18,11 +17,6 @@ components:
           description: MongoDB ObjectId string reference to the episode.
           example: '60e9ef67af7b8a0015e3b4bc'
           readOnly: true
-        season:
-          type: string
-          format: uuid
-          description: MongoDB ObjectId referencing the parent Season.
-          example: '60e9ef67af7b8a0015e3b4bc'
         title:
           type: string
           description: Title of the episode.
@@ -44,6 +38,26 @@ components:
           description: Duration of the episode in minutes.
           example: 47
 
+    EpisodeResponseFlat:
+      allOf:
+        - $ref: '#/components/schemas/Episode'
+      required:
+        - season
+      properties:
+        season:
+          type: string
+          format: uuid
+          example: '60e9ef67af7b8a0015e3b4bc'
+
+    EpisodeResponsePopulated:
+      allOf:
+        - $ref: '#/components/schemas/Episode'
+      required:
+        - season
+      properties:
+        season:
+          $ref: '#/components/schemas/SeasonResponsePopulated'
+
   requestBodies:
     AddEpisodeRequest:
       description: Request body for adding an episode
@@ -51,7 +65,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Episode'
+            $ref: '#/components/schemas/EpisodeResponseFlat'
 
   responses:
     AddEpisodeSuccessResponse:
@@ -65,7 +79,32 @@ components:
                 type: boolean
                 example: true
               data:
-                $ref: '#/components/schemas/Episode'
+                $ref: '#/components/schemas/EpisodeResponseFlat'
               message:
                 type: string
                 example: 'Episode created successfully'
+
+    GetEpisodeSuccessResponse:
+      description: Success response for getting a single episode
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                oneOf:
+                  - $ref: '#/components/schemas/EpisodeResponseFlat'
+                  - $ref: '#/components/schemas/EpisodeResponsePopulated'
+            example:
+              success: true
+              data:
+                _id: '60e9ef67af7b8a0015e3b4bc'
+                season: '60e9ef67af7b8a0015e3b4bb'
+                title: 'Pilot'
+                description: 'Walter White, a high school chemistry teacher, learns he has cancer and starts making meth.'
+                episodeNumber: 1
+                releaseDate: '2008-01-20'
+                runTime: 47

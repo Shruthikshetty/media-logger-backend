@@ -132,7 +132,36 @@ route.post(
   addEpisode
 );
 
-//Route to get a episode by id
+/**
+ * @swagger
+ * /api/tv-show/episode/{id}:
+ *   get:
+ *     summary: Get an episode by ID
+ *     tags: [TV Shows]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *       - name: fullDetails
+ *         in: query
+ *         required: false
+ *         default: false
+ *         description: full details with seasons and tv information
+ *         schema:
+ *           type: boolean
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetEpisodeSuccessResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/episode/:id', getEpisodeById);
 
 //Route to delete episode by id

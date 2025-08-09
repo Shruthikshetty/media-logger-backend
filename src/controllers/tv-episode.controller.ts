@@ -55,6 +55,11 @@ export const getEpisodeById = async (
   try {
     // get id from params
     const { id } = req.params;
+    // if id is not a valid mongo id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid episode id', statusCode: 400 });
+      return;
+    }
     //get query param fullDetails
     const { fullDetails } = req.query;
 
