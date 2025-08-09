@@ -49,7 +49,7 @@ export const deleteTvShow = async (
 
   // in case tv show is not deleted
   if (!deletedTvShow) {
-    throw new ApiError(404, 'Tv show not found');
+    throw new ApiError(404, `TV show with id ${tvShowId} not found`);
   }
 
   return {

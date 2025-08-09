@@ -216,21 +216,50 @@ export const bulkAddGames = async (
 ) => {
   try {
     // add all games
-    const games = await Game.insertMany(req.validatedData!);
+    const games = await Game.insertMany(req.validatedData!, {
+      ordered: false, // continuous insertion in case of error
+      throwOnValidationError: true,
+    });
 
     // return the added games
     res.status(201).json({
       success: true,
-      data: games,
+      data: {
+        added: games,
+        notAdded: [],
+      },
       message: 'Games added successfully',
     });
-  } catch (err) {
+  } catch (err: any) {
+    // Extract failed (duplicate) docs from error object
+    const notAdded = err?.writeErrors
+      ? err.writeErrors.map((e: any) => e.err?.op ?? e.err?.doc ?? {})
+      : [];
+
+    //err.insertedDocs gives successfully inserted docs
+    const added = err?.insertedDocs || [];
+
+    // in case games are added partially
+    if (added.length > 0) {
+      // return the added games
+      res.status(206).json({
+        success: true,
+        data: {
+          added,
+          notAdded,
+        },
+        message: 'Games partially added successfully',
+      });
+      return;
+    }
+
     // handle unexpected error
     handleError(res, {
       error: err,
       message: isDuplicateKeyError(err)
-        ? 'One of the game already exists'
+        ? 'All games already exists'
         : 'Server down please try again later',
+      statusCode: isDuplicateKeyError(err) ? 409 : 500,
     });
   }
 };
@@ -240,9 +269,11 @@ export const bulkDeleteGames = async (
   res: Response
 ) => {
   try {
+    const gameIds = req.validatedData!.gameIds;
+
     // delete all games
     const games = await Game.deleteMany({
-      _id: { $in: req.validatedData!.gameIds },
+      _id: { $in: gameIds },
     });
 
     // in case game is not found
@@ -260,7 +291,10 @@ export const bulkDeleteGames = async (
       data: {
         deleCount: games.deletedCount,
       },
-      message: 'Games deleted successfully',
+      message:
+        games.deletedCount === gameIds.length
+          ? 'All games deleted successfully'
+          : 'Some games could not be deleted (IDs not found or already deleted)',
     });
   } catch (err) {
     // handle unexpected error

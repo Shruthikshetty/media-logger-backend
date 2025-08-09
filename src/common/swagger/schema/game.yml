@@ -427,6 +427,10 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - success
+              - message
+              - data
             properties:
               success:
                 type: boolean
@@ -435,6 +439,45 @@ components:
                 type: string
                 example: 'Games added successfully'
               data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Game'
+                type: object
+                required:
+                  - added
+                  - notAdded
+                properties:
+                  added:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
+                  notAdded:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
+                    example: []
+                    description: this will be empty if all games were added
+    BulkAddGamePartialResponse:
+      description: when some games were not added
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Games partially added successfully'
+              data:
+                type: object
+                required:
+                  - added
+                  - notAdded
+                properties:
+                  added:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
+                  notAdded:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
