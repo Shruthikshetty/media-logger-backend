@@ -187,7 +187,7 @@ route.post('/filter', validateReq(GamesFilterZodSchema), filterGames);
  *       '400':
  *         $ref: '#/components/responses/BadRequest'
  *       '409':
- *         $ref: '#/components/responses/Conflict'
+ *         $ref: '#/components/responses/BulkAddGameConflictResponse'
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */

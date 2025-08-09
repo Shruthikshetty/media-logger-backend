@@ -435,6 +435,39 @@ components:
                 type: string
                 example: 'Games added successfully'
               data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Game'
+                type: object
+                properties:
+                  added:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
+                  notAdded:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
+                    example: []
+                    description: this will be empty if all games were added
+    BulkAddGameConflictResponse:
+      description: Conflict response for bulk adding games
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Games partially added successfully / all games already exists'
+              data:
+                type: object
+                properties:
+                  added:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game' 
+                  notAdded:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'

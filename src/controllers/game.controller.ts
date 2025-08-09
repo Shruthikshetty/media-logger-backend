@@ -216,21 +216,47 @@ export const bulkAddGames = async (
 ) => {
   try {
     // add all games
-    const games = await Game.insertMany(req.validatedData!);
+    const games = await Game.insertMany(req.validatedData!, { ordered: false }); // continuous insertion in case of error
 
     // return the added games
     res.status(201).json({
       success: true,
-      data: games,
+      data: {
+        added: games,
+        notAdded: [],
+      },
       message: 'Games added successfully',
     });
-  } catch (err) {
+  } catch (err: any) {
+    // Extract failed (duplicate) docs from error object
+    const notAdded = err?.writeErrors
+      ? err.writeErrors.map((e: any) => e.err.op) // may differ depending on driver version
+      : [];
+
+    //err.insertedDocs gives successfully inserted docs
+    const added = err?.insertedDocs || [];
+
+    // in case games are added partially
+    if (added.length > 0) {
+      // return the added games
+      res.status(409).json({
+        success: true,
+        data: {
+          added,
+          notAdded,
+        },
+        message: 'Games partially added successfully',
+      });
+      return;
+    }
+
     // handle unexpected error
     handleError(res, {
       error: err,
       message: isDuplicateKeyError(err)
-        ? 'One of the game already exists'
+        ? 'all games already exists'
         : 'Server down please try again later',
+      statusCode: isDuplicateKeyError(err) ? 409 : 500,
     });
   }
 };
