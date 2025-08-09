@@ -186,7 +186,7 @@ route.post('/filter', validateReq(GamesFilterZodSchema), filterGames);
  *         $ref: '#/components/responses/Unauthorized'
  *       '400':
  *         $ref: '#/components/responses/BadRequest'
- *       '206':
+ *       '207':
  *         $ref: '#/components/responses/BulkAddGamePartialResponse'
  *       '409':
  *         $ref: '#/components/responses/Conflict'
