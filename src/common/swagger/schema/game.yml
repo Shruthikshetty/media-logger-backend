@@ -427,6 +427,10 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - success
+              - message
+              - data
             properties:
               success:
                 type: boolean
@@ -436,6 +440,9 @@ components:
                 example: 'Games added successfully'
               data:
                 type: object
+                required:
+                  - added
+                  - notAdded
                 properties:
                   added:
                     type: array
@@ -462,6 +469,9 @@ components:
                 example: 'Games partially added successfully'
               data:
                 type: object
+                required:
+                  - added
+                  - notAdded
                 properties:
                   added:
                     type: array

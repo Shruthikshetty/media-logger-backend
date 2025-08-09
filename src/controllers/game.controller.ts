@@ -233,7 +233,7 @@ export const bulkAddGames = async (
   } catch (err: any) {
     // Extract failed (duplicate) docs from error object
     const notAdded = err?.writeErrors
-      ? err.writeErrors.map((e: any) => e.err.op) // may differ depending on driver version
+      ? err.writeErrors.map((e: any) => e.err?.op ?? e.err?.doc ?? {})
       : [];
 
     //err.insertedDocs gives successfully inserted docs
@@ -257,7 +257,7 @@ export const bulkAddGames = async (
     handleError(res, {
       error: err,
       message: isDuplicateKeyError(err)
-        ? 'all games already exists'
+        ? 'All games already exists'
         : 'Server down please try again later',
       statusCode: isDuplicateKeyError(err) ? 409 : 500,
     });
