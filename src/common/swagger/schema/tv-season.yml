@@ -85,3 +85,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Episode'
+
+  responses:
+    GetSeasonSuccessResponse:
+      description: Success response for getting a season by ID.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                oneOf:
+                  - $ref: '#/components/schemas/SeasonResponseFlat'
+                  - allOf:
+                      - $ref: '#/components/schemas/Season'
+                      - type: object
+                        required:
+                          - tvShow
+                        properties:
+                          tvShow:
+                            type: string
+                            description: MongoDB ObjectId string reference to the TV show.
+                            example: '60e9ef67af7b8a0015e3b4bc'
+                    description: Season details only when full details is set to false
