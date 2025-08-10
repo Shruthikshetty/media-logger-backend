@@ -149,7 +149,7 @@ route.post(
  *         in: query
  *         required: false
  *         default: false
- *         description: full details with seasons and tv information
+ *         description: full details with seasons and TV information
  *         schema:
  *           type: boolean
  *     responses:
