@@ -52,6 +52,54 @@ components:
           type: string
           description: Optional trailer YouTube URL.
           example: 'https://youtube.com/watch?v=trailer'
+    UpdateSeason:
+      type: object
+      description: Schema for updating an existing season. All fields are optional.
+      minProperties: 1
+      properties:
+        seasonNumber:
+          type: integer
+          description: Season number.
+          example: 1
+        title:
+          type: string
+          description: Title of the season.
+          example: 'Season 1'
+        description:
+          type: string
+          description: Description of the season.
+          example: 'The gripping debut season introducing core characters and conflicts.'
+        releaseDate:
+          type: string
+          description: Release date (ISO format, YYYY-MM-DD).
+          example: '2022-02-15'
+        noOfEpisodes:
+          type: integer
+          description: Number of episodes in the season.
+          example: 10
+        posterUrl:
+          type: string
+          description: Optional poster image URL.
+          example: 'http://example.com/season1-poster.jpg'
+        seasonRating:
+          type: number
+          format: float
+          description: Optional average rating (0-10).
+          example: 8.7
+          maximum: 10
+        status:
+          type: string
+          description: Status of the season.
+          enum: ['ended', 'upcoming', 'on-going']
+          example: 'on-going'
+        trailerYoutubeUrl:
+          type: string
+          description: Optional trailer YouTube URL.
+          example: 'https://youtube.com/watch?v=trailer'
+        tvShow:
+          type: string
+          description: MongoDB ObjectId string reference to the TV show.
+          example: '60e9ef67af7b8a0015e3b4bc'
 
     SeasonResponseFlat:
       allOf:
@@ -85,3 +133,116 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Episode'
+
+  requestBodies:
+    UpdateSeasonRequest:
+      description: Update season request body, at least one field required.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateSeason'
+
+    AddSeasonRequest:
+      description: Add season request body.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SeasonResponseFlat'
+
+  responses:
+    GetSeasonSuccessResponse:
+      description: Success response for getting a season by ID.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                oneOf:
+                  - $ref: '#/components/schemas/SeasonResponseFlat'
+                  - allOf:
+                      - $ref: '#/components/schemas/Season'
+                        description: Season details only (no episodes) when fullDetails is set to false
+                      - type: object
+                        required:
+                          - tvShow
+                        properties:
+                          tvShow:
+                            type: string
+                            description: MongoDB ObjectId string reference to the TV show.
+                            example: '60e9ef67af7b8a0015e3b4bc'
+                    description: Season details only when full details is set to false
+
+    UpdateSeasonSuccessResponse:
+      description: Success response for updating a season.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                allOf:
+                  - $ref: '#/components/schemas/Season'
+                  - type: object
+                    required:
+                      - tvShow
+                    properties:
+                      tvShow:
+                        type: string
+                        description: MongoDB ObjectId string reference to the TV show.
+                        example: '60e9ef67af7b8a0015e3b4bc'
+
+    DeleteSeasonSuccessResponse:
+      description: Success response for deleting a season.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+              allOf:
+                - $ref: '#/components/schemas/Season'
+                - type: object
+                  required: [tvShow, episodes]
+                  properties:
+                    tvShow:
+                      type: string
+                      description: MongoDB ObjectId string reference to the TV show.
+                      example: '60e9ef67af7b8a0015e3b4bc'
+                    episodes:
+                      type: object
+                      description: Result of deleting all episodes in the season.
+                      properties:
+                        deletedCount:
+                          type: integer
+                          example: 10
+              message:
+                type: string
+                example: 'Season and associated episodes deleted successfully'
+
+    AddSeasonSuccessResponse:
+      description: Success response for adding a season.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/SeasonResponseFlat'
+              message:
+                type: string
+                example: 'Season created successfully'
