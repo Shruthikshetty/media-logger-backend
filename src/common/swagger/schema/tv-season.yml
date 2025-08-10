@@ -167,6 +167,7 @@ components:
                   - $ref: '#/components/schemas/SeasonResponseFlat'
                   - allOf:
                       - $ref: '#/components/schemas/Season'
+                        description: Season details only (no episodes) when fullDetails is set to false
                       - type: object
                         required:
                           - tvShow
