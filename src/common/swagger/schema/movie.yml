@@ -155,7 +155,7 @@ components:
       status:
         $ref: '#/components/schemas/MovieStatusEnum'
         example: released
-        description: Movie status (e.g., released, upcoming, cancelled)
+        description: Movie status (e.g., released, upcoming)
       tags:
         type: array
         items:
@@ -307,9 +307,9 @@ components:
             $ref: '#/components/schemas/UpdateMovie'
           description: all the fields are optional but at least one field must be provided
           example:
-            title: 'The Witcher 3: Wild Hunt'
-            averageRating: 9.5
-            genre: ['Action', 'RPG']
+            title: 'The Dark Knight'
+            averageRating: 9.0
+            genre: ['Action', 'Adventure']
 
   responses:
     GetAllMoviesSuccessResponse:

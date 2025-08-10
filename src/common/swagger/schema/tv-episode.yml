@@ -13,8 +13,7 @@ components:
       properties:
         _id:
           type: string
-          format: uuid
-          description: MongoDB ObjectId string reference to the episode.
+          description: MongoDB ObjectId of the episode.
           example: '60e9ef67af7b8a0015e3b4bc'
           readOnly: true
         title:
@@ -48,25 +47,48 @@ components:
           example: '2022-01-01T00:00:00.000Z'
           readOnly: true
 
-    EpisodeResponseFlat:
-      allOf:
-        - $ref: '#/components/schemas/Episode'
-      required:
-        - season
+    EpisodeUpdate:
+      type: object
+      description: Partial update for episode; at least one field required.
+      minProperties: 1
       properties:
         season:
           type: string
-          format: uuid
+          description: MongoDB ObjectId of the season.
           example: '60e9ef67af7b8a0015e3b4bc'
+        title:
+          type: string
+        description:
+          type: string
+        episodeNumber:
+          type: integer
+        releaseDate:
+          type: string
+          format: date
+        runTime:
+          type: integer
+
+    EpisodeResponseFlat:
+      allOf:
+        - $ref: '#/components/schemas/Episode'
+        - type: object
+          required:
+            - season
+          properties:
+            season:
+              type: string
+              description: MongoDB ObjectId string reference to the season.
+              example: '60e9ef67af7b8a0015e3b4bc'
 
     EpisodeResponsePopulated:
       allOf:
         - $ref: '#/components/schemas/Episode'
-      required:
-        - season
-      properties:
-        season:
-          $ref: '#/components/schemas/SeasonResponsePopulated'
+        - type: object
+          required:
+            - season
+          properties:
+            season:
+              $ref: '#/components/schemas/SeasonResponsePopulated'
 
   requestBodies:
     AddEpisodeRequest:
@@ -154,7 +176,7 @@ components:
                 type: boolean
                 example: true
               data:
-                $ref: '#/components/schemas/EpisodeResponseFlat'
+                $ref: '#/components/schemas/EpisodeUpdate'
               message:
                 type: string
                 example: 'Episode updated successfully'

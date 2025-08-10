@@ -61,7 +61,6 @@ components:
       properties:
         tvShow:
           type: string
-          format: uuid
           description: MongoDB ObjectId string reference to the TV show.
           example: '60e9ef67af7b8a0015e3b4bc'
         episodes:

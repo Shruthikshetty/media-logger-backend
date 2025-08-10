@@ -172,7 +172,17 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/TvShowResponseFull'
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  tvShow:
+                    $ref: '#/components/schemas/TvShowResponseFull'
           example:
             success: true
             message: 'Tv show created successfully'
