@@ -195,6 +195,8 @@ route.post('/', requireAuth('admin'), validateReq(AddMovieZodSchema), addMovie);
  *         $ref: '#/components/responses/BadRequest'
  *       '409':
  *         $ref: '#/components/responses/Conflict'
+ *       '207':
+ *         $ref: '#/components/responses/BulkAddMovieSuccessResponse'
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -264,7 +266,35 @@ route.delete(
  */
 route.delete('/:id', requireAuth('admin'), deleteMovieById);
 
-// update a movie by id
+/**
+ * @swagger
+ * /api/movie/{id}:
+ *   patch:
+ *     summary: Update movie by id requires admin access
+ *     tags: [Movies]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/UpdateMovieRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/UpdateMovieSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.patch(
   '/:id',
   requireAuth('admin'),

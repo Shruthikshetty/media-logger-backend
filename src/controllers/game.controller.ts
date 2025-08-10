@@ -242,7 +242,7 @@ export const bulkAddGames = async (
     // in case games are added partially
     if (added.length > 0) {
       // return the added games
-      res.status(206).json({
+      res.status(207).json({
         success: true,
         data: {
           added,
