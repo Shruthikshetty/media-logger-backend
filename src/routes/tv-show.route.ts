@@ -261,7 +261,35 @@ route.patch(
  */
 route.get('/season/:id', getSeasonById);
 
-//Route to update a season by id
+/**
+ * @swagger
+ * /api/tv-show/season/{id}:
+ *   patch:
+ *     summary: Update a season by ID
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/UpdateSeasonRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/UpdateSeasonSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400': 
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.patch(
   '/season/:id',
   requireAuth('admin'),

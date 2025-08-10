@@ -155,7 +155,7 @@ export const updateSeason = async (
 
     // in case season is not updated
     if (!updatedSeason) {
-      handleError(res, { message: 'Season dose not exist' });
+      handleError(res, { message: 'Season does not exist', statusCode: 404 });
       return;
     }
 
