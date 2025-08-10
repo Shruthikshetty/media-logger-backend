@@ -55,6 +55,7 @@ components:
     UpdateSeason:
       type: object
       description: Schema for updating an existing season. All fields are optional.
+      minProperties: 1
       properties:
         seasonNumber:
           type: integer
@@ -209,7 +210,17 @@ components:
                 type: boolean
                 example: true
               data:
-                $ref: '#/components/schemas/SeasonResponseFlat'
+                allOf:
+                  - $ref: '#/components/schemas/SeasonResponseFlat'
+                  - type: object
+                    properties:
+                      episodes:
+                        type: object
+                        description: Result of deleting all episodes in the season.
+                        properties:
+                          deletedCount:
+                            type: integer
+                            example: 10
               message:
                 type: string
                 example: 'Season and associated episodes deleted successfully'

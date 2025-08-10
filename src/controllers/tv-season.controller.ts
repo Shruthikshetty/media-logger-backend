@@ -219,7 +219,9 @@ export const deleteSeasonById = async (
       success: true,
       data: {
         ...deletedSeason,
-        episodes: deletedEpisodes,
+        episodes: {
+          deletedCount: deletedEpisodes.deletedCount,
+        },
       },
       message: 'Season and associated episodes deleted successfully',
     });
