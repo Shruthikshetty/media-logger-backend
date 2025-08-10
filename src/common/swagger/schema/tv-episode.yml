@@ -77,6 +77,14 @@ components:
           schema:
             $ref: '#/components/schemas/EpisodeResponseFlat'
 
+    UpdateEpisodeRequest:
+      description: Request body for updating an episode (at least one field must be provided)
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EpisodeResponseFlat'
+
   responses:
     AddEpisodeSuccessResponse:
       description: Success response for adding an episode
@@ -134,3 +142,19 @@ components:
               message:
                 type: string
                 example: 'Episode deleted successfully'
+
+    UpdateEpisodeSuccessResponse:
+      description: Success response for updating an episode
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/EpisodeResponseFlat'
+              message:
+                type: string
+                example: 'Episode updated successfully'

@@ -153,7 +153,7 @@ export const updateEpisodeById = async (
 
     // in case episode is not updated
     if (!updatedEpisode) {
-      handleError(res, { message: 'Episode dose not exist' });
+      handleError(res, { message: 'Episode dose not exist', statusCode: 404 });
       return;
     }
 

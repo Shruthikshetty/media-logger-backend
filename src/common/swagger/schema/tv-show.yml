@@ -106,7 +106,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SeasonResponseFlat'
-    
+
     TvShowResponseFull:
       allOf:
         - $ref: '#/components/schemas/TvShow'
