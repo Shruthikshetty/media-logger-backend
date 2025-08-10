@@ -189,3 +189,19 @@ components:
                         type: string
                         description: MongoDB ObjectId string reference to the TV show.
                         example: '60e9ef67af7b8a0015e3b4bc'
+
+    DeleteSeasonSuccessResponse:
+      description: Success response for deleting a season.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/SeasonResponseFlat'
+              message:
+                type: string
+                example: 'Season and associated episodes deleted successfully'

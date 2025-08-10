@@ -285,7 +285,7 @@ route.get('/season/:id', getSeasonById);
  *         $ref: '#/components/responses/Unauthorized'
  *       '404':
  *         $ref: '#/components/responses/NotFound'
- *       '400': 
+ *       '400':
  *         $ref: '#/components/responses/BadRequest'
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
@@ -297,7 +297,33 @@ route.patch(
   updateSeason
 );
 
-//Route to delete season by id (this will delete all the episodes as well)
+/**
+ * @swagger
+ * /api/tv-show/season/{id}:
+ *   delete:
+ *     summary: Delete a season by ID (this will also delete all episodes in the season)
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteSeasonSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete('/season/:id', requireAuth('admin'), deleteSeasonById);
 
 //Route to bulk delete tv shows
