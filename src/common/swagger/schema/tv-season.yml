@@ -142,6 +142,14 @@ components:
           schema:
             $ref: '#/components/schemas/UpdateSeason'
 
+    AddSeasonRequest:
+      description: Add season request body.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SeasonResponseFlat'
+
   responses:
     GetSeasonSuccessResponse:
       description: Success response for getting a season by ID.
@@ -168,11 +176,11 @@ components:
                             example: '60e9ef67af7b8a0015e3b4bc'
                     description: Season details only when full details is set to false
 
-    UpdateSeasonSuccessResponse: 
+    UpdateSeasonSuccessResponse:
       description: Success response for updating a season.
       content:
         application/json:
-          schema: 
+          schema:
             type: object
             properties:
               success:
@@ -205,3 +213,19 @@ components:
               message:
                 type: string
                 example: 'Season and associated episodes deleted successfully'
+
+    AddSeasonSuccessResponse:
+      description: Success response for adding a season.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/SeasonResponseFlat'
+              message:
+                type: string
+                example: 'Season created successfully'

@@ -97,7 +97,26 @@ route.patch(
   updateTvShowById
 );
 
-//Route to add a season to a tv-show
+/**
+ * @swagger
+ * /api/tv-show/season:
+ *   post:
+ *     summary: Add a season to a tv show
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/AddSeasonRequest'
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/AddSeasonSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post(
   '/season',
   requireAuth('admin'),

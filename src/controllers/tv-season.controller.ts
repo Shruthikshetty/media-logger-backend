@@ -76,7 +76,7 @@ export const addSeason = async (
     await session.commitTransaction();
 
     //send the response
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       data: { ...saveSeason.toObject(), episodes: savedEpisodes },
       message: 'Season added successfully',
