@@ -1,0 +1,182 @@
+#
+# This file contains the swagger schema , req and response bodies for tv episode
+#
+
+components:
+  schemas:
+    Episode:
+      type: object
+      required:
+        - title
+        - episodeNumber
+        - runTime
+      properties:
+        _id:
+          type: string
+          description: MongoDB ObjectId of the episode.
+          example: '60e9ef67af7b8a0015e3b4bc'
+          readOnly: true
+        title:
+          type: string
+          description: Title of the episode.
+          example: 'Pilot'
+        description:
+          type: string
+          description: Description or summary of the episode.
+          example: 'Walter White, a high school chemistry teacher, learns he has cancer and starts making meth.'
+        episodeNumber:
+          type: integer
+          description: The episode number within the season.
+          example: 1
+        releaseDate:
+          type: string
+          description: Release date (ISO format, e.g., YYYY-MM-DD).
+          example: '2008-01-20'
+        runTime:
+          type: integer
+          description: Duration of the episode in minutes.
+          example: 47
+        createdAt:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00.000Z'
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00.000Z'
+          readOnly: true
+
+    EpisodeUpdate:
+      type: object
+      description: Partial update for episode; at least one field required.
+      minProperties: 1
+      properties:
+        season:
+          type: string
+          description: MongoDB ObjectId of the season.
+          example: '60e9ef67af7b8a0015e3b4bc'
+        title:
+          type: string
+        description:
+          type: string
+        episodeNumber:
+          type: integer
+        releaseDate:
+          type: string
+          format: date
+        runTime:
+          type: integer
+
+    EpisodeResponseFlat:
+      allOf:
+        - $ref: '#/components/schemas/Episode'
+        - type: object
+          required:
+            - season
+          properties:
+            season:
+              type: string
+              description: MongoDB ObjectId string reference to the season.
+              example: '60e9ef67af7b8a0015e3b4bc'
+
+    EpisodeResponsePopulated:
+      allOf:
+        - $ref: '#/components/schemas/Episode'
+        - type: object
+          required:
+            - season
+          properties:
+            season:
+              $ref: '#/components/schemas/SeasonResponsePopulated'
+
+  requestBodies:
+    AddEpisodeRequest:
+      description: Request body for adding an episode
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EpisodeResponseFlat'
+
+    UpdateEpisodeRequest:
+      description: Request body for updating an episode (at least one field must be provided)
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EpisodeResponseFlat'
+
+  responses:
+    AddEpisodeSuccessResponse:
+      description: Success response for adding an episode
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/EpisodeResponseFlat'
+              message:
+                type: string
+                example: 'Episode created successfully'
+
+    GetEpisodeSuccessResponse:
+      description: Success response for getting a single episode
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                oneOf:
+                  - $ref: '#/components/schemas/EpisodeResponseFlat'
+                  - $ref: '#/components/schemas/EpisodeResponsePopulated'
+            example:
+              success: true
+              data:
+                _id: '60e9ef67af7b8a0015e3b4bc'
+                season: '60e9ef67af7b8a0015e3b4bb'
+                title: 'Pilot'
+                description: 'Walter White, a high school chemistry teacher, learns he has cancer and starts making meth.'
+                episodeNumber: 1
+                releaseDate: '2008-01-20'
+                runTime: 47
+
+    DeleteEpisodeSuccessResponse:
+      description: Success response for deleting an episode
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/EpisodeResponseFlat'
+              message:
+                type: string
+                example: 'Episode deleted successfully'
+
+    UpdateEpisodeSuccessResponse:
+      description: Success response for updating an episode
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/EpisodeUpdate'
+              message:
+                type: string
+                example: 'Episode updated successfully'

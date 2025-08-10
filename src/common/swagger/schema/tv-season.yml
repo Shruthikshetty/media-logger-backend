@@ -1,0 +1,87 @@
+#
+# file contains all the swagger schema and req and response bodies for tv-season
+#
+
+components:
+  schemas:
+    Season:
+      type: object
+      required:
+        - seasonNumber
+        - title
+        - releaseDate
+        - noOfEpisodes
+        - status
+      properties:
+        seasonNumber:
+          type: integer
+          description: Season number.
+          example: 1
+        title:
+          type: string
+          description: Title of the season.
+          example: 'Season 1'
+        description:
+          type: string
+          description: Description of the season.
+          example: 'The gripping debut season introducing core characters and conflicts.'
+        releaseDate:
+          type: string
+          description: Release date (ISO format, YYYY-MM-DD).
+          example: '2022-02-15'
+        noOfEpisodes:
+          type: integer
+          description: Number of episodes in the season.
+          example: 10
+        posterUrl:
+          type: string
+          description: Optional poster image URL.
+          example: 'http://example.com/season1-poster.jpg'
+        seasonRating:
+          type: number
+          format: float
+          description: Optional average rating (0-10).
+          example: 8.7
+          maximum: 10
+        status:
+          type: string
+          description: Status of the season.
+          enum: ['ended', 'upcoming', 'on-going']
+          example: 'ended'
+        trailerYoutubeUrl:
+          type: string
+          description: Optional trailer YouTube URL.
+          example: 'https://youtube.com/watch?v=trailer'
+
+    SeasonResponseFlat:
+      allOf:
+        - $ref: '#/components/schemas/Season'
+      required:
+        - tvShow
+      properties:
+        tvShow:
+          type: string
+          description: MongoDB ObjectId string reference to the TV show.
+          example: '60e9ef67af7b8a0015e3b4bc'
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/EpisodeResponseFlat'
+
+    SeasonResponsePopulated:
+      allOf:
+        - $ref: '#/components/schemas/Season'
+      required:
+        - tvShow
+      properties:
+        tvShow:
+          $ref: '#/components/schemas/TvShow'
+
+    SeasonResponseFull:
+      allOf:
+        - $ref: '#/components/schemas/Season'
+      properties:
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Episode'

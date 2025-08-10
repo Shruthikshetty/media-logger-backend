@@ -105,7 +105,26 @@ route.post(
   addSeason
 );
 
-//Route to add a Episode to a season
+/**
+ * @swagger
+ * /api/tv-show/episode:
+ *   post:
+ *     summary: Add an episode to a season
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/AddEpisodeRequest'
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/AddEpisodeSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post(
   '/episode',
   requireAuth('admin'),
@@ -113,13 +132,96 @@ route.post(
   addEpisode
 );
 
-//Route to get a episode by id
+/**
+ * @swagger
+ * /api/tv-show/episode/{id}:
+ *   get:
+ *     summary: Get an episode by ID
+ *     tags: [TV Shows]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *       - name: fullDetails
+ *         in: query
+ *         required: false
+ *         default: false
+ *         description: full details with seasons and tv information
+ *         schema:
+ *           type: boolean
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetEpisodeSuccessResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/episode/:id', getEpisodeById);
 
-//Route to delete episode by id
+/**
+ * @swagger
+ * /api/tv-show/episode/{id}:
+ *   delete:
+ *     summary: Delete an episode by ID
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteEpisodeSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete('/episode/:id', requireAuth('admin'), deleteEpisodeById);
 
-//Route to update a episode by id
+/**
+ * @swagger
+ * /api/tv-show/episode/{id}:
+ *   patch:
+ *     summary: Update an episode by ID
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/UpdateEpisodeRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/UpdateEpisodeSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.patch(
   '/episode/:id',
   requireAuth('admin'),
