@@ -107,7 +107,7 @@ export const deleteEpisodeById = async (
 
     // in case episode is not deleted
     if (!deletedEpisode) {
-      handleError(res, { message: 'Episode dose not exist' });
+      handleError(res, { message: 'Episode dose not exist', statusCode: 404 });
       return;
     }
 

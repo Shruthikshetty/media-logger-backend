@@ -164,7 +164,33 @@ route.post(
  */
 route.get('/episode/:id', getEpisodeById);
 
-//Route to delete episode by id
+/**
+ * @swagger
+ * /api/tv-show/episode/{id}:
+ *   delete:
+ *     summary: Delete an episode by ID
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteEpisodeSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete('/episode/:id', requireAuth('admin'), deleteEpisodeById);
 
 //Route to update a episode by id

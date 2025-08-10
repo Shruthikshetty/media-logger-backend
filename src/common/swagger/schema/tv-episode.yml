@@ -37,6 +37,16 @@ components:
           type: integer
           description: Duration of the episode in minutes.
           example: 47
+        createdAt:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00.000Z'
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00.000Z'
+          readOnly: true
 
     EpisodeResponseFlat:
       allOf:
@@ -108,3 +118,19 @@ components:
                 episodeNumber: 1
                 releaseDate: '2008-01-20'
                 runTime: 47
+
+    DeleteEpisodeSuccessResponse:
+      description: Success response for deleting an episode
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/EpisodeResponseFlat'
+              message:
+                type: string
+                example: 'Episode deleted successfully'
