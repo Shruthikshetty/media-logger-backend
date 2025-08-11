@@ -157,7 +157,7 @@ export const deleteMovieById = async (
 
     // in case movie is not deleted
     if (!deletedMovie) {
-      handleError(res, { message: 'movie dose not exist', statusCode: 404 });
+      handleError(res, { message: 'Movie dose not exist', statusCode: 404 });
       return;
     }
 
