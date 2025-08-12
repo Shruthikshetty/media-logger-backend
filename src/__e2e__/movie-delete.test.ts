@@ -10,7 +10,9 @@ describe('movies delete related endpoints', () => {
   //initialize mongo server
   let mongoServer: MongoMemoryServer;
   let token: string;
-  let gameId1: string;
+  let movieId1: string;
+  let movieId2: string;
+  let movieId3: string;
 
   // Connect to a new in-memory database before running any tests.
   beforeAll(async () => {
@@ -20,7 +22,9 @@ describe('movies delete related endpoints', () => {
     await User.create(mockTestUsers);
     // create movies mock data
     const movies: any = await Movie.insertMany(mockTestMovies);
-    gameId1 = movies[0]._id.toString();
+    movieId1 = movies[0]._id.toString();
+    movieId2 = movies[1]._id.toString();
+    movieId3 = movies[2]._id.toString();
   });
 
   const loginUser = async () => {
@@ -44,9 +48,9 @@ describe('movies delete related endpoints', () => {
       await loginUser();
       // delete the first movie
       const res = await supertest(app)
-        .delete(`/api/movie/${gameId1}`)
+        .delete(`/api/movie/${movieId1}`)
         .set('Authorization', `Bearer ${token}`);
-      console.log(res.body);
+
       //assertions
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
@@ -54,7 +58,7 @@ describe('movies delete related endpoints', () => {
     });
 
     it('should reject deletion when unauthenticated', async () => {
-      const res = await supertest(app).delete(`/api/movie/${gameId1}`);
+      const res = await supertest(app).delete(`/api/movie/${movieId1}`);
       expect(res.status).toBe(401);
       expect(res.body.success).toBe(false);
       expect(res.body.message).toMatch(/Unauthorized/);
@@ -81,5 +85,67 @@ describe('movies delete related endpoints', () => {
       expect(res.body.success).toBe(false);
       expect(res.body.message).toMatch('Invalid movie id');
     });
+  });
+
+  describe('bulk delete using ids DELETE /api/movie/bulk', () => {
+    it('should allow an admin to delete multiple movies', async () => {
+      await loginUser();
+      // delete the first movie
+      const res = await supertest(app)
+        .delete(`/api/movie/bulk`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ movieIds: [movieId2] });
+
+      console.log(res.body);
+
+      //assertions
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.deletedCount).toBe(1);
+    });
+
+    it('should reject bulk deletion when unauthenticated', async () => {
+      const res = await supertest(app).delete(`/api/movie/bulk`);
+      expect(res.status).toBe(401);
+      expect(res.body.success).toBe(false);
+      expect(res.body.message).toMatch(/Unauthorized/);
+    });
+
+    it('should return 400 if invalid movie id', async () => {
+      //log in as admin
+      await loginUser();
+      const res = await supertest(app)
+        .delete(`/api/movie/bulk`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ movieIds: ['invalid-id'] });
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+      expect(res.body.message).toMatch('Invalid movie id');
+    });
+
+    it('should return 404 if movie not found', async () => {
+      //log in as admin
+      await loginUser();
+      const res = await supertest(app)
+        .delete(`/api/movie/bulk`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ movieIds: [new mongoose.Types.ObjectId()] });
+      expect(res.status).toBe(404);
+      expect(res.body.success).toBe(false);
+      expect(res.body.message).toMatch('No movies found');
+    });
+
+    it("it should return 200 in case of partial delete when one of the ids is not existing " , async () => {
+      //log in as admin
+      await loginUser();
+      const res = await supertest(app)
+        .delete(`/api/movie/bulk`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ movieIds: [movieId3, new mongoose.Types.ObjectId()] });
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.deletedCount).toBe(1);
+      expect(res.body.message).toMatch(/Some movies could not be deleted \(IDs not found or already deleted\)/);
+    })
   });
 });
