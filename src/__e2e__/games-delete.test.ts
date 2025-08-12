@@ -11,6 +11,7 @@ describe('all the games delete related endpoints', () => {
   let mongoServer: MongoMemoryServer;
   let token: string;
   let gameId1: string;
+  let gameId2: string;
 
   //crete in memory mongo instance
   beforeAll(async () => {
@@ -23,6 +24,7 @@ describe('all the games delete related endpoints', () => {
     //create games
     const games: any = await Game.create(mockTestGames);
     gameId1 = games[0]._id.toString();
+    gameId2 = games[1]._id.toString();
   });
 
   // clean up mongo
@@ -111,7 +113,7 @@ describe('all the games delete related endpoints', () => {
         .set({
           Authorization: `Bearer ${token}`,
         })
-        .send({ gameIds: [gameId1] });
+        .send({ gameIds: [gameId2] });
       // assertions
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);

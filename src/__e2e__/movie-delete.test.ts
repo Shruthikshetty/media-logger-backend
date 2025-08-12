@@ -135,7 +135,7 @@ describe('movies delete related endpoints', () => {
       expect(res.body.message).toMatch('No movies found');
     });
 
-    it("it should return 200 in case of partial delete when one of the ids is not existing " , async () => {
+    it('it should return 200 in case of partial delete when one of the ids is not existing ', async () => {
       //log in as admin
       await loginUser();
       const res = await supertest(app)
@@ -145,7 +145,9 @@ describe('movies delete related endpoints', () => {
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.data.deletedCount).toBe(1);
-      expect(res.body.message).toMatch(/Some movies could not be deleted \(IDs not found or already deleted\)/);
-    })
+      expect(res.body.message).toMatch(
+        /Some movies could not be deleted \(IDs not found or already deleted\)/
+      );
+    });
   });
 });
