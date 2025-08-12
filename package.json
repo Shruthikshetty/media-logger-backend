@@ -12,6 +12,7 @@
     "test:unit": "jest --testPathPattern=__tests__",
     "test:e2e": "jest __e2e__",
     "test:coverage": "jest --coverage",
+    "format:check": "prettier --check .",
     "format": "prettier --write .",
     "lint": "eslint ./src"
   },

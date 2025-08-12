@@ -6,7 +6,10 @@ import { ValidatedRequest } from '../types/custom-types';
 import { handleError } from '../common/utils/handle-error';
 import { AddMovieZodSchemaType } from '../common/validation-schema/movie/add-movie';
 import Movie from '../models/movie.model';
-import { isDuplicateKeyError, isMongoIdValid } from '../common/utils/mongo-errors';
+import {
+  isDuplicateKeyError,
+  isMongoIdValid,
+} from '../common/utils/mongo-errors';
 import {
   getPaginationParams,
   getPaginationResponse,
@@ -143,12 +146,18 @@ export const deleteMovieById = async (
     // get id from params
     const { id } = req.params;
 
+    // validate id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid movie id', statusCode: 400 });
+      return;
+    }
+
     // delete the movie
     const deletedMovie = await Movie.findByIdAndDelete(id).lean().exec();
 
     // in case movie is not deleted
     if (!deletedMovie) {
-      handleError(res, { message: 'movie dose not exist' });
+      handleError(res, { message: 'movie dose not exist', statusCode: 404 });
       return;
     }
 
@@ -208,12 +217,21 @@ export const bulkDeleteMovies = async (
   res: Response
 ) => {
   try {
+    // get movie ids
+    const movieIds = req.validatedData!.movieIds;
+
     //delete all the movies that are passed
     const deletedMovies = await Movie.deleteMany({
       _id: {
-        $in: req.validatedData!.movieIds,
+        $in: movieIds,
       },
     });
+
+    // in case no movies are deleted
+    if (deletedMovies.deletedCount === 0) {
+      handleError(res, { message: 'No movies found', statusCode: 404 });
+      return;
+    }
 
     // return the deleted movies
     res.status(200).json({
@@ -221,7 +239,10 @@ export const bulkDeleteMovies = async (
       data: {
         deletedCount: deletedMovies.deletedCount,
       },
-      message: 'Movies deleted successfully',
+      message:
+        deletedMovies.deletedCount === movieIds.length
+          ? 'All movies deleted successfully'
+          : 'Some movies could not be deleted (IDs not found or already deleted)',
     });
   } catch (err) {
     // handle unexpected error
@@ -237,22 +258,49 @@ export const addBulkMovies = async (
   res: Response
 ) => {
   try {
-    // bulk add all the movies
-    const savedMovies = await Movie.insertMany(req.validatedData!);
+    // continue inserting even if there are errors
+    const savedMovies = await Movie.insertMany(req.validatedData!, {
+      ordered: false,
+      throwOnValidationError: true, // throw error if validation fails
+    });
 
-    // return the saved movies
-    res.status(200).json({
+    // return the added movies
+    res.status(201).json({
       success: true,
-      data: savedMovies,
+      data: {
+        added: savedMovies,
+        notAdded: [],
+      },
       message: 'Movies added successfully',
     });
-  } catch (err) {
-    // handle unexpected error
+  } catch (err: any) {
+    // failed (duplicate) docs
+    const notAdded = err?.writeErrors
+      ? err.writeErrors.map((e: any) => e.err?.op ?? e.err?.doc ?? {})
+      : [];
+
+    // successfully inserted docs
+    const added = err?.insertedDocs || [];
+
+    // in case movies are added partially
+    if (added.length > 0) {
+      res.status(207).json({
+        success: true,
+        data: {
+          added,
+          notAdded,
+        },
+        message: 'Movies partially added successfully',
+      });
+      return;
+    }
+
     handleError(res, {
       error: err,
       message: isDuplicateKeyError(err)
-        ? 'One of the movie already exists'
+        ? 'All movies already exist'
         : 'Server down please try again later',
+      statusCode: isDuplicateKeyError(err) ? 409 : 500,
     });
   }
 };

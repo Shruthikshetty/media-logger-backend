@@ -30,7 +30,7 @@ describe('User API E2E: POST /api/user', () => {
     password: 'password123',
   };
 
-  it('should allow  to create a new user', async () => {
+  it('should create a new user', async () => {
     // Perform POST
     const res = await supertest(app).post('/api/user').send(newUser);
 
@@ -42,14 +42,14 @@ describe('User API E2E: POST /api/user', () => {
 
   it('Should show user exist error when same user is added ', async () => {
     // add a user
-    await User.create(newUser)
+    await User.create(newUser);
 
     //Perform POST with the same user
-    const res = await supertest(app).post("/api/user").send(newUser);
+    const res = await supertest(app).post('/api/user').send(newUser);
 
     //Assertion
     expect(res.status).toBe(409);
     expect(res.body.success).toBe(false);
-    expect(res.body.message).toBe("User already exists")
+    expect(res.body.message).toBe('User already exists');
   });
 });

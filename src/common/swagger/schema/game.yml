@@ -114,7 +114,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GamePlatformEnum'
-          example: ['PC', 'Xbox', 'PlayStation 4']
           description: Game platforms
         avgPlaytime:
           type: number
@@ -145,6 +144,183 @@ components:
           example: '2022-01-01T00:00:00.000Z'
           readOnly: true
           description: Game last update date
+    UpdateGame:
+      type: object
+      minProperties: 1
+      description: Game object for updates—any/all fields optional; at least one required at runtime.
+      properties:
+        title:
+          type: string
+          example: 'The Witcher 3: Wild Hunt'
+        description:
+          type: string
+          example: 'The Witcher 3: Wild Hunt is an action role-playing video game...'
+        averageRating:
+          type: number
+          example: 9.5
+        genre:
+          type: array
+          items:
+            $ref: '#/components/schemas/gameGenreEnum'
+        releaseDate:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00.000Z'
+        posterUrl:
+          type: string
+          format: uri
+          example: 'https://example.com/poster.jpg'
+        backdropUrl:
+          type: string
+          format: uri
+          example: 'https://example.com/backdrop.jpg'
+        status:
+          type: string
+          example: 'released'
+        platforms:
+          type: array
+          items:
+            $ref: '#/components/schemas/GamePlatformEnum'
+        avgPlaytime:
+          type: number
+          example: 60
+        developer:
+          type: string
+          example: 'CD Projekt RED'
+        ageRating:
+          type: number
+          example: 18
+        trailerYoutubeUrl:
+          type: string
+          format: uri
+          example: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+  requestBodies:
+    AddGameRequest:
+      description: Request body for adding a game
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Game'
+    GamesFilterRequest:
+      description: Request body for filtering games
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              averageRating:
+                type: number
+                description: Filter by average game rating
+                minimum: 0
+                maximum: 10
+                example: 8.5
+              genre:
+                type: array
+                items:
+                  $ref: '#/components/schemas/gameGenreEnum'
+
+              ageRating:
+                type: object
+                description: Filter games by age rating range
+                properties:
+                  gte:
+                    type: number
+                    minimum: 0
+                    description: Minimum age rating (inclusive)
+                    example: 12
+                  lte:
+                    type: number
+                    minimum: 0
+                    description: Maximum age rating (inclusive)
+                    example: 18
+                example: { 'gte': 12, 'lte': 18 }
+
+              releaseDate:
+                type: object
+                description: Filter by release date range
+                properties:
+                  gte:
+                    type: string
+                    format: date-time
+                    description: Earliest release date (inclusive, ISO 8601)
+                    example: '2021-01-01T00:00:00.000Z'
+                  lte:
+                    type: string
+                    format: date-time
+                    description: Latest release date (inclusive, ISO 8601)
+                    example: '2023-12-31T23:59:59.000Z'
+                example:
+                  {
+                    'gte': '2021-01-01T00:00:00.000Z',
+                    'lte': '2023-12-31T23:59:59.000Z',
+                  }
+
+              status:
+                type: string
+                description: Status of the game (e.g., released, upcoming)
+                example: 'released'
+
+              platforms:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GamePlatformEnum'
+                description: Array of platforms to filter
+                example: ['PC', 'PlayStation 5']
+
+              avgPlaytime:
+                type: object
+                description: Filter by average playtime (in minutes)
+                properties:
+                  gte:
+                    type: number
+                    minimum: 0
+                    description: Minimum average playtime
+                    example: 30
+                  lte:
+                    type: number
+                    minimum: 0
+                    description: Maximum average playtime
+                    example: 180
+                example: { 'gte': 30, 'lte': 180 }
+
+              limit:
+                type: number
+                description: Number of results per page
+                example: 10
+
+              page:
+                type: number
+                description: Page number for pagination (1-based)
+                example: 1
+            required: []
+    BulkDeleteGameRequest:
+      description: Request body for bulk deleting games
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              gameIds:
+                type: array
+                items:
+                  type: string
+                description: Array of game IDs to delete
+                example:
+                  ['630f06f6f80f0c456d5d3e11', '630f06f6f80f0c456d5d3e12']
+    UpdateGameRequest:
+      description: Request body for updating a game. At least one field must be provided.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateGame'
+          example:
+            title: 'The Witcher 3: Wild Hunt'
+            averageRating: 9.5
+            genre: ['Action', 'RPG']
 
   responses:
     GetAllGamesSuccessResponse:
@@ -166,3 +342,142 @@ components:
                       $ref: '#/components/schemas/Game'
                   pagination:
                     $ref: '#/components/schemas/pagination'
+    GetGameSuccessResponse:
+      description: Success response for getting a single game
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Game'
+    AddGameSuccessResponse:
+      description: Success response for adding a game
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Game'
+              message:
+                type: string
+                example: 'Game created successfully'
+    DeleteGameSuccessResponse:
+      description: Success response for deleting a game
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Game'
+              message:
+                type: string
+                example: 'Game deleted successfully'
+    DeleteBulkGameSuccessResponse:
+      description: Success response for bulk deleting games
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Games deleted successfully'
+              data:
+                type: object
+                properties:
+                  deletedCount:
+                    type: number
+                    example: 2
+    UpdateGameSuccessResponse:
+      description: Updated game is returned
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - success
+              - data
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/Game'
+              message:
+                type: string
+                example: 'Game updated successfully'
+    BulkAddGameSuccessResponse:
+      description: Success response for bulk adding games
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - success
+              - message
+              - data
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Games added successfully'
+              data:
+                type: object
+                required:
+                  - added
+                  - notAdded
+                properties:
+                  added:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
+                  notAdded:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
+                    example: []
+                    description: this will be empty if all games were added
+    BulkAddGamePartialResponse:
+      description: when some games were not added
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Games partially added successfully'
+              data:
+                type: object
+                required:
+                  - added
+                  - notAdded
+                properties:
+                  added:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
+                  notAdded:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'

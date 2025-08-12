@@ -10,7 +10,28 @@ import { login } from '../controllers/auth.controller';
 // initialize router
 const route = Router();
 
-// login
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/LoginRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/LoginSuccessResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '401':
+ *         $ref: '#/components/responses/LoginUnauthorizedResponse'
+ *       '404':
+ *         $ref: '#/components/responses/LoginNotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post('/login', validateReq(LoginZodSchema), login);
 
 //export all the routes

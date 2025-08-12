@@ -146,7 +146,7 @@ components:
                 enum:
                   - user
                   - admin
-  
+
   responses:
     AddUserSuccessResponse:
       description: Added user is returned

@@ -69,10 +69,17 @@ export const MovieFiltersZodSchema = z
       .optional(),
 
     languages: z
-      .string({
-        message: 'Languages must be string',
+      .array(
+        z
+          .string({
+            message: 'Languages must be string',
+          })
+          .transform((val) => val.toLowerCase())
+      )
+      .refine((data) => data.length > 0, {
+        message:
+          'Languages must be an array of strings with at least one value',
       })
-      .transform((val) => val.toLowerCase())
       .optional(),
 
     tags: z

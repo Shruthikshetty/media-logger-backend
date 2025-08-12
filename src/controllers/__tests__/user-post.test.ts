@@ -5,14 +5,20 @@ const mockResponse: any = {
   json: jest.fn(),
 };
 
-//mock save
-const mockSave = jest.fn().mockResolvedValue({
+// Define user data
+const mockUserData = {
   name: 'John Doe',
   email: 'johndoe@example.com',
   password: 'SecurePass123!',
   bio: 'Software Engineer',
   profileImg: 'https://example.com/avatar.jpg',
   xp: 0,
+};
+
+// mock save
+const mockSave = jest.fn().mockResolvedValue({
+  ...mockUserData, // Spread the data
+  toObject: jest.fn().mockReturnValue(mockUserData), // Add the toObject method
 });
 
 //mock user model
@@ -50,7 +56,6 @@ describe('Test suite for add user', () => {
       data: {
         name: 'John Doe',
         email: 'johndoe@example.com',
-        password: 'SecurePass123!',
         bio: 'Software Engineer',
         profileImg: 'https://example.com/avatar.jpg',
         xp: 0,

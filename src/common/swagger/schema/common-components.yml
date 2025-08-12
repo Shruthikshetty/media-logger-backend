@@ -1,6 +1,118 @@
 # contains commonly used component
 
 components:
+  schemas:
+    pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 7
+        start:
+          type: integer
+          example: 0
+        limit:
+          type: integer
+          example: 20
+        currentPage:
+          type: integer
+          example: 1
+        totalPages:
+          type: integer
+          example: 1
+        hasMore:
+          type: boolean
+          example: false
+        hasPrevious:
+          type: boolean
+          example: false
+        nextPage:
+          type: integer
+          nullable: true
+          example: null
+        previousPage:
+          type: integer
+          nullable: true
+          example: null
+    GenreMovieTvEnum:
+      type: string
+      enum:
+        - Action
+        - Adventure
+        - Animation
+        - Comedy
+        - Crime
+        - Documentary
+        - Drama
+        - Fantasy
+        - Historical
+        - Horror
+        - Mystery
+        - Romance
+        - Sci-Fi
+        - Thriller
+        - War
+        - Western
+        - Superhero
+        - Family
+        - Musical
+        - Biography
+        - Sport
+        - Noir
+        - Reality
+        - Talk Show
+        - Game Show
+        - News
+        - Cooking
+        - Kids
+        - Indie
+        - RPG
+        - Shooter
+        - Strategy
+        - Puzzle
+        - Simulation
+        - Fighting
+        - Racing
+        - Survival
+        - Sandbox
+    TagsMovieTvEnum:
+      type: string
+      enum:
+        - Based on True Story
+        - Cult Classic
+        - Binge-worthy
+        - Award-winning
+        - Coming of Age
+        - Post-Apocalyptic
+        - Dystopian
+        - Feel-Good
+        - Dark
+        - Slow Burn
+        - Fast-paced
+        - Character-driven
+        - Plot Twist
+        - Underrated
+        - Critically Acclaimed
+        - Soundtrack Heavy
+        - Visual Masterpiece
+        - Mind-Bending
+        - Satirical
+        - Non-linear Story
+        - Multi-language
+        - Psychological
+        - Time Travel
+        - Violent
+        - Family Friendly
+        - Adult
+        - Romantic
+        - Political
+        - Fantasy World
+        - Supernatural
+        - Historical Fiction
+        - Episodic
+        - Serialized
+        - Minimalist
+        - Dialogue-heavy
   responses:
     InternalServerError:
       description: An unexpected error occurred

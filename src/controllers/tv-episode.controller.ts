@@ -33,7 +33,7 @@ export const addEpisode = async (
     const savedEpisode = await newEpisode.save();
 
     //return the saved episode
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       data: savedEpisode,
       message: 'Episode created successfully',
@@ -55,6 +55,11 @@ export const getEpisodeById = async (
   try {
     // get id from params
     const { id } = req.params;
+    // if id is not a valid mongo id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid episode id', statusCode: 400 });
+      return;
+    }
     //get query param fullDetails
     const { fullDetails } = req.query;
 
@@ -102,7 +107,7 @@ export const deleteEpisodeById = async (
 
     // in case episode is not deleted
     if (!deletedEpisode) {
-      handleError(res, { message: 'Episode dose not exist' });
+      handleError(res, { message: 'Episode does not exist', statusCode: 404 });
       return;
     }
 
@@ -148,7 +153,7 @@ export const updateEpisodeById = async (
 
     // in case episode is not updated
     if (!updatedEpisode) {
-      handleError(res, { message: 'Episode dose not exist' });
+      handleError(res, { message: 'Episode does not exist', statusCode: 404 });
       return;
     }
 
