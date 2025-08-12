@@ -38,7 +38,7 @@ describe('User API E2E: POST /api/user', () => {
         email: 'charlie@example.com',
         password: 'password123',
     };
-    it('should allow  to create a new user', () => __awaiter(void 0, void 0, void 0, function* () {
+    it('should create a new user', () => __awaiter(void 0, void 0, void 0, function* () {
         // Perform POST
         const res = yield (0, supertest_1.default)(index_1.app).post('/api/user').send(newUser);
         // Assertion
@@ -50,10 +50,10 @@ describe('User API E2E: POST /api/user', () => {
         // add a user
         yield user_model_1.default.create(newUser);
         //Perform POST with the same user
-        const res = yield (0, supertest_1.default)(index_1.app).post("/api/user").send(newUser);
+        const res = yield (0, supertest_1.default)(index_1.app).post('/api/user').send(newUser);
         //Assertion
         expect(res.status).toBe(409);
         expect(res.body.success).toBe(false);
-        expect(res.body.message).toBe("User already exists");
+        expect(res.body.message).toBe('User already exists');
     }));
 });

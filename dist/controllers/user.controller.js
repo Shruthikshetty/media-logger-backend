@@ -40,7 +40,7 @@ const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // return the saved user
         res.status(201).json({
             success: true,
-            data: saveUser,
+            data: (0, lodash_1.omit)(saveUser.toObject(), 'password'), //return saved user without password
             message: 'User created successfully',
         });
     }

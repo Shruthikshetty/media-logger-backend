@@ -81,6 +81,6 @@ describe('Auth API E2E: POST /api/auth/login', () => {
         const res = yield (0, supertest_1.default)(index_1.app).post('/api/auth/login').send(loginPayload);
         expect(res.status).toBe(400);
         expect(res.body.success).toBe(false);
-        expect(res.body.message).toMatch("Password must be string");
+        expect(res.body.message).toMatch('Password must be string');
     }));
 });

@@ -120,11 +120,16 @@ const deleteMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         // get id from params
         const { id } = req.params;
+        // validate id
+        if (!(0, mongo_errors_1.isMongoIdValid)(id)) {
+            (0, handle_error_1.handleError)(res, { message: 'Invalid movie id', statusCode: 400 });
+            return;
+        }
         // delete the movie
         const deletedMovie = yield movie_model_1.default.findByIdAndDelete(id).lean().exec();
         // in case movie is not deleted
         if (!deletedMovie) {
-            (0, handle_error_1.handleError)(res, { message: 'movie dose not exist' });
+            (0, handle_error_1.handleError)(res, { message: 'movie dose not exist', statusCode: 404 });
             return;
         }
         // return the deleted movie
@@ -176,19 +181,28 @@ exports.updateMovieById = updateMovieById;
 //controller to bulk delete movies by taking list of ids
 const bulkDeleteMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // get movie ids
+        const movieIds = req.validatedData.movieIds;
         //delete all the movies that are passed
         const deletedMovies = yield movie_model_1.default.deleteMany({
             _id: {
-                $in: req.validatedData.movieIds,
+                $in: movieIds,
             },
         });
+        // in case no movies are deleted
+        if (deletedMovies.deletedCount === 0) {
+            (0, handle_error_1.handleError)(res, { message: 'No movies found', statusCode: 404 });
+            return;
+        }
         // return the deleted movies
         res.status(200).json({
             success: true,
             data: {
                 deletedCount: deletedMovies.deletedCount,
             },
-            message: 'Movies deleted successfully',
+            message: deletedMovies.deletedCount === movieIds.length
+                ? 'All movies deleted successfully'
+                : 'Some movies could not be deleted (IDs not found or already deleted)',
         });
     }
     catch (err) {
@@ -202,22 +216,46 @@ exports.bulkDeleteMovies = bulkDeleteMovies;
 //controller to add bulk movies by json
 const addBulkMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // bulk add all the movies
-        const savedMovies = yield movie_model_1.default.insertMany(req.validatedData);
-        // return the saved movies
-        res.status(200).json({
+        // continue inserting even if there are errors
+        const savedMovies = yield movie_model_1.default.insertMany(req.validatedData, {
+            ordered: false,
+            throwOnValidationError: true, // throw error if validation fails
+        });
+        // return the added movies
+        res.status(201).json({
             success: true,
-            data: savedMovies,
+            data: {
+                added: savedMovies,
+                notAdded: [],
+            },
             message: 'Movies added successfully',
         });
     }
     catch (err) {
-        // handle unexpected error
+        // failed (duplicate) docs
+        const notAdded = (err === null || err === void 0 ? void 0 : err.writeErrors)
+            ? err.writeErrors.map((e) => { var _a, _b, _c, _d; return (_d = (_b = (_a = e.err) === null || _a === void 0 ? void 0 : _a.op) !== null && _b !== void 0 ? _b : (_c = e.err) === null || _c === void 0 ? void 0 : _c.doc) !== null && _d !== void 0 ? _d : {}; })
+            : [];
+        // successfully inserted docs
+        const added = (err === null || err === void 0 ? void 0 : err.insertedDocs) || [];
+        // in case movies are added partially
+        if (added.length > 0) {
+            res.status(207).json({
+                success: true,
+                data: {
+                    added,
+                    notAdded,
+                },
+                message: 'Movies partially added successfully',
+            });
+            return;
+        }
         (0, handle_error_1.handleError)(res, {
             error: err,
             message: (0, mongo_errors_1.isDuplicateKeyError)(err)
-                ? 'One of the movie already exists'
+                ? 'All movies already exist'
                 : 'Server down please try again later',
+            statusCode: (0, mongo_errors_1.isDuplicateKeyError)(err) ? 409 : 500,
         });
     }
 });

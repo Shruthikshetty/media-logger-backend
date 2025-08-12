@@ -79,7 +79,7 @@ const addSeason = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // commit the transaction
         yield session.commitTransaction();
         //send the response
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             data: Object.assign(Object.assign({}, saveSeason.toObject()), { episodes: savedEpisodes }),
             message: 'Season added successfully',
@@ -142,7 +142,7 @@ const updateSeason = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             .exec();
         // in case season is not updated
         if (!updatedSeason) {
-            (0, handle_error_1.handleError)(res, { message: 'Season dose not exist' });
+            (0, handle_error_1.handleError)(res, { message: 'Season does not exist', statusCode: 404 });
             return;
         }
         // return the updated season
@@ -180,7 +180,7 @@ const deleteSeasonById = (req, res) => __awaiter(void 0, void 0, void 0, functio
             .exec();
         // in case season is not deleted
         if (!deletedSeason) {
-            (0, handle_error_1.handleError)(res, { message: 'Season dose not exist' });
+            (0, handle_error_1.handleError)(res, { message: 'Season does not exist', statusCode: 404 });
             return;
         }
         // delete all the episodes of the season
@@ -192,7 +192,9 @@ const deleteSeasonById = (req, res) => __awaiter(void 0, void 0, void 0, functio
         // return the deleted season
         res.status(200).json({
             success: true,
-            data: Object.assign(Object.assign({}, deletedSeason), { episodes: deletedEpisodes }),
+            data: Object.assign(Object.assign({}, deletedSeason), { episodes: {
+                    deletedCount: deletedEpisodes.deletedCount,
+                } }),
             message: 'Season and associated episodes deleted successfully',
         });
     }

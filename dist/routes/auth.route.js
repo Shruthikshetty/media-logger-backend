@@ -9,7 +9,28 @@ const login_user_1 = require("../common/validation-schema/auth/login-user");
 const auth_controller_1 = require("../controllers/auth.controller");
 // initialize router
 const route = (0, express_1.Router)();
-// login
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/LoginRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/LoginSuccessResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '401':
+ *         $ref: '#/components/responses/LoginUnauthorizedResponse'
+ *       '404':
+ *         $ref: '#/components/responses/LoginNotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post('/login', (0, handle_validation_1.validateReq)(login_user_1.LoginZodSchema), auth_controller_1.login);
 //export all the routes
 exports.default = route;

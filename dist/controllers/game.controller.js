@@ -106,12 +106,12 @@ const addGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (err) {
+        const isDuplicate = (0, mongo_errors_1.isDuplicateKeyError)(err);
         // handle unexpected error
         (0, handle_error_1.handleError)(res, {
             error: err,
-            message: (0, mongo_errors_1.isDuplicateKeyError)(err)
-                ? 'Game already exists'
-                : 'Game creation failed',
+            message: isDuplicate ? 'Game already exists' : 'Game creation failed',
+            statusCode: isDuplicate ? 409 : 500,
         });
     }
 });
@@ -131,7 +131,7 @@ const deleteGameById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             .exec();
         // in case game is not deleted
         if (!deletedGame) {
-            (0, handle_error_1.handleError)(res, { message: 'Game dose not exist' });
+            (0, handle_error_1.handleError)(res, { message: 'Game does not exist', statusCode: 404 });
             return;
         }
         // return the deleted game
@@ -166,7 +166,7 @@ const updateGameById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             .exec();
         // in case game is not updated
         if (!updatedGame) {
-            (0, handle_error_1.handleError)(res, { message: 'Game not found' });
+            (0, handle_error_1.handleError)(res, { message: 'Game not found', statusCode: 404 });
             return;
         }
         // return the updated game
@@ -188,21 +188,47 @@ exports.updateGameById = updateGameById;
 const bulkAddGames = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // add all games
-        const games = yield game_model_1.default.insertMany(req.validatedData);
+        const games = yield game_model_1.default.insertMany(req.validatedData, {
+            ordered: false, // continuous insertion in case of error
+            throwOnValidationError: true,
+        });
         // return the added games
         res.status(201).json({
             success: true,
-            data: games,
+            data: {
+                added: games,
+                notAdded: [],
+            },
             message: 'Games added successfully',
         });
     }
     catch (err) {
+        // Extract failed (duplicate) docs from error object
+        const notAdded = (err === null || err === void 0 ? void 0 : err.writeErrors)
+            ? err.writeErrors.map((e) => { var _a, _b, _c, _d; return (_d = (_b = (_a = e.err) === null || _a === void 0 ? void 0 : _a.op) !== null && _b !== void 0 ? _b : (_c = e.err) === null || _c === void 0 ? void 0 : _c.doc) !== null && _d !== void 0 ? _d : {}; })
+            : [];
+        //err.insertedDocs gives successfully inserted docs
+        const added = (err === null || err === void 0 ? void 0 : err.insertedDocs) || [];
+        // in case games are added partially
+        if (added.length > 0) {
+            // return the added games
+            res.status(207).json({
+                success: true,
+                data: {
+                    added,
+                    notAdded,
+                },
+                message: 'Games partially added successfully',
+            });
+            return;
+        }
         // handle unexpected error
         (0, handle_error_1.handleError)(res, {
             error: err,
             message: (0, mongo_errors_1.isDuplicateKeyError)(err)
-                ? 'One of the game already exists'
+                ? 'All games already exists'
                 : 'Server down please try again later',
+            statusCode: (0, mongo_errors_1.isDuplicateKeyError)(err) ? 409 : 500,
         });
     }
 });
@@ -210,17 +236,28 @@ exports.bulkAddGames = bulkAddGames;
 //controller to bulk delete games by taking ids
 const bulkDeleteGames = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const gameIds = req.validatedData.gameIds;
         // delete all games
         const games = yield game_model_1.default.deleteMany({
-            _id: { $in: req.validatedData.gameIds },
+            _id: { $in: gameIds },
         });
+        // in case game is not found
+        if (games.deletedCount === 0) {
+            (0, handle_error_1.handleError)(res, {
+                message: 'no games found',
+                statusCode: 404,
+            });
+            return;
+        }
         // return the deleted games
         res.status(200).json({
             success: true,
             data: {
                 deleCount: games.deletedCount,
             },
-            message: 'Games deleted successfully',
+            message: games.deletedCount === gameIds.length
+                ? 'All games deleted successfully'
+                : 'Some games could not be deleted (IDs not found or already deleted)',
         });
     }
     catch (err) {

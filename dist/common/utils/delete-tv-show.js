@@ -48,7 +48,7 @@ const deleteTvShow = (tvShowId, session) => __awaiter(void 0, void 0, void 0, fu
         .exec();
     // in case tv show is not deleted
     if (!deletedTvShow) {
-        throw new api_error_1.ApiError(404, 'Tv show not found');
+        throw new api_error_1.ApiError(404, `TV show with id ${tvShowId} not found`);
     }
     return {
         deletedCount: {

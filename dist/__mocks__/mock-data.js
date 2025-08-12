@@ -77,7 +77,7 @@ exports.invalidGames = [
     {
         title: 'Apex Legends Season 20',
         description: 'Squad up and drop into the arena in this free-to-play battle royale where legendary characters fight for glory',
-        genre: ['Battle Royale', "invalid genre"],
+        genre: ['Battle Royale', 'invalid genre'],
         releaseDate: new Date().toISOString(),
         posterUrl: 'https://example.com/apex-poster.jpg',
         backdropUrl: 'https://example.com/apex-backdrop.jpg',

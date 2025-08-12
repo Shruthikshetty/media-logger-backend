@@ -36,7 +36,7 @@ const addEpisode = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         //save the episode
         const savedEpisode = yield newEpisode.save();
         //return the saved episode
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             data: savedEpisode,
             message: 'Episode created successfully',
@@ -56,6 +56,11 @@ const getEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         // get id from params
         const { id } = req.params;
+        // if id is not a valid mongo id
+        if (!(0, mongo_errors_1.isMongoIdValid)(id)) {
+            (0, handle_error_1.handleError)(res, { message: 'Invalid episode id', statusCode: 400 });
+            return;
+        }
         //get query param fullDetails
         const { fullDetails } = req.query;
         //find the episode by id
@@ -95,7 +100,7 @@ const deleteEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const deletedEpisode = yield tv_episode_1.default.findByIdAndDelete(id).lean().exec();
         // in case episode is not deleted
         if (!deletedEpisode) {
-            (0, handle_error_1.handleError)(res, { message: 'Episode dose not exist' });
+            (0, handle_error_1.handleError)(res, { message: 'Episode does not exist', statusCode: 404 });
             return;
         }
         // return the deleted episode
@@ -131,7 +136,7 @@ const updateEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, functi
             .exec();
         // in case episode is not updated
         if (!updatedEpisode) {
-            (0, handle_error_1.handleError)(res, { message: 'Episode dose not exist' });
+            (0, handle_error_1.handleError)(res, { message: 'Episode does not exist', statusCode: 404 });
             return;
         }
         // return the updated episode

@@ -14,15 +14,17 @@ const mockResponse = {
     status: jest.fn().mockReturnThis(),
     json: jest.fn(),
 };
-//mock save
-const mockSave = jest.fn().mockResolvedValue({
+// Define user data
+const mockUserData = {
     name: 'John Doe',
     email: 'johndoe@example.com',
     password: 'SecurePass123!',
     bio: 'Software Engineer',
     profileImg: 'https://example.com/avatar.jpg',
     xp: 0,
-});
+};
+// mock save
+const mockSave = jest.fn().mockResolvedValue(Object.assign(Object.assign({}, mockUserData), { toObject: jest.fn().mockReturnValue(mockUserData) }));
 //mock user model
 jest.mock('../../models/user.model', () => {
     return {
@@ -56,7 +58,6 @@ describe('Test suite for add user', () => {
             data: {
                 name: 'John Doe',
                 email: 'johndoe@example.com',
-                password: 'SecurePass123!',
                 bio: 'Software Engineer',
                 profileImg: 'https://example.com/avatar.jpg',
                 xp: 0,

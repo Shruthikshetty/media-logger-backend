@@ -67,10 +67,14 @@ exports.MovieFiltersZodSchema = zod_1.default
     })
         .optional(),
     languages: zod_1.default
+        .array(zod_1.default
         .string({
         message: 'Languages must be string',
     })
-        .transform((val) => val.toLowerCase())
+        .transform((val) => val.toLowerCase()))
+        .refine((data) => data.length > 0, {
+        message: 'Languages must be an array of strings with at least one value',
+    })
         .optional(),
     tags: zod_1.default
         .array(zod_1.default.string({ message: 'Tags must be string' }), {
