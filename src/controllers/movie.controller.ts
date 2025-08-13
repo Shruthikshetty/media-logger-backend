@@ -184,6 +184,12 @@ export const updateMovieById = async (
     // get id from params
     const { id } = req.params;
 
+    // validate id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid movie id', statusCode: 400 });
+      return;
+    }
+
     // update the movie
     const updatedMovie = await Movie.findByIdAndUpdate(id, req.validatedData!, {
       new: true,
@@ -193,7 +199,7 @@ export const updateMovieById = async (
 
     // in case movie is not updated
     if (!updatedMovie) {
-      handleError(res, { message: 'movie dose not exist' });
+      handleError(res, { message: 'movie dose not exist', statusCode: 404 });
       return;
     }
 
