@@ -72,7 +72,7 @@ describe('movies delete related endpoints', () => {
         .set('Authorization', `Bearer ${token}`);
       expect(res.status).toBe(404);
       expect(res.body.success).toBe(false);
-      expect(res.body.message).toMatch('Movie dose not exist');
+      expect(res.body.message).toMatch(/does not exist/i);
     });
 
     it('should return 400 if invalid movie id', async () => {
