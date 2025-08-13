@@ -199,7 +199,7 @@ export const updateMovieById = async (
 
     // in case movie is not updated
     if (!updatedMovie) {
-      handleError(res, { message: 'movie dose not exist', statusCode: 404 });
+      handleError(res, { message: 'Movie dose not exist', statusCode: 404 });
       return;
     }
 

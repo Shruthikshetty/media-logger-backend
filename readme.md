@@ -1,3 +1,6 @@
+[![CI Checks for Pull Request on master](https://github.com/Shruthikshetty/media-logger-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/Shruthikshetty/media-logger-backend/actions/workflows/ci.yml)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Shruthikshetty/media-logger-backend?utm_source=oss&utm_medium=github&utm_campaign=Shruthikshetty%2Fmedia-logger-backend&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 # Media Logger App
 
 A backend for comprehensive media logging application that allows users to log and track their favorite games, TV shows, and movies.
