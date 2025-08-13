@@ -2,6 +2,7 @@
  * @file holds the controller related to tv-episode
  */
 
+import { ApiError } from '../common/utils/api-error';
 import { getEpisodeDetailsById } from '../common/utils/get-episode';
 import { handleError } from '../common/utils/handle-error';
 import { isMongoIdValid } from '../common/utils/mongo-errors';
@@ -23,7 +24,7 @@ export const addEpisode = async (
       .lean()
       .exec();
     if (!season) {
-      throw new Error('Season not found');
+      throw new ApiError(404, 'Season not found');
     }
 
     //create a new episode
@@ -42,6 +43,7 @@ export const addEpisode = async (
     //handle unexpected error
     handleError(res, {
       error: err,
+      statusCode: err?.statusCode || 500,
       message: err?.message,
     });
   }

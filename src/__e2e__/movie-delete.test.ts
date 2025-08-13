@@ -96,8 +96,6 @@ describe('movies delete related endpoints', () => {
         .set('Authorization', `Bearer ${token}`)
         .send({ movieIds: [movieId2] });
 
-      console.log(res.body);
-
       //assertions
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
