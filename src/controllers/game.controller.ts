@@ -279,7 +279,7 @@ export const bulkDeleteGames = async (
     // in case game is not found
     if (games.deletedCount === 0) {
       handleError(res, {
-        message: 'no games found',
+        message: 'No games found',
         statusCode: 404,
       });
       return;

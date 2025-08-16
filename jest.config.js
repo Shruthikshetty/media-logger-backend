@@ -9,4 +9,5 @@ module.exports = {
     '**/__e2e__/**/*.test.ts', // Matches all .test.ts files inside any __e2e__ folder
   ],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
+  setupFiles: ['<rootDir>/jest.setup.js'],
 };

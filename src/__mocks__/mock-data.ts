@@ -2,6 +2,9 @@
  * @file contains data mocks required for testing
  */
 
+import { Types } from 'mongoose';
+import { SEASON_STATUS } from '../common/constants/model.constants';
+
 export const mockTestUsers = [
   { name: 'Alice', email: 'alice@example.com', password: 'password123' },
   { name: 'Bob', email: 'bob@example.com', password: 'password123' },
@@ -107,3 +110,32 @@ export const invalidGames = [
     ageRating: 16,
   },
 ];
+
+export const mockTestSeason = {
+  _id: new Types.ObjectId(), // Random ObjectId
+  tvShow: new Types.ObjectId(),
+  seasonNumber: 1,
+  title: 'Season 1: The Beginning',
+  description: 'The first season introduces the main characters and storyline.',
+  releaseDate: '2025-01-15',
+  noOfEpisodes: 10,
+  posterUrl: 'https://example.com/posters/season1.jpg',
+  seasonRating: 8.5,
+  status: SEASON_STATUS[0],
+  trailerYoutubeUrl: 'https://youtube.com/watch?v=abcd1234',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+export const createMockEpisode = (overrides = {}) => ({
+  _id: new Types.ObjectId(),
+  season: new Types.ObjectId(),
+  title: 'Episode 1: A New Beginning',
+  description: 'The story begins as new characters are introduced.',
+  episodeNumber: 1,
+  releaseDate: '2025-01-15',
+  runTime: 45,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  ...overrides, // Override defaults as needed
+});
