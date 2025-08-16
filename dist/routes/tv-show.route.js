@@ -1,29 +1,33 @@
-"use strict";
+'use strict';
 /**
  * @file contains all the routes related to tv show
  */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const require_auth_1 = require("../common/middleware/require-auth");
-const handle_validation_1 = require("../common/middleware/handle-validation");
-const add_tv_show_1 = require("../common/validation-schema/tv-show/add-tv-show");
-const tv_show_controller_1 = require("../controllers/tv-show.controller");
-const tv_season_controller_1 = require("../controllers/tv-season.controller");
-const add_season_1 = require("../common/validation-schema/tv-show/add-season");
-const tv_episode_controller_1 = require("../controllers/tv-episode.controller");
-const add_episode_1 = require("../common/validation-schema/tv-show/add-episode");
-const update_episode_1 = require("../common/validation-schema/tv-show/update-episode");
-const update_season_1 = require("../common/validation-schema/tv-show/update-season");
-const update_tv_show_1 = require("../common/validation-schema/tv-show/update-tv-show");
-const bulk_delete_tv_show_1 = require("../common/validation-schema/tv-show/bulk-delete-tv-show");
-const tv_show_filter_1 = require("../common/validation-schema/tv-show/tv-show-filter");
-const bulk_add_tv_show_1 = require("../common/validation-schema/tv-show/bulk-add-tv-show");
-const handle_json_file_validation_1 = require("../common/middleware/handle-json-file-validation");
-const handle_upload_1 = require("../common/middleware/handle-upload");
-const json_upload_config_1 = __importDefault(require("../common/config/json-upload.config"));
+var __importDefault =
+  (this && this.__importDefault) ||
+  function (mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  };
+Object.defineProperty(exports, '__esModule', { value: true });
+const express_1 = require('express');
+const require_auth_1 = require('../common/middleware/require-auth');
+const handle_validation_1 = require('../common/middleware/handle-validation');
+const add_tv_show_1 = require('../common/validation-schema/tv-show/add-tv-show');
+const tv_show_controller_1 = require('../controllers/tv-show.controller');
+const tv_season_controller_1 = require('../controllers/tv-season.controller');
+const add_season_1 = require('../common/validation-schema/tv-show/add-season');
+const tv_episode_controller_1 = require('../controllers/tv-episode.controller');
+const add_episode_1 = require('../common/validation-schema/tv-show/add-episode');
+const update_episode_1 = require('../common/validation-schema/tv-show/update-episode');
+const update_season_1 = require('../common/validation-schema/tv-show/update-season');
+const update_tv_show_1 = require('../common/validation-schema/tv-show/update-tv-show');
+const bulk_delete_tv_show_1 = require('../common/validation-schema/tv-show/bulk-delete-tv-show');
+const tv_show_filter_1 = require('../common/validation-schema/tv-show/tv-show-filter');
+const bulk_add_tv_show_1 = require('../common/validation-schema/tv-show/bulk-add-tv-show');
+const handle_json_file_validation_1 = require('../common/middleware/handle-json-file-validation');
+const handle_upload_1 = require('../common/middleware/handle-upload');
+const json_upload_config_1 = __importDefault(
+  require('../common/config/json-upload.config')
+);
 //initialize router
 const route = (0, express_1.Router)();
 /**
@@ -44,19 +48,44 @@ const route = (0, express_1.Router)();
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.post('/', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(add_tv_show_1.AddTvShowZodSchema), tv_show_controller_1.addTvShow);
+route.post(
+  '/',
+  (0, require_auth_1.requireAuth)('admin'),
+  (0, handle_validation_1.validateReq)(add_tv_show_1.AddTvShowZodSchema),
+  tv_show_controller_1.addTvShow
+);
 // route to bulk add tv shows
-route.post('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_upload_1.handleUpload)(json_upload_config_1.default, 'tvShowDataFile'), (0, handle_json_file_validation_1.ValidateJsonFile)(bulk_add_tv_show_1.BulkAddTvShowZodSchema), tv_show_controller_1.bulkAddTvShow);
+route.post(
+  '/bulk',
+  (0, require_auth_1.requireAuth)('admin'),
+  (0, handle_upload_1.handleUpload)(
+    json_upload_config_1.default,
+    'tvShowDataFile'
+  ),
+  (0, handle_json_file_validation_1.ValidateJsonFile)(
+    bulk_add_tv_show_1.BulkAddTvShowZodSchema
+  ),
+  tv_show_controller_1.bulkAddTvShow
+);
 //get all the tv shows
 route.get('/', tv_show_controller_1.getAllTvShows);
 //get tv show by search text
 route.get('/search', tv_show_controller_1.searchTvShow);
 //get tv show by filters
-route.post('/filter', (0, handle_validation_1.validateReq)(tv_show_filter_1.FilterTvShowZodSchema), tv_show_controller_1.filterTvShow);
+route.post(
+  '/filter',
+  (0, handle_validation_1.validateReq)(tv_show_filter_1.FilterTvShowZodSchema),
+  tv_show_controller_1.filterTvShow
+);
 //Route to get tv show by id
 route.get('/:id', tv_show_controller_1.getTvShowById);
 //Route to update a tv show by id
-route.patch('/:id', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(update_tv_show_1.UpdateTvShowZodSchema), tv_show_controller_1.updateTvShowById);
+route.patch(
+  '/:id',
+  (0, require_auth_1.requireAuth)('admin'),
+  (0, handle_validation_1.validateReq)(update_tv_show_1.UpdateTvShowZodSchema),
+  tv_show_controller_1.updateTvShowById
+);
 /**
  * @swagger
  * /api/tv-show/season:
@@ -77,7 +106,12 @@ route.patch('/:id', (0, require_auth_1.requireAuth)('admin'), (0, handle_validat
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.post('/season', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(add_season_1.AddSeasonZodSchema), tv_season_controller_1.addSeason);
+route.post(
+  '/season',
+  (0, require_auth_1.requireAuth)('admin'),
+  (0, handle_validation_1.validateReq)(add_season_1.AddSeasonZodSchema),
+  tv_season_controller_1.addSeason
+);
 /**
  * @swagger
  * /api/tv-show/episode:
@@ -98,7 +132,12 @@ route.post('/season', (0, require_auth_1.requireAuth)('admin'), (0, handle_valid
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.post('/episode', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(add_episode_1.AddEpisodeZodSchema), tv_episode_controller_1.addEpisode);
+route.post(
+  '/episode',
+  (0, require_auth_1.requireAuth)('admin'),
+  (0, handle_validation_1.validateReq)(add_episode_1.AddEpisodeZodSchema),
+  tv_episode_controller_1.addEpisode
+);
 /**
  * @swagger
  * /api/tv-show/episode/{id}:
@@ -157,7 +196,11 @@ route.get('/episode/:id', tv_episode_controller_1.getEpisodeById);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/episode/:id', (0, require_auth_1.requireAuth)('admin'), tv_episode_controller_1.deleteEpisodeById);
+route.delete(
+  '/episode/:id',
+  (0, require_auth_1.requireAuth)('admin'),
+  tv_episode_controller_1.deleteEpisodeById
+);
 /**
  * @swagger
  * /api/tv-show/episode/{id}:
@@ -187,7 +230,12 @@ route.delete('/episode/:id', (0, require_auth_1.requireAuth)('admin'), tv_episod
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.patch('/episode/:id', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(update_episode_1.UpdateEpisodeZodSchema), tv_episode_controller_1.updateEpisodeById);
+route.patch(
+  '/episode/:id',
+  (0, require_auth_1.requireAuth)('admin'),
+  (0, handle_validation_1.validateReq)(update_episode_1.UpdateEpisodeZodSchema),
+  tv_episode_controller_1.updateEpisodeById
+);
 /**
  * @swagger
  * /api/tv-show/season/{id}:
@@ -248,7 +296,12 @@ route.get('/season/:id', tv_season_controller_1.getSeasonById);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.patch('/season/:id', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(update_season_1.UpdateSeasonZodSchema), tv_season_controller_1.updateSeason);
+route.patch(
+  '/season/:id',
+  (0, require_auth_1.requireAuth)('admin'),
+  (0, handle_validation_1.validateReq)(update_season_1.UpdateSeasonZodSchema),
+  tv_season_controller_1.updateSeason
+);
 /**
  * @swagger
  * /api/tv-show/season/{id}:
@@ -276,10 +329,25 @@ route.patch('/season/:id', (0, require_auth_1.requireAuth)('admin'), (0, handle_
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/season/:id', (0, require_auth_1.requireAuth)('admin'), tv_season_controller_1.deleteSeasonById);
+route.delete(
+  '/season/:id',
+  (0, require_auth_1.requireAuth)('admin'),
+  tv_season_controller_1.deleteSeasonById
+);
 //Route to bulk delete tv shows
-route.delete('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(bulk_delete_tv_show_1.BulkDeleteTvShowZodSchema), tv_show_controller_1.bulkDeleteTvShow);
+route.delete(
+  '/bulk',
+  (0, require_auth_1.requireAuth)('admin'),
+  (0, handle_validation_1.validateReq)(
+    bulk_delete_tv_show_1.BulkDeleteTvShowZodSchema
+  ),
+  tv_show_controller_1.bulkDeleteTvShow
+);
 // Route to delete a tv show by id
-route.delete('/:id', (0, require_auth_1.requireAuth)('admin'), tv_show_controller_1.deleteTvShowById);
+route.delete(
+  '/:id',
+  (0, require_auth_1.requireAuth)('admin'),
+  tv_show_controller_1.deleteTvShowById
+);
 //export all the routes
 exports.default = route;

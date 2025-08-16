@@ -1,6 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPaginationResponse = exports.getPaginationParams = exports.getValidatedStart = exports.getValidatedLimit = void 0;
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.getPaginationResponse =
+  exports.getPaginationParams =
+  exports.getValidatedStart =
+  exports.getValidatedLimit =
+    void 0;
 /**
  * Validates and returns a numerical limit within specified constraints.
  *
@@ -9,7 +13,10 @@ exports.getPaginationResponse = exports.getPaginationParams = exports.getValidat
  * @returns The validated limit as a number, clamped between the min and max values.
  */
 const getValidatedLimit = (limit, limits) => {
-    return Math.max(limits.min, Math.min(limits.max, Number(limit) || limits.default));
+  return Math.max(
+    limits.min,
+    Math.min(limits.max, Number(limit) || limits.default)
+  );
 };
 exports.getValidatedLimit = getValidatedLimit;
 /**
@@ -20,7 +27,7 @@ exports.getValidatedLimit = getValidatedLimit;
  * @returns The validated start as a number, clamped to a minimum of 0.
  */
 const getValidatedStart = (start, defaultStart = 0) => {
-    return Math.max(0, Number(start) || defaultStart);
+  return Math.max(0, Number(start) || defaultStart);
 };
 exports.getValidatedStart = getValidatedStart;
 /**
@@ -31,23 +38,25 @@ exports.getValidatedStart = getValidatedStart;
  * @returns An object with validated numerical limit and start values.
  */
 const getPaginationParams = (query, limits) => {
-    // Get limit and start , page from query
-    const { limit, start, page } = query;
-    // Validate limit
-    const validatedLimit = Math.max(limits.limit.min, Math.min(limits.limit.max, Number(limit) || limits.limit.default));
-    // Calculate start
-    let validatedStart;
-    if (page) {
-        const pageNumber = Math.max(1, Number(page) || 1);
-        validatedStart = (pageNumber - 1) * validatedLimit;
-    }
-    else {
-        validatedStart = Math.max(0, Number(start) || limits.start.default);
-    }
-    return {
-        limit: validatedLimit,
-        start: validatedStart,
-    };
+  // Get limit and start , page from query
+  const { limit, start, page } = query;
+  // Validate limit
+  const validatedLimit = Math.max(
+    limits.limit.min,
+    Math.min(limits.limit.max, Number(limit) || limits.limit.default)
+  );
+  // Calculate start
+  let validatedStart;
+  if (page) {
+    const pageNumber = Math.max(1, Number(page) || 1);
+    validatedStart = (pageNumber - 1) * validatedLimit;
+  } else {
+    validatedStart = Math.max(0, Number(start) || limits.start.default);
+  }
+  return {
+    limit: validatedLimit,
+    start: validatedStart,
+  };
 };
 exports.getPaginationParams = getPaginationParams;
 /**
@@ -60,18 +69,18 @@ exports.getPaginationParams = getPaginationParams;
  *          items per page, current page number, total pages, and navigation flags.
  */
 const getPaginationResponse = (total, limit, start) => {
-    const currentPage = Math.floor(start / limit) + 1;
-    const totalPages = Math.ceil(total / limit);
-    return {
-        total,
-        start,
-        limit,
-        currentPage,
-        totalPages,
-        hasMore: start + limit < total,
-        hasPrevious: start > 0,
-        nextPage: currentPage < totalPages ? currentPage + 1 : null,
-        previousPage: currentPage > 1 ? currentPage - 1 : null,
-    };
+  const currentPage = Math.floor(start / limit) + 1;
+  const totalPages = Math.ceil(total / limit);
+  return {
+    total,
+    start,
+    limit,
+    currentPage,
+    totalPages,
+    hasMore: start + limit < total,
+    hasPrevious: start > 0,
+    nextPage: currentPage < totalPages ? currentPage + 1 : null,
+    previousPage: currentPage > 1 ? currentPage - 1 : null,
+  };
 };
 exports.getPaginationResponse = getPaginationResponse;

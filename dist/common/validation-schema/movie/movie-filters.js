@@ -1,132 +1,141 @@
-"use strict";
+'use strict';
 /**
  * This file contains the validation schema for movie filters
  */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
+var __importDefault =
+  (this && this.__importDefault) ||
+  function (mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  };
+Object.defineProperty(exports, '__esModule', { value: true });
 exports.MovieFiltersZodSchema = void 0;
-const zod_1 = __importDefault(require("zod"));
-const config_constants_1 = require("../../constants/config.constants");
-const lodash_1 = require("lodash");
+const zod_1 = __importDefault(require('zod'));
+const config_constants_1 = require('../../constants/config.constants');
+const lodash_1 = require('lodash');
 exports.MovieFiltersZodSchema = zod_1.default
-    .object({
+  .object({
     averageRating: zod_1.default
-        .number({
+      .number({
         message: 'Average rating must be number',
-    })
-        .optional(),
+      })
+      .optional(),
     genre: zod_1.default
-        .array(zod_1.default.string({ message: 'Genre must be string' }), {
+      .array(zod_1.default.string({ message: 'Genre must be string' }), {
         message: 'Genre must be an array of strings',
-    })
-        .optional(),
+      })
+      .optional(),
     releaseDate: zod_1.default
-        .object({
+      .object({
         lte: zod_1.default
-            .string({
+          .string({
             message: 'Release date lte must be string',
-        })
-            .datetime({
-            message: 'Release date lte must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)',
-        })
-            .transform((val) => new Date(val))
-            .optional(),
+          })
+          .datetime({
+            message:
+              'Release date lte must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)',
+          })
+          .transform((val) => new Date(val))
+          .optional(),
         gte: zod_1.default
-            .string({
+          .string({
             message: 'Release date gte must be string',
-        })
-            .datetime({
-            message: 'Release date gte must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)',
-        })
-            .transform((val) => new Date(val))
-            .optional(),
-    })
-        .refine((data) => data.gte !== undefined || data.lte !== undefined, {
+          })
+          .datetime({
+            message:
+              'Release date gte must be in ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)',
+          })
+          .transform((val) => new Date(val))
+          .optional(),
+      })
+      .refine((data) => data.gte !== undefined || data.lte !== undefined, {
         message: 'Release date must include at least one of gte or lte',
-    })
-        .optional(),
+      })
+      .optional(),
     runTime: zod_1.default
-        .object({
+      .object({
         gte: zod_1.default
-            .number({
+          .number({
             message: 'Run time gte must be number',
-        })
-            .min(0)
-            .optional(),
+          })
+          .min(0)
+          .optional(),
         lte: zod_1.default
-            .number({
+          .number({
             message: 'Run time lte must be number',
-        })
-            .min(0)
-            .optional(),
-    })
-        .refine((data) => data.gte !== undefined || data.lte !== undefined, {
+          })
+          .min(0)
+          .optional(),
+      })
+      .refine((data) => data.gte !== undefined || data.lte !== undefined, {
         message: 'Run time must include at least one of gte or lte',
-    })
-        .optional(),
+      })
+      .optional(),
     languages: zod_1.default
-        .array(zod_1.default
-        .string({
-        message: 'Languages must be string',
-    })
-        .transform((val) => val.toLowerCase()))
-        .refine((data) => data.length > 0, {
-        message: 'Languages must be an array of strings with at least one value',
-    })
-        .optional(),
+      .array(
+        zod_1.default
+          .string({
+            message: 'Languages must be string',
+          })
+          .transform((val) => val.toLowerCase())
+      )
+      .refine((data) => data.length > 0, {
+        message:
+          'Languages must be an array of strings with at least one value',
+      })
+      .optional(),
     tags: zod_1.default
-        .array(zod_1.default.string({ message: 'Tags must be string' }), {
+      .array(zod_1.default.string({ message: 'Tags must be string' }), {
         message: 'Tags must be an array of strings',
-    })
-        .optional(),
+      })
+      .optional(),
     status: zod_1.default
-        .string({
+      .string({
         required_error: 'Status is required',
         message: 'Status must be string',
-    })
-        .optional(),
+      })
+      .optional(),
     ageRating: zod_1.default
-        .object({
+      .object({
         gte: zod_1.default
-            .number({
+          .number({
             message: 'Age rating gte must be number',
-        })
-            .min(0)
-            .optional(),
+          })
+          .min(0)
+          .optional(),
         lte: zod_1.default
-            .number({
+          .number({
             message: 'Age rating lte must be number',
-        })
-            .min(0)
-            .optional(),
-    })
-        .refine((data) => data.gte !== undefined || data.lte !== undefined, {
+          })
+          .min(0)
+          .optional(),
+      })
+      .refine((data) => data.gte !== undefined || data.lte !== undefined, {
         message: 'Age rating must include at least one of gte or lte',
-    })
-        .optional(),
+      })
+      .optional(),
     limit: zod_1.default
-        .number({
+      .number({
         message: 'Limit must be number',
-    })
-        .max(config_constants_1.GET_ALL_MOVIES_LIMITS.limit.max)
-        .min(config_constants_1.GET_ALL_MOVIES_LIMITS.limit.min)
-        .default(config_constants_1.GET_ALL_MOVIES_LIMITS.limit.default),
+      })
+      .max(config_constants_1.GET_ALL_MOVIES_LIMITS.limit.max)
+      .min(config_constants_1.GET_ALL_MOVIES_LIMITS.limit.min)
+      .default(config_constants_1.GET_ALL_MOVIES_LIMITS.limit.default),
     page: zod_1.default
-        .number({
+      .number({
         message: 'Page must be number',
-    })
-        .min(1)
-        .default(1),
-})
-    .superRefine((data, ctx) => {
-    const hasValue = Object.values((0, lodash_1.omit)(data, 'limit', 'start', 'page')).some((val) => val !== undefined);
+      })
+      .min(1)
+      .default(1),
+  })
+  .superRefine((data, ctx) => {
+    const hasValue = Object.values(
+      (0, lodash_1.omit)(data, 'limit', 'start', 'page')
+    ).some((val) => val !== undefined);
     if (!hasValue) {
-        ctx.addIssue({
-            code: zod_1.default.ZodIssueCode.custom,
-            message: 'Provide filter for results to appear',
-            path: [],
-        });
+      ctx.addIssue({
+        code: zod_1.default.ZodIssueCode.custom,
+        message: 'Provide filter for results to appear',
+        path: [],
+      });
     }
-});
+  });

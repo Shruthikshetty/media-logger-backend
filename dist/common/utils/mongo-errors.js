@@ -1,11 +1,13 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
+'use strict';
+var __importDefault =
+  (this && this.__importDefault) ||
+  function (mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  };
+Object.defineProperty(exports, '__esModule', { value: true });
 exports.isMongoIdValid = void 0;
 exports.isDuplicateKeyError = isDuplicateKeyError;
-const mongoose_1 = __importDefault(require("mongoose"));
+const mongoose_1 = __importDefault(require('mongoose'));
 /**
  * Checks if a given error is a duplicate key error in MongoDB.
  *
@@ -14,8 +16,14 @@ const mongoose_1 = __importDefault(require("mongoose"));
  * @returns {boolean} True if the error is a duplicate key error.
  */
 function isDuplicateKeyError(error) {
-    var _a;
-    return ((_a = error === null || error === void 0 ? void 0 : error.errorResponse) === null || _a === void 0 ? void 0 : _a.code) === 11000;
+  var _a;
+  return (
+    ((_a =
+      error === null || error === void 0 ? void 0 : error.errorResponse) ===
+      null || _a === void 0
+      ? void 0
+      : _a.code) === 11000
+  );
 }
 /**
  * Checks if a given string is a valid MongoDB ObjectId.

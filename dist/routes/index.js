@@ -1,17 +1,19 @@
-"use strict";
+'use strict';
 /**
  * This will combine all the routes to be imported in the index
  */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const user_route_1 = __importDefault(require("./user.route"));
-const auth_route_1 = __importDefault(require("./auth.route"));
-const movie_route_1 = __importDefault(require("./movie.route"));
-const game_route_1 = __importDefault(require("./game.route"));
-const tv_show_route_1 = __importDefault(require("./tv-show.route"));
+var __importDefault =
+  (this && this.__importDefault) ||
+  function (mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  };
+Object.defineProperty(exports, '__esModule', { value: true });
+const express_1 = require('express');
+const user_route_1 = __importDefault(require('./user.route'));
+const auth_route_1 = __importDefault(require('./auth.route'));
+const movie_route_1 = __importDefault(require('./movie.route'));
+const game_route_1 = __importDefault(require('./game.route'));
+const tv_show_route_1 = __importDefault(require('./tv-show.route'));
 //initialize router
 const route = (0, express_1.Router)();
 //User routes
