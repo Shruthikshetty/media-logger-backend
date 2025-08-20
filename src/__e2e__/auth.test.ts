@@ -4,7 +4,6 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { app } from '../index';
 import User from '../models/user.model';
 import { mockTestUsers } from '../__mocks__/mock-data';
-import { log } from 'console';
 
 describe('Auth API E2E', () => {
   let mongoServer: MongoMemoryServer;

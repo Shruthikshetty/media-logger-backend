@@ -69,3 +69,16 @@ components:
               message:
                 type: string
                 example: 'User not found verify email'
+    VerifyTokenSuccessResponse:
+      description: Verify token success response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Token is valid'

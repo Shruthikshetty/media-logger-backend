@@ -34,7 +34,20 @@ const route = Router();
  */
 route.post('/login', validateReq(LoginZodSchema), login);
 
-//route to verify the token
+/**
+ * @swagger
+ * /api/auth/verify:
+ *   get:
+ *     summary: Verify token
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/VerifyTokenSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ */
 route.get('/verify', verifyToken);
 
 //export all the routes
