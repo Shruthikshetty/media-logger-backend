@@ -133,6 +133,7 @@ export const dashboardAdminAnalytics = async (
 
     //send the aggregated data
     res.status(200).json({
+      success: true,
       data: {
         totalUsers,
         totalMovies,

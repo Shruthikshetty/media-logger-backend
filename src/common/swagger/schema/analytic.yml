@@ -1,0 +1,86 @@
+# contains the analytics schema for request and response
+
+components:
+  schemas:
+    DayData:
+      type: array
+      items:
+        type: object
+        properties:
+          date:
+            type: string
+            format: date-time
+            example: '2023-01-01T00:00:00.000Z'
+          movies:
+            type: integer
+            example: 5
+          tvShows:
+            type: integer
+            example: 3
+          games:
+            type: integer
+            example: 2
+          weekday:
+            type: string
+            example: 'Mon'
+            description: Day of the week ddd format
+    ChangeData:
+      type: object
+      properties:
+        percentage:
+          type: number
+          example: 50
+        change:
+          enum: ['up', 'down']
+          example: 'up'
+    DashboardAnalytics:
+      type: object
+      properties:
+        totalUsers:
+          type: integer
+          example: 10
+        totalGames:
+          type: integer
+          example: 5
+        totalMovies:
+          type: integer
+          example: 3
+        totalTvShows:
+          type: integer
+          example: 2
+        totalMedia:
+          type: integer
+          example: 20
+        currentMonthData:
+          description: Data for each day of the current month
+          $ref: '#/components/schemas/DayData'
+        weeklyData:
+          description: Data for each day of the current week
+          $ref: '#/components/schemas/DayData'
+        percentageChangeFromLastMonth:
+          type: object
+          properties:
+            users:
+              $ref: '#/components/schemas/ChangeData'
+            movies:
+              $ref: '#/components/schemas/ChangeData'
+            tvShows:
+              $ref: '#/components/schemas/ChangeData'
+            games:
+              $ref: '#/components/schemas/ChangeData'
+  responses:
+    GetDashboardAdminAnalyticsSuccessResponse:
+      description: Get dashboard admin analytics success response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  dashboard:
+                    $ref: '#/components/schemas/DashboardAnalytics'
