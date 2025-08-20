@@ -32,7 +32,20 @@ const route = (0, express_1.Router)();
  *         $ref: '#/components/responses/InternalServerError'
  */
 route.post('/login', (0, handle_validation_1.validateReq)(login_user_1.LoginZodSchema), auth_controller_1.login);
-//route to verify the token
+/**
+ * @swagger
+ * /api/auth/verify:
+ *   get:
+ *     summary: Verify token
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/VerifyTokenSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ */
 route.get('/verify', auth_controller_1.verifyToken);
 //export all the routes
 exports.default = route;

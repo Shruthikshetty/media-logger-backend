@@ -111,6 +111,7 @@ const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, 
         const totalGamesInMonth = currentMonthData.reduce((acc, curr) => acc + curr.games, 0);
         //send the aggregated data
         res.status(200).json({
+            success: true,
             data: {
                 totalUsers,
                 totalMovies,
