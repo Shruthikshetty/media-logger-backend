@@ -30,7 +30,7 @@ export const dashboardAdminAnalytics = async (
 
     //get total count of users in current month
     const totalUsersInMonth = await User.countDocuments({
-      createdAt: { $gte: getDaysAgo(30) },
+      createdAt: { $gte: getDaysAgo(30).toDate() },
     });
 
     //get total count of movies , users , tv-show , games added in last month
@@ -41,16 +41,28 @@ export const dashboardAdminAnalytics = async (
       totalGamesInLastMonth,
     ] = await Promise.all([
       User.countDocuments({
-        createdAt: { $gte: getDaysAgo(60), $lte: getDaysAgo(30) },
+        createdAt: {
+          $gte: getDaysAgo(60).toDate(),
+          $lte: getDaysAgo(30).toDate(),
+        },
       }),
       Movie.countDocuments({
-        createdAt: { $gte: getDaysAgo(60), $lte: getDaysAgo(30) },
+        createdAt: {
+          $gte: getDaysAgo(60).toDate(),
+          $lte: getDaysAgo(30).toDate(),
+        },
       }),
       TVShow.countDocuments({
-        createdAt: { $gte: getDaysAgo(60), $lte: getDaysAgo(30) },
+        createdAt: {
+          $gte: getDaysAgo(60).toDate(),
+          $lte: getDaysAgo(30).toDate(),
+        },
       }),
       Game.countDocuments({
-        createdAt: { $gte: getDaysAgo(60), $lte: getDaysAgo(30) },
+        createdAt: {
+          $gte: getDaysAgo(60).toDate(),
+          $lte: getDaysAgo(30).toDate(),
+        },
       }),
     ]);
 
@@ -65,7 +77,7 @@ export const dashboardAdminAnalytics = async (
     //generate day wise data for current month(past ~30days)
     for (let i = 0; i < moment().daysInMonth(); i++) {
       //get target date
-      const targetDate = getDaysAgo(1);
+      const targetDate = getDaysAgo(i);
       //get start and end of day
       const startOfDay = targetDate.clone().startOf('day');
       const endOfDay = targetDate.clone().endOf('day');

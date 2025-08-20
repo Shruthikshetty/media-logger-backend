@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzI4NzdjMDkwZGJjZTI5NGViY2Q2NSIsImlhdCI6MTc1NTY2MTU3MSwiZXhwIjoxNzU1NzQ3OTcxfQ.w5ZdaywYe2tbGIEpFOC4GJ0FDW0QAZ21m_c3o9cTNNM
+@authToken = Bearer <token>
 
 #------------------------------------------------ Auth ---------------------------------------------------
 ### verify if the token is valid
