@@ -108,7 +108,6 @@ describe('Auth API E2E', () => {
         .post('/api/auth/login')
         .send({ email: 'Admin@example.com', password: 'password123' });
       const token = loginRes.body.data.token;
-      console.log(loginRes.body);
 
       const res = await supertest(app)
         .get('/api/auth/verify')
