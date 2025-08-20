@@ -4,22 +4,22 @@
 
 - **GET /api/auth/verify**: Check if the token is valid
 
-## Analytic
+## Analytics
 
-- **GET /dashboard-admin**: Get all analytics data required for the admin dashboard
+- **GET /api/analytic/dashboard-admin**: Get all analytics data required for the admin dashboard
 
 ## Timeline Estimates
 
 ## Auth
 
-| Feature/Area               | Estimated Days | Notes                                                       |
-| -------------------------- | -------------- | ----------------------------------------------------------- |
+| Feature/Area               | Estimated Days | Notes                                                      |
+| -------------------------- | -------------- | ---------------------------------------------------------- |
 | Token validation endpoint  | 1              | Implement **GET /api/auth/verify** to check token validity |
-| Middleware integration     | 0              | Use existing passport method to validate                    |
-| Error handling consistency | 0              | Standardized error responses for expired/invalid tokens     |
-| Unit testing (auth flows)  | 1              | Jest tests for token verification + invalid/expired cases   |
-| Swagger docs (auth)        | 1              | Document headers, request/response examples                 |
-| Buffer/Debug/Refactor      | 1              | Final polish, refactoring, and bug fixes                    |
+| Middleware integration     | 0              | Use existing passport method to validate                   |
+| Error handling consistency | 0              | Standardized error responses for expired/invalid tokens    |
+| Unit testing (auth flows)  | 1              | Jest tests for token verification + invalid/expired cases  |
+| Swagger docs (auth)        | 1              | Document headers, request/response examples                |
+| Buffer/Debug/Refactor      | 1              | Final polish, refactoring, and bug fixes                   |
 
 ---
 
