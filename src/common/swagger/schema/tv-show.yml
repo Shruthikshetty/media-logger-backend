@@ -39,7 +39,7 @@ components:
         releaseDate:
           type: string
           description: The release date (ISO format, e.g., YYYY-MM-DD).
-          example: '2008-01-20'
+          example: '2008-07-21T00:00:00.000Z'
         cast:
           type: array
           description: List of cast members.
@@ -129,7 +129,7 @@ components:
             description: 'A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy.'
             averageRating: 8.7
             genre: ['Comedy', 'Drama']
-            releaseDate: '2016-07-21'
+            releaseDate: "2016-07-21T00:00:00.000Z"
             cast: ['Phoebe Waller-Bridge', 'Sian Clifford', 'Olivia Colman']
             directors: ['Harry Bradbeer']
             runTime: 27
@@ -150,7 +150,7 @@ components:
               - seasonNumber: 1
                 title: 'Season 1'
                 description: 'Fleabag navigates...'
-                releaseDate: '2016-07-21'
+                releaseDate: "2016-07-21T00:00:00.000Z"
                 noOfEpisodes: 6
                 posterUrl: 'https://www.themoviedb.org/t/p/w220_and_h330_face/ohh0255e0x9a8y6eSyrDLi2hM96.jpg'
                 seasonRating: 8.5
