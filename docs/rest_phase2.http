@@ -1,7 +1,12 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer <token>
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzI4NzdjMDkwZGJjZTI5NGViY2Q2NSIsImlhdCI6MTc1NTY2MTU3MSwiZXhwIjoxNzU1NzQ3OTcxfQ.w5ZdaywYe2tbGIEpFOC4GJ0FDW0QAZ21m_c3o9cTNNM
 
 #------------------------------------------------ Auth ---------------------------------------------------
 ### verify if the token is valid
 GET {{baseUrl}}/api/auth/verify
+Authorization: {{authToken}}
+
+#-----------------------------------------------Analytics -----------------------------------------------
+### get all the aggregated data fro admin dashboard
+GET {{baseUrl}}/api/analytic/dashboard-admin
 Authorization: {{authToken}}

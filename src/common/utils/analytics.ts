@@ -1,0 +1,28 @@
+/**
+ * @file contains utility functions related to analytics
+ */
+
+/**
+ * Calculate the percentage change between two numbers and whether the change is up or down
+ * @param {number} n1 The original number
+ * @param {number} n2 The new number
+ */
+export const calculateChangeBetweenTwoNumbers = (
+  n1: number,
+  n2: number
+): {
+  percentage: number;
+  change: 'up' | 'down';
+} => {
+  //in case n1 is 0
+  if (n1 === 0) {
+    return {
+      percentage: n2 > 0 ? 100 : 0,
+      change: n2 > 0 ? 'up' : 'down',
+    };
+  }
+  return {
+    percentage: Math.abs(Math.round(((n2 - n1) / n1) * 100)),
+    change: n2 > n1 ? 'up' : 'down',
+  };
+};
