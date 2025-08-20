@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:3001
+@authToken = Bearer <token>
+
+#------------------------------------------------ Auth ---------------------------------------------------
+### verify if the token is valid
+GET {{baseUrl}}/api/auth/verify
+Authorization: {{authToken}}

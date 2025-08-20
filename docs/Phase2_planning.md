@@ -2,7 +2,7 @@
 
 ### Auth
 
-- **POST /api/auth/verify**: Check if the token is valid
+- **GET /api/auth/verify**: Check if the token is valid
 
 ### analytic
 
