@@ -5,7 +5,7 @@
 import { Router } from 'express';
 import { validateReq } from '../common/middleware/handle-validation';
 import { LoginZodSchema } from '../common/validation-schema/auth/login-user';
-import { login } from '../controllers/auth.controller';
+import { login, verifyToken } from '../controllers/auth.controller';
 
 // initialize router
 const route = Router();
@@ -33,6 +33,9 @@ const route = Router();
  *         $ref: '#/components/responses/InternalServerError'
  */
 route.post('/login', validateReq(LoginZodSchema), login);
+
+//route to verify the token
+route.get('/verify', verifyToken);
 
 //export all the routes
 export default route;

@@ -1,7 +1,7 @@
-dist
 node_modules
 coverage
 .env
 passwords.txt
 logs
 .vscode
+dist

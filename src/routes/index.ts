@@ -8,6 +8,7 @@ import authRoutes from './auth.route';
 import movieRoutes from './movie.route';
 import gameRoutes from './game.route';
 import tvShowRoutes from './tv-show.route';
+import analyticRoutes from './analytic.route';
 
 //initialize router
 const route = Router();
@@ -26,6 +27,9 @@ route.use('/game', gameRoutes);
 
 //TV Show routes
 route.use('/tv-show', tvShowRoutes);
+
+//Analytics routes
+route.use('/analytic', analyticRoutes);
 
 // export all the routes
 export default route;
