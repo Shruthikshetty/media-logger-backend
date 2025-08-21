@@ -37,8 +37,8 @@ components:
             $ref: '#/components/schemas/GenreMovieTvEnum'
           example: ['Drama', 'Crime']
         releaseDate:
-          type: string
-          description: The release date (ISO format, e.g., YYYY-MM-DD).
+          format: date-time
+          description: The release date (ISO 8601 UTC, e.g., 2016-07-21T00:00:00.000Z).
           example: '2008-07-21T00:00:00.000Z'
         cast:
           type: array

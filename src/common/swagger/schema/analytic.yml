@@ -55,10 +55,10 @@ components:
           type: integer
           example: 20
         currentMonthData:
-          description: Data for each day of the current month
+          description: Data for each day for past 30 days
           $ref: '#/components/schemas/DayData'
         weeklyData:
-          description: Data for each day of the current week
+          description: Data for each day for last 7 days
           $ref: '#/components/schemas/DayData'
         percentageChangeFromLastMonth:
           type: object

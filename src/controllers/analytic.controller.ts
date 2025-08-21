@@ -11,7 +11,6 @@ import User from '../models/user.model';
 import { ValidatedRequest } from '../types/custom-types';
 import { Response } from 'express';
 import { calculateChangeBetweenTwoNumbers } from '../common/utils/analytics';
-import moment from 'moment';
 
 //admin dashboard analytics data
 export const dashboardAdminAnalytics = async (
@@ -74,8 +73,8 @@ export const dashboardAdminAnalytics = async (
       weekday: string;
     }[] = [];
 
-    //generate day wise data for current month(past ~30days)
-    for (let i = 0; i < moment().daysInMonth(); i++) {
+    //generate day wise data for past 30 days
+    for (let i = 30; i >= 0; i--) {
       //get target date
       const targetDate = getDaysAgo(i);
       //get start and end of day
@@ -87,19 +86,19 @@ export const dashboardAdminAnalytics = async (
         Movie.countDocuments({
           createdAt: {
             $gte: startOfDay.toDate(),
-            $lte: endOfDay.toDate(),
+            $lt: endOfDay.toDate(),
           },
         }),
         TVShow.countDocuments({
           createdAt: {
             $gte: startOfDay.toDate(),
-            $lte: endOfDay.toDate(),
+            $lt: endOfDay.toDate(),
           },
         }),
         Game.countDocuments({
           createdAt: {
             $gte: startOfDay.toDate(),
-            $lte: endOfDay.toDate(),
+            $lt: endOfDay.toDate(),
           },
         }),
       ]);
@@ -114,10 +113,7 @@ export const dashboardAdminAnalytics = async (
       });
     }
 
-    //reverse the data
-    currentMonthData.reverse();
-
-    //extract weekly data from the current month data
+    //extract weekly data for past 7 days
     const weeklyData = currentMonthData.slice(-7);
 
     //get total count of movies, tv-show , games added in last month from the current month data
