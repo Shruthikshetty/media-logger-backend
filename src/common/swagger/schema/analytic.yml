@@ -31,7 +31,10 @@ components:
           type: number
           example: 50
         change:
-          enum: ['up', 'down']
+          type: string
+          enum: 
+            - up
+            - down
           example: 'up'
     DashboardAnalytics:
       type: object
