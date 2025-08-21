@@ -114,8 +114,11 @@ export const dashboardAdminAnalytics = async (
       });
     }
 
+    //reverse the data
+    currentMonthData.reverse();
+
     //extract weekly data from the current month data
-    const weeklyData = currentMonthData.slice(0, 7);
+    const weeklyData = currentMonthData.slice(-7);
 
     //get total count of movies, tv-show , games added in last month from the current month data
     const totalMoviesInMonth = currentMonthData.reduce(
