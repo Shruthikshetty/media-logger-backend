@@ -23,7 +23,6 @@ const movie_model_1 = __importDefault(require("../models/movie.model"));
 const tv_show_mode_1 = __importDefault(require("../models/tv-show.mode"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const analytics_1 = require("../common/utils/analytics");
-const moment_1 = __importDefault(require("moment"));
 //admin dashboard analytics data
 const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -66,8 +65,8 @@ const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, 
             }),
         ]);
         const currentMonthData = [];
-        //generate day wise data for current month(past ~30days)
-        for (let i = 0; i < (0, moment_1.default)().daysInMonth(); i++) {
+        //generate day wise data for past 30 days
+        for (let i = 30; i >= 0; i--) {
             //get target date
             const targetDate = (0, date_1.getDaysAgo)(i);
             //get start and end of day
@@ -78,19 +77,19 @@ const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, 
                 movie_model_1.default.countDocuments({
                     createdAt: {
                         $gte: startOfDay.toDate(),
-                        $lte: endOfDay.toDate(),
+                        $lt: endOfDay.toDate(),
                     },
                 }),
                 tv_show_mode_1.default.countDocuments({
                     createdAt: {
                         $gte: startOfDay.toDate(),
-                        $lte: endOfDay.toDate(),
+                        $lt: endOfDay.toDate(),
                     },
                 }),
                 game_model_1.default.countDocuments({
                     createdAt: {
                         $gte: startOfDay.toDate(),
-                        $lte: endOfDay.toDate(),
+                        $lt: endOfDay.toDate(),
                     },
                 }),
             ]);
@@ -103,8 +102,8 @@ const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, 
                 weekday: targetDate.format('ddd'),
             });
         }
-        //extract weekly data from the current month data
-        const weeklyData = currentMonthData.slice(0, 7);
+        //extract weekly data for past 7 days
+        const weeklyData = currentMonthData.slice(-7);
         //get total count of movies, tv-show , games added in last month from the current month data
         const totalMoviesInMonth = currentMonthData.reduce((acc, curr) => acc + curr.movies, 0);
         const totalTvShowsInMonth = currentMonthData.reduce((acc, curr) => acc + curr.tvShows, 0);
