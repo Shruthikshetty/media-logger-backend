@@ -32,7 +32,7 @@ components:
           example: 50
         change:
           type: string
-          enum: 
+          enum:
             - up
             - down
           example: 'up'
