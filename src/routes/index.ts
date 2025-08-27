@@ -9,6 +9,7 @@ import movieRoutes from './movie.route';
 import gameRoutes from './game.route';
 import tvShowRoutes from './tv-show.route';
 import analyticRoutes from './analytic.route';
+import uploadRoutes from './upload.route';
 
 //initialize router
 const route = Router();
@@ -30,6 +31,9 @@ route.use('/tv-show', tvShowRoutes);
 
 //Analytics routes
 route.use('/analytic', analyticRoutes);
+
+//upload routes
+route.use('/upload', uploadRoutes);
 
 // export all the routes
 export default route;
