@@ -3,7 +3,7 @@
 ## Auth
 
 - **GET /api/auth/verify**: Check if the token is valid
-- **GET /api/auth/**: Update this api to return use user details
+- **GET /api/auth/**: Update this API to return user details
 
 ## Analytics
 
