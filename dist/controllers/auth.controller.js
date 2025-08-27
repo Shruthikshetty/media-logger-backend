@@ -22,6 +22,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_constants_1 = require("../common/constants/config.constants");
 const hashing_1 = require("../common/utils/hashing");
 const passport_1 = __importDefault(require("../common/passport"));
+const lodash_1 = require("lodash");
 // controller to login
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -53,7 +54,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // if validation is successful pass token jwt
         res.status(200).json({
             success: true,
-            data: { token },
+            data: { token, user: (0, lodash_1.omit)(user.toObject(), 'password') },
             message: 'Login successful',
         });
     }
