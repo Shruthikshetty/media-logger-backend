@@ -3,15 +3,15 @@
 ## Auth
 
 - **GET /api/auth/verify**: Check if the token is valid
-- **GET /api/auth/**: Update this api to return use user details 
+- **GET /api/auth/**: Update this api to return use user details
 
 ## Analytics
 
 - **GET /api/analytic/dashboard-admin**: Get all analytics data required for the admin dashboard
 
-## Uploads 
+## Uploads
 
-- **GET /api/upload/image**: upload a image (used for profile image etc)
+- **POST /api/upload/image**: upload an image (used for profile images, etc.)
 
 # Timeline Estimates
 
@@ -42,15 +42,15 @@
 
 ## Uploads
 
-| Feature/Area               | Estimated Days | Notes                                                                            |
-| -------------------------- | -------------- | -------------------------------------------------------------------------------- |
-| Image upload endpoint      | 0.5            | Implement **GET /api/upload/image** to upload images (used for profile image etc) |
-| Multer setup               | 0.5            | Configure Multer (local storage, file limits, etc.)                              |
-| Error handling consistency | 0              | Standard error format across upload response                                       |
-| Response structuring       | 0.5            | Consistent, reusable response shape                                              |
-| Unit testing (uploads)     | 0.5            | Cover dataset correctness + edge cases (empty, partial, large scale)             |
-| Swagger docs (uploads)     | 0.5            | Example queries + schema                                                         |
-| Buffer/Debug/Refactor      | 1              | Polish, debug, optimize queries                                                  |
+| Feature/Area               | Estimated Days | Notes                                                                                 |
+| -------------------------- | -------------- | ------------------------------------------------------------------------------------- |
+| Image upload endpoint      | 0.5            | Implement **POST /api/upload/image** to upload images (used for profile images, etc.) |
+| Multer setup               | 0.5            | Configure Multer (local storage, file limits, etc.)                                   |
+| Error handling consistency | 0              | Standard error format across upload response                                          |
+| Response structuring       | 0.5            | Consistent, reusable response shape                                                   |
+| Unit testing (uploads)     | 0.5            | Cover dataset correctness + edge cases (empty, partial, large scale)                  |
+| Swagger docs (uploads)     | 0.5            | Example queries + schema                                                              |
+| Buffer/Debug/Refactor      | 1              | Polish, debug, optimize queries                                                       |
 
 **Total Estimated Phase 2 Time:** **~5-6 days** (solo effort; pace may vary depending on final endpoint count and feature depth)
 

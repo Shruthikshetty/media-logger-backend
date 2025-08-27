@@ -25,16 +25,12 @@ export const uploadImage = async (req: ValidatedRequest<{}>, res: Response) => {
       use_filename: true,
     });
 
-    // Remove file from local server
-    fs.unlink(req.file.path, (err) => {
-      if (err) {
-        logger.error(err);
-      }
-    });
-
     // Return the uploaded image URL
     res.status(200).json({
-      url: result.secure_url,
+      success: true,
+      data: {
+        url: result.secure_url,
+      },
       message: 'Image uploaded successfully',
     });
   } catch (err) {
@@ -42,5 +38,14 @@ export const uploadImage = async (req: ValidatedRequest<{}>, res: Response) => {
     handleError(res, {
       error: err,
     });
+  } finally {
+    //remove the local file
+    if (req.file?.path) {
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          logger.warn(`Failed to remove temp file: ${(err as Error)?.message}`);
+        }
+      });
+    }
   }
 };

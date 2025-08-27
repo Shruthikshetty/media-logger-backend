@@ -1,4 +1,4 @@
-import cloudinary from 'cloudinary';
+import { v2 as cloudinary, ConfigOptions } from 'cloudinary';
 
 /**
  * configuration for cloudinary
@@ -12,4 +12,4 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-export default cloudinary as any;
+export default cloudinary as ConfigOptions;
