@@ -40,6 +40,8 @@ components:
                   token:
                     type: string
                     description: JWT token
+                  user:
+                    $ref: '#/components/schemas/User'
               message:
                 type: string
                 example: 'Login successful'

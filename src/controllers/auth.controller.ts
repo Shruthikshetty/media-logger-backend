@@ -14,6 +14,7 @@ import {
 } from '../common/constants/config.constants';
 import { decrypt } from '../common/utils/hashing';
 import passport from '../common/passport';
+import { omit } from 'lodash';
 
 // controller to login
 export const login = async (
@@ -57,7 +58,7 @@ export const login = async (
     // if validation is successful pass token jwt
     res.status(200).json({
       success: true,
-      data: { token },
+      data: { token, user: omit(user.toObject(), 'password') },
       message: 'Login successful',
     });
   } catch (err) {

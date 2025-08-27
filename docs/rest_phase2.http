@@ -10,3 +10,10 @@ Authorization: {{authToken}}
 ### get all the aggregated data fro admin dashboard
 GET {{baseUrl}}/api/analytic/dashboard-admin
 Authorization: {{authToken}}
+
+#-----------------------------------------------Uploads --------------------------------------------------
+### upload an image 
+### send as form data with file name as image
+### use post man 
+POST {{baseUrl}}/api/upload/image
+Authorization: {{authToken}}
