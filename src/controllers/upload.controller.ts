@@ -3,6 +3,7 @@
  */
 
 import cloudinary from '../common/config/cloudinary.config';
+import { CLOUDINARY_FOLDER } from '../common/constants/config.constants';
 import { handleError } from '../common/utils/handle-error';
 import { logger } from '../common/utils/logger';
 import { ValidatedRequest } from '../types/custom-types';
@@ -20,7 +21,7 @@ export const uploadImage = async (req: ValidatedRequest<{}>, res: Response) => {
 
     // Upload image to Cloudinary
     const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: '../../commons/uploads',
+      folder: CLOUDINARY_FOLDER,
       use_filename: true,
     });
 

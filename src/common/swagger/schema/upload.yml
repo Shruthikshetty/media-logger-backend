@@ -1,0 +1,19 @@
+#
+# this file contains the schema and req and response bodies for upload
+# 
+
+components: 
+  responses:
+    UploadImageSuccessResponse:
+      description: Upload image success response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Image uploaded successfully'

@@ -22,6 +22,8 @@ export const IMAGE_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
 
 export const ALLOWED_IMAGE_FORMATS = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
+export const CLOUDINARY_FOLDER = 'media_logger';
+
 export const GET_ALL_USER_LIMITS = {
   limit: {
     min: 1,
