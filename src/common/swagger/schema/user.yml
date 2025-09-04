@@ -167,18 +167,30 @@ components:
           schema:
             type: object
             properties:
-              users:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
-              pagination:
-                $ref: '#/components/schemas/pagination'
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
     GetUserDetailSuccessResponse:
       description: User details are returned
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/User'
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/User'
     DeleteUserSuccessResponse:
       description: User is deleted
       content:
