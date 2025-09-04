@@ -82,7 +82,7 @@ describe('POST /api/movie', () => {
       //assertions
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
-      expect(response.body.message).toMatch(/Title must be/);
+      expect(response.body.message).toMatch(/Title is required/);
     });
     it('should return 401 for unauthenticated user', async () => {
       const res = await supertest(app).post('/api/movie').send({});
