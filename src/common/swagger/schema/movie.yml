@@ -190,7 +190,8 @@ components:
             properties:
               searchText:
                 type: string
-                description: Text to search for in movie title 
+                description: Text to search for in movie title
+                example: 'Dark'
               averageRating:
                 type: number
                 description: Filter by minimum average movie rating
