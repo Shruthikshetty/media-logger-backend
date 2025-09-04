@@ -29,14 +29,14 @@ export const AddMovieZodSchema = z.object({
     .array(z.string({ message: 'Cast must be string' }), {
       message: 'Cast must be an array of strings',
     })
-    .default([])
-    .optional(),
+    .optional()
+    .default([]),
   directors: z
     .array(z.string({ message: 'Directors must be string' }), {
       message: 'Directors must be an array of strings',
     })
-    .default([])
-    .optional(),
+    .optional()
+    .default([]),
   runTime: z.number({
     required_error: 'Run time is required',
     invalid_type_error: 'Run time must be number',
@@ -47,7 +47,6 @@ export const AddMovieZodSchema = z.object({
         .string({ message: 'Languages must be string' })
         .transform((val) => val.toLocaleLowerCase()),
       {
-        required_error: 'Languages is required',
         invalid_type_error: 'Languages must be an array of strings',
       }
     )
@@ -66,11 +65,10 @@ export const AddMovieZodSchema = z.object({
     .boolean({
       message: 'Is active must be boolean',
     })
-    .default(true)
-    .optional(),
+    .optional()
+    .default(true),
   status: z
     .string({
-      required_error: 'Status is required',
       invalid_type_error: 'Status must be string',
     })
     .refine((val) => MEDIA_STATUS.includes(val), {
@@ -123,7 +121,7 @@ export const AddMovieZodSchema = z.object({
         message: 'Genre must be an array of strings',
       }
     )
-    .optional(),
+    .default([]),
 });
 
 //export the type

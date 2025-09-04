@@ -491,23 +491,19 @@ export const getMoviesWithFilters = async (
 
     // build pipeline if filters are defined
     // Only add a $search stage if there's something to search or filter by
-    if (searchClauses.must.length > 0 || searchClauses.filter.length > 0) {
+    const compound: any = {};
+    if (searchClauses.must.length) compound.must = searchClauses.must;
+    if (searchClauses.filter.length) compound.filter = searchClauses.filter;
+
+    if (Object.keys(compound).length) {
       pipeline.push({
-        $search: {
-          index: MOVIE_SEARCH_INDEX,
-          compound: {
-            // Use 'must' for scoring-based text search
-            must:
-              searchClauses.must.length > 0 ? searchClauses.must : undefined,
-            // Use 'filter' for exact matching and range queries
-            filter:
-              searchClauses.filter.length > 0
-                ? searchClauses.filter
-                : undefined,
-          },
-        },
+        $search: { index: MOVIE_SEARCH_INDEX, compound },
       });
     }
+
+    // Ensure that the results are sorted by createdAt in descending order
+    pipeline.push({ $sort: { createdAt: -1 } });
+
     //Use $facet to get both paginated data and total count in one query
     const skip = (page - 1) * limit;
     pipeline.push({
