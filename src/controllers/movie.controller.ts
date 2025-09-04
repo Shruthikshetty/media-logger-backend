@@ -381,16 +381,31 @@ export const getMoviesWithFilters = async (
       ageRating,
       runTime,
       releaseDate,
+      searchText,
     } = req.validatedData!;
 
     //define filters and pipeline
-    const filters: any[] = [];
     const pipeline: any[] = [];
+    const searchClauses: any = {
+      must: [],
+      filter: [],
+    };
+
+    //search has to be first in pipeline
+    if (searchText) {
+      //push search text to pipeline
+      searchClauses.must.push({
+        text: {
+          query: searchText,
+          path: ['title'],
+        },
+      });
+    }
 
     //check if languages is defined
     if (languages) {
       //push language filter to filters
-      filters.push({
+      searchClauses.filter.push({
         in: {
           value: languages,
           path: 'languages',
@@ -401,7 +416,7 @@ export const getMoviesWithFilters = async (
     //check if status is defined
     if (status) {
       //push status filter to filters
-      filters.push({
+      searchClauses.filter.push({
         in: {
           value: status,
           path: 'status',
@@ -412,7 +427,7 @@ export const getMoviesWithFilters = async (
     //if genre is defined
     if (genre) {
       //push genre filter to filters
-      filters.push({
+      searchClauses.filter.push({
         in: {
           value: genre,
           path: 'genre',
@@ -423,7 +438,7 @@ export const getMoviesWithFilters = async (
     //if tags is defined
     if (tags) {
       //push tags filter to filters
-      filters.push({
+      searchClauses.filter.push({
         in: {
           value: tags,
           path: 'tags',
@@ -433,7 +448,7 @@ export const getMoviesWithFilters = async (
 
     if (runTime) {
       //push run time filter to filters
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'runTime',
           ...runTime,
@@ -444,7 +459,7 @@ export const getMoviesWithFilters = async (
     //if average rating is present
     if (averageRating) {
       //push average rating filter to filters
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'averageRating',
           gte: averageRating,
@@ -455,7 +470,7 @@ export const getMoviesWithFilters = async (
     //if age rating is present
     if (ageRating) {
       //push age rating filter to filters
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'ageRating',
           ...ageRating,
@@ -466,7 +481,7 @@ export const getMoviesWithFilters = async (
     //if releaseDate is present
     if (releaseDate) {
       //push release date filter to filters
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'releaseDate',
           ...releaseDate,
@@ -475,16 +490,20 @@ export const getMoviesWithFilters = async (
     }
 
     // build pipeline if filters are defined
-    if (filters.length > 0) {
+    // Only add a $search stage if there's something to search or filter by
+    const compound: any = {};
+    if (searchClauses.must.length) compound.must = searchClauses.must;
+    if (searchClauses.filter.length) compound.filter = searchClauses.filter;
+
+    if (Object.keys(compound).length) {
       pipeline.push({
-        $search: {
-          index: MOVIE_SEARCH_INDEX,
-          compound: {
-            filter: filters,
-          },
-        },
+        $search: { index: MOVIE_SEARCH_INDEX, compound },
       });
     }
+
+    // Ensure that the results are sorted by createdAt in descending order
+    pipeline.push({ $sort: { createdAt: -1 } });
+
     //Use $facet to get both paginated data and total count in one query
     const skip = (page - 1) * limit;
     pipeline.push({

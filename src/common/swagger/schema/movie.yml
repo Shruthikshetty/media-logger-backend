@@ -86,91 +86,91 @@ components:
         trailerYoutubeUrl:
           type: string
           default: ''
-  UpdateMovie:
-    type: object
-    minProperties: 1
-    description: >
-      Movie object for updates. All fields optional; at least one must be provided at runtime.
-    properties:
-      title:
-        type: string
-        example: 'The Dark Knight'
-        description: Movie title (should be unique)
-      description:
-        type: string
-        example: 'When the menace known as the Joker wreaks havoc and chaos...'
-        description: Movie synopsis or plot summary
-      averageRating:
-        type: number
-        minimum: 0
-        maximum: 10
-        example: 9
-        description: Average user or critic rating
-      genre:
-        type: array
-        items:
-          $ref: '#/components/schemas/GenreMovieTvEnum'
-        example: ['Action', 'Adventure']
-        description: List of movie genres
-      releaseDate:
-        type: string
-        format: date-time
-        example: '2008-07-18T00:00:00.000Z'
-        description: Release date (ISO 8601 format)
-      cast:
-        type: array
-        items:
+    UpdateMovie:
+      type: object
+      minProperties: 1
+      description: >
+        Movie object for updates. All fields optional; at least one must be provided at runtime.
+      properties:
+        title:
           type: string
-        example: ['Christian Bale', 'Heath Ledger']
-        description: Array of main actor names
-      directors:
-        type: array
-        items:
+          example: 'The Dark Knight'
+          description: Movie title (should be unique)
+        description:
           type: string
-        example: ['Christopher Nolan']
-        description: Array of director names
-      runTime:
-        type: integer
-        minimum: 0
-        example: 152
-        description: Movie runtime in minutes
-      languages:
-        type: array
-        items:
+          example: 'When the menace known as the Joker wreaks havoc and chaos...'
+          description: Movie synopsis or plot summary
+        averageRating:
+          type: number
+          minimum: 0
+          maximum: 10
+          example: 9
+          description: Average user or critic rating
+        genre:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenreMovieTvEnum'
+          example: ['Action', 'Adventure']
+          description: List of movie genres
+        releaseDate:
           type: string
-        example: ['english', 'french']
-        description: Languages available (lowercase recommended)
-      posterUrl:
-        type: string
-        example: 'https://example.com/poster.jpg'
-        description: URL to the movie's poster image
-      backdropUrl:
-        type: string
-        example: 'https://example.com/backdrop.jpg'
-        description: URL to the movie's backdrop image
-      isActive:
-        type: boolean
-        example: true
-        description: Whether the movie is active/available
-      status:
-        $ref: '#/components/schemas/MovieStatusEnum'
-        example: released
-        description: Movie status (e.g., released, upcoming)
-      tags:
-        type: array
-        items:
-          $ref: '#/components/schemas/TagsMovieTvEnum'
-        example: ['Cult Classic']
-        description: Miscellaneous tags
-      ageRating:
-        type: number
-        example: 13
-        description: Suitable age rating for the movie
-      trailerYoutubeUrl:
-        type: string
-        example: 'https://youtube.com/watch?v=xyz'
-        description: YouTube URL for the movie trailer
-    additionalProperties: false
+          format: date-time
+          example: '2008-07-18T00:00:00.000Z'
+          description: Release date (ISO 8601 format)
+        cast:
+          type: array
+          items:
+            type: string
+          example: ['Christian Bale', 'Heath Ledger']
+          description: Array of main actor names
+        directors:
+          type: array
+          items:
+            type: string
+          example: ['Christopher Nolan']
+          description: Array of director names
+        runTime:
+          type: integer
+          minimum: 0
+          example: 152
+          description: Movie runtime in minutes
+        languages:
+          type: array
+          items:
+            type: string
+          example: ['english', 'french']
+          description: Languages available (lowercase recommended)
+        posterUrl:
+          type: string
+          example: 'https://example.com/poster.jpg'
+          description: URL to the movie's poster image
+        backdropUrl:
+          type: string
+          example: 'https://example.com/backdrop.jpg'
+          description: URL to the movie's backdrop image
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the movie is active/available
+        status:
+          $ref: '#/components/schemas/MovieStatusEnum'
+          example: released
+          description: Movie status (e.g., released, upcoming)
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagsMovieTvEnum'
+          example: ['Cult Classic']
+          description: Miscellaneous tags
+        ageRating:
+          type: number
+          example: 13
+          description: Suitable age rating for the movie
+        trailerYoutubeUrl:
+          type: string
+          example: 'https://youtube.com/watch?v=xyz'
+          description: YouTube URL for the movie trailer
+      additionalProperties: false
   requestBodies:
     AddMovieRequest:
       description: Request body for adding a movie
@@ -188,6 +188,10 @@ components:
           schema:
             type: object
             properties:
+              searchText:
+                type: string
+                description: Text to search for in movie title
+                example: 'Dark'
               averageRating:
                 type: number
                 description: Filter by minimum average movie rating
