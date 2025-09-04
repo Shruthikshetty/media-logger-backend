@@ -312,14 +312,27 @@ const getMoviesWithFilters = (req, res) => __awaiter(void 0, void 0, void 0, fun
     var _a, _b, _c;
     try {
         // destructure the filters from validated data
-        const { languages, page, limit, status, genre, tags, averageRating, ageRating, runTime, releaseDate, } = req.validatedData;
+        const { languages, page, limit, status, genre, tags, averageRating, ageRating, runTime, releaseDate, searchText, } = req.validatedData;
         //define filters and pipeline
-        const filters = [];
         const pipeline = [];
+        const searchClauses = {
+            must: [],
+            filter: [],
+        };
+        //search has to be first in pipeline
+        if (searchText) {
+            //push search text to pipeline
+            searchClauses.must.push({
+                text: {
+                    query: searchText,
+                    path: ['title'],
+                },
+            });
+        }
         //check if languages is defined
         if (languages) {
             //push language filter to filters
-            filters.push({
+            searchClauses.filter.push({
                 in: {
                     value: languages,
                     path: 'languages',
@@ -329,7 +342,7 @@ const getMoviesWithFilters = (req, res) => __awaiter(void 0, void 0, void 0, fun
         //check if status is defined
         if (status) {
             //push status filter to filters
-            filters.push({
+            searchClauses.filter.push({
                 in: {
                     value: status,
                     path: 'status',
@@ -339,7 +352,7 @@ const getMoviesWithFilters = (req, res) => __awaiter(void 0, void 0, void 0, fun
         //if genre is defined
         if (genre) {
             //push genre filter to filters
-            filters.push({
+            searchClauses.filter.push({
                 in: {
                     value: genre,
                     path: 'genre',
@@ -349,7 +362,7 @@ const getMoviesWithFilters = (req, res) => __awaiter(void 0, void 0, void 0, fun
         //if tags is defined
         if (tags) {
             //push tags filter to filters
-            filters.push({
+            searchClauses.filter.push({
                 in: {
                     value: tags,
                     path: 'tags',
@@ -358,14 +371,14 @@ const getMoviesWithFilters = (req, res) => __awaiter(void 0, void 0, void 0, fun
         }
         if (runTime) {
             //push run time filter to filters
-            filters.push({
+            searchClauses.filter.push({
                 range: Object.assign({ path: 'runTime' }, runTime),
             });
         }
         //if average rating is present
         if (averageRating) {
             //push average rating filter to filters
-            filters.push({
+            searchClauses.filter.push({
                 range: {
                     path: 'averageRating',
                     gte: averageRating,
@@ -375,28 +388,31 @@ const getMoviesWithFilters = (req, res) => __awaiter(void 0, void 0, void 0, fun
         //if age rating is present
         if (ageRating) {
             //push age rating filter to filters
-            filters.push({
+            searchClauses.filter.push({
                 range: Object.assign({ path: 'ageRating' }, ageRating),
             });
         }
         //if releaseDate is present
         if (releaseDate) {
             //push release date filter to filters
-            filters.push({
+            searchClauses.filter.push({
                 range: Object.assign({ path: 'releaseDate' }, releaseDate),
             });
         }
         // build pipeline if filters are defined
-        if (filters.length > 0) {
+        // Only add a $search stage if there's something to search or filter by
+        const compound = {};
+        if (searchClauses.must.length)
+            compound.must = searchClauses.must;
+        if (searchClauses.filter.length)
+            compound.filter = searchClauses.filter;
+        if (Object.keys(compound).length) {
             pipeline.push({
-                $search: {
-                    index: config_constants_1.MOVIE_SEARCH_INDEX,
-                    compound: {
-                        filter: filters,
-                    },
-                },
+                $search: { index: config_constants_1.MOVIE_SEARCH_INDEX, compound },
             });
         }
+        // Ensure that the results are sorted by createdAt in descending order
+        pipeline.push({ $sort: { createdAt: -1 } });
         //Use $facet to get both paginated data and total count in one query
         const skip = (page - 1) * limit;
         pipeline.push({

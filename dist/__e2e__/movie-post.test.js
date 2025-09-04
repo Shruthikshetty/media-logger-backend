@@ -84,7 +84,7 @@ describe('POST /api/movie', () => {
             //assertions
             expect(response.status).toBe(400);
             expect(response.body.success).toBe(false);
-            expect(response.body.message).toMatch(/Title must be/);
+            expect(response.body.message).toMatch(/Title is required/);
         }));
         it('should return 401 for unauthenticated user', () => __awaiter(void 0, void 0, void 0, function* () {
             const res = yield (0, supertest_2.default)(index_1.app).post('/api/movie').send({});

@@ -88,7 +88,7 @@ route.get('/search', movie_controller_1.searchMovies);
  * @swagger
  * /api/movie/filter:
  *   post:
- *     summary: Get movies by filters (supports page based pagination only )
+ *     summary: Get movies by filters with title search  (supports page based pagination only )
  *     tags: [Movies]
  *     requestBody:
  *       $ref: '#/components/requestBodies/MoviesFilterRequest'
