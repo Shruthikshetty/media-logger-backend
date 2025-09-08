@@ -26,7 +26,7 @@ export interface IMovie extends Document {
   status: string;
   tags: string[];
   ageRating: number;
-  trailerYoutubeUrl: string;
+  youtubeVideoId?: string;
 }
 
 // schema
@@ -103,10 +103,9 @@ const MovieSchema: Schema = new Schema(
       type: Number,
       required: false,
     },
-    trailerYoutubeUrl: {
+    youtubeVideoId: {
       type: String,
       required: false,
-      default: '',
     },
   },
   { timestamps: true }

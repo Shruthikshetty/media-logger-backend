@@ -97,7 +97,7 @@ Content-Type: application/json
   "isActive": true,
   "tags": ["Coming of Age", "Character-driven", "Feel-Good"],
   "ageRating": 12,
-  "trailerYoutubeUrl": "https://youtube.com/watch?v=journey-trailer",
+  "youtubeVideoId":"uwidiwid22",
   "releaseDate": "2025-05-01T00:00:00.000Z"
 }
 
