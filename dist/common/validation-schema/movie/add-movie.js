@@ -85,9 +85,9 @@ exports.AddMovieZodSchema = zod_1.default.object({
         required_error: 'Age rating is required',
         invalid_type_error: 'Age rating must be number',
     }),
-    trailerYoutubeUrl: zod_1.default
+    youtubeVideoId: zod_1.default
         .string({
-        message: 'Trailer youtube url must be string',
+        message: 'Trailer youtube embed id must be string',
     })
         .optional(),
     releaseDate: zod_1.default

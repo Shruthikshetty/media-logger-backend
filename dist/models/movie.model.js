@@ -78,10 +78,9 @@ const MovieSchema = new mongoose_1.Schema({
         type: Number,
         required: false,
     },
-    trailerYoutubeUrl: {
+    youtubeVideoId: {
         type: String,
         required: false,
-        default: '',
     },
 }, { timestamps: true });
 // create model from the above model

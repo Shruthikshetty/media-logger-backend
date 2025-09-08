@@ -50,7 +50,7 @@ exports.mockTestMovies = Array.from({ length: 10 }).map((_, i) => ({
     isActive: true,
     tags: ['Coming of Age', 'Character-driven', 'Feel-Good'],
     ageRating: 12,
-    trailerYoutubeUrl: `https://youtube.com/watch?v=journey-trailer-${i + 1}`,
+    youtubeVideoId: `weweqwef-${i + 1}`,
     releaseDate: new Date(Date.now() + i * 1000 * 60 * 60 * 24 * 30).toISOString(),
 }));
 exports.mockTestGamesSet2 = Array.from({ length: 5 }).map((_, i) => ({
