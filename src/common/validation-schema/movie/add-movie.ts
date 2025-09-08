@@ -93,9 +93,9 @@ export const AddMovieZodSchema = z.object({
     required_error: 'Age rating is required',
     invalid_type_error: 'Age rating must be number',
   }),
-  trailerYoutubeUrl: z
+  youtubeVideoId: z
     .string({
-      message: 'Trailer youtube url must be string',
+      message: 'Trailer youtube embed id must be string',
     })
     .optional(),
   releaseDate: z

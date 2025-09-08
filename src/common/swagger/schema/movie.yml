@@ -83,7 +83,7 @@ components:
           example: ['Based on True Story', 'Cult Classic']
         ageRating:
           type: number
-        trailerYoutubeUrl:
+        youtubeVideoId:
           type: string
           default: ''
     UpdateMovie:
@@ -166,10 +166,10 @@ components:
           type: number
           example: 13
           description: Suitable age rating for the movie
-        trailerYoutubeUrl:
+        youtubeVideoId:
           type: string
-          example: 'https://youtube.com/watch?v=xyz'
-          description: YouTube URL for the movie trailer
+          example: 'JAIWF522FVHD'
+          description: YouTube video ID for the movie trailer
       additionalProperties: false
   requestBodies:
     AddMovieRequest:

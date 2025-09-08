@@ -103,10 +103,9 @@ const MovieSchema: Schema = new Schema(
       type: Number,
       required: false,
     },
-    trailerYoutubeUrl: {
+    youtubeVideoId: {
       type: String,
       required: false,
-      default: '',
     },
   },
   { timestamps: true }
