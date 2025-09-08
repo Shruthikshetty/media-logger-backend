@@ -26,7 +26,7 @@ export interface IMovie extends Document {
   status: string;
   tags: string[];
   ageRating: number;
-  trailerYoutubeUrl: string;
+  youtubeVideoId?: string;
 }
 
 // schema
