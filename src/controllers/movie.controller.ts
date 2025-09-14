@@ -193,6 +193,7 @@ export const updateMovieById = async (
     // update the movie
     const updatedMovie = await Movie.findByIdAndUpdate(id, req.validatedData!, {
       new: true,
+      runValidators: true,
     })
       .lean()
       .exec();
@@ -213,6 +214,9 @@ export const updateMovieById = async (
     // handle unexpected error
     handleError(res, {
       error: err,
+      message: isDuplicateKeyError(err)
+        ? 'Movie already exists'
+        : 'Server down please try again later',
     });
   }
 };

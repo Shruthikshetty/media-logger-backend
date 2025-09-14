@@ -184,6 +184,7 @@ export const updateGameById = async (
       req.validatedData!,
       {
         new: true,
+        runValidators: true,
       }
     )
       .lean()
@@ -205,6 +206,9 @@ export const updateGameById = async (
     // handle unexpected error
     handleError(res, {
       error: err,
+      message: isDuplicateKeyError(err)
+        ? 'Game already exists'
+        : 'Server down please try again later',
     });
   }
 };

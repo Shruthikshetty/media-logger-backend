@@ -5,7 +5,10 @@
 import { ApiError } from '../common/utils/api-error';
 import { getEpisodeDetailsById } from '../common/utils/get-episode';
 import { handleError } from '../common/utils/handle-error';
-import { isMongoIdValid } from '../common/utils/mongo-errors';
+import {
+  isDuplicateKeyError,
+  isMongoIdValid,
+} from '../common/utils/mongo-errors';
 import { AddEpisodeZodType } from '../common/validation-schema/tv-show/add-episode';
 import { UpdateEpisodeZodType } from '../common/validation-schema/tv-show/update-episode';
 import Episode from '../models/tv-episode';
@@ -148,6 +151,7 @@ export const updateEpisodeById = async (
       req.validatedData!,
       {
         new: true,
+        runValidators: true,
       }
     )
       .lean()
@@ -169,6 +173,9 @@ export const updateEpisodeById = async (
     //handle unexpected error
     handleError(res, {
       error: err,
+      message: isDuplicateKeyError(err)
+        ? 'Episode already exists'
+        : 'Server down please try again later',
     });
   }
 };

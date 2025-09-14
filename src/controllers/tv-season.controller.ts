@@ -13,7 +13,10 @@ import Episode, { IEpisode } from '../models/tv-episode';
 import TVShow from '../models/tv-show.mode';
 import { getSeasonDetailsById } from '../common/utils/get-season';
 import { ApiError } from '../common/utils/api-error';
-import { isMongoIdValid } from '../common/utils/mongo-errors';
+import {
+  isDuplicateKeyError,
+  isMongoIdValid,
+} from '../common/utils/mongo-errors';
 import { UpdateSeasonZodType } from '../common/validation-schema/tv-show/update-season';
 
 //controller to add a tv season to a tv show
@@ -148,6 +151,7 @@ export const updateSeason = async (
       req.validatedData!,
       {
         new: true,
+        runValidators: true,
       }
     )
       .lean()
@@ -169,6 +173,9 @@ export const updateSeason = async (
     // handle unexpected error
     handleError(res, {
       error: err,
+      message: isDuplicateKeyError(err)
+        ? 'Season title already exists'
+        : 'Server down please try again later',
     });
   }
 };
