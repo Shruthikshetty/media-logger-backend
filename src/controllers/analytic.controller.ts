@@ -134,7 +134,7 @@ export const dashboardAdminAnalytics = async (
           },
         ]),
       ]);
-      console.log(moviesCountLast30Days)
+    console.log(moviesCountLast30Days);
 
     // Merge the results into a single data structure
     const dailyDataMap = new Map();
