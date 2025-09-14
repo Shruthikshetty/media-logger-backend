@@ -12,6 +12,7 @@ import { ValidatedRequest } from '../types/custom-types';
 import { Response } from 'express';
 import {
   calculateChangeBetweenTwoNumbers,
+  DailyCountsMap,
   processContentDayWise,
 } from '../common/utils/analytics';
 
@@ -134,10 +135,9 @@ export const dashboardAdminAnalytics = async (
           },
         ]),
       ]);
-    console.log(moviesCountLast30Days);
 
     // Merge the results into a single data structure
-    const dailyDataMap = new Map();
+    const dailyDataMap: DailyCountsMap = new Map();
     processContentDayWise(moviesCountLast30Days, 'movies', dailyDataMap);
     processContentDayWise(tvShowsCountLast30Days, 'tvShows', dailyDataMap);
     processContentDayWise(gamesCountLast, 'games', dailyDataMap);

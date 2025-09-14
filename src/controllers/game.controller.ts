@@ -185,6 +185,7 @@ export const updateGameById = async (
       {
         new: true,
         runValidators: true,
+        context: 'query',
       }
     )
       .lean()
@@ -335,8 +336,8 @@ export const searchGame = async (req: ValidatedRequest<{}>, res: Response) => {
 
     // get the games
     const games = await Game.aggregate(pipeline)
-      .limit(limit)
       .skip(start)
+      .limit(limit)
       .exec();
 
     //send response

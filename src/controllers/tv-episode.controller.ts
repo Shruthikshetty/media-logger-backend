@@ -152,6 +152,7 @@ export const updateEpisodeById = async (
       {
         new: true,
         runValidators: true,
+        context: 'query',
       }
     )
       .lean()

@@ -152,6 +152,7 @@ export const updateSeason = async (
       {
         new: true,
         runValidators: true,
+        context: 'query', //validator to exclude the document being updated from its duplication check
       }
     )
       .lean()
