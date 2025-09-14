@@ -156,7 +156,7 @@ export const dashboardAdminAnalytics = async (
     //generate day wise data for past 30 days
     for (let i = 30; i >= 0; i--) {
       const targetDate = getDaysAgo(i);
-      const dateString = targetDate.format('YYYY-MM-DD');
+      const dateString = targetDate.utc().format('YYYY-MM-DD');
 
       // Get data from the map or default to zeros if no media was added on that day
       const dataForDay = dailyDataMap.get(dateString) || {
