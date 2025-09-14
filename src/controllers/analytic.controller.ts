@@ -10,7 +10,10 @@ import TVShow from '../models/tv-show.mode';
 import User from '../models/user.model';
 import { ValidatedRequest } from '../types/custom-types';
 import { Response } from 'express';
-import { calculateChangeBetweenTwoNumbers } from '../common/utils/analytics';
+import {
+  calculateChangeBetweenTwoNumbers,
+  processContentDayWise,
+} from '../common/utils/analytics';
 
 //admin dashboard analytics data
 export const dashboardAdminAnalytics = async (
@@ -65,6 +68,80 @@ export const dashboardAdminAnalytics = async (
       }),
     ]);
 
+    //get total count of movies , users , tv-show , games added in last 30 days
+    const [moviesCountLast30Days, tvShowsCountLast30Days, gamesCountLast] =
+      await Promise.all([
+        //aggregate movies
+        Movie.aggregate([
+          {
+            $match: {
+              createdAt: {
+                $gte: getDaysAgo(30).toDate(),
+              },
+            },
+          },
+          {
+            $group: {
+              _id: {
+                $dateToString: {
+                  format: '%Y-%m-%d',
+                  date: '$createdAt',
+                },
+              },
+              count: { $sum: 1 },
+            },
+          },
+        ]),
+        //aggregate tv-shows
+        TVShow.aggregate([
+          {
+            $match: {
+              createdAt: {
+                $gte: getDaysAgo(30).toDate(),
+              },
+            },
+          },
+          {
+            $group: {
+              _id: {
+                $dateToString: {
+                  format: '%Y-%m-%d',
+                  date: '$createdAt',
+                },
+              },
+              count: { $sum: 1 },
+            },
+          },
+        ]),
+        Game.aggregate([
+          {
+            $match: {
+              createdAt: {
+                $gte: getDaysAgo(30).toDate(),
+              },
+            },
+          },
+          {
+            $group: {
+              _id: {
+                $dateToString: {
+                  format: '%Y-%m-%d',
+                  date: '$createdAt',
+                },
+              },
+              count: { $sum: 1 },
+            },
+          },
+        ]),
+      ]);
+      console.log(moviesCountLast30Days)
+
+    // Merge the results into a single data structure
+    const dailyDataMap = new Map();
+    processContentDayWise(moviesCountLast30Days, 'movies', dailyDataMap);
+    processContentDayWise(tvShowsCountLast30Days, 'tvShows', dailyDataMap);
+    processContentDayWise(gamesCountLast, 'games', dailyDataMap);
+
     const currentMonthData: {
       date: Date;
       movies: number;
@@ -75,41 +152,22 @@ export const dashboardAdminAnalytics = async (
 
     //generate day wise data for past 30 days
     for (let i = 30; i >= 0; i--) {
-      //get target date
       const targetDate = getDaysAgo(i);
-      //get start and end of day
-      const startOfDay = targetDate.clone().startOf('day');
-      const endOfDay = targetDate.clone().endOf('day');
+      const dateString = targetDate.format('YYYY-MM-DD');
 
-      //get movie , tv-show , game count
-      const [movies, tvShows, games] = await Promise.all([
-        Movie.countDocuments({
-          createdAt: {
-            $gte: startOfDay.toDate(),
-            $lt: endOfDay.toDate(),
-          },
-        }),
-        TVShow.countDocuments({
-          createdAt: {
-            $gte: startOfDay.toDate(),
-            $lt: endOfDay.toDate(),
-          },
-        }),
-        Game.countDocuments({
-          createdAt: {
-            $gte: startOfDay.toDate(),
-            $lt: endOfDay.toDate(),
-          },
-        }),
-      ]);
+      // Get data from the map or default to zeros if no media was added on that day
+      const dataForDay = dailyDataMap.get(dateString) || {
+        movies: 0,
+        tvShows: 0,
+        games: 0,
+      };
 
-      //push formatted data
       currentMonthData.push({
         date: targetDate.toDate(),
-        movies,
-        tvShows,
-        games,
         weekday: targetDate.format('ddd'),
+        movies: dataForDay.movies,
+        tvShows: dataForDay.tvShows,
+        games: dataForDay.games,
       });
     }
 

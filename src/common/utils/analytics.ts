@@ -26,3 +26,18 @@ export const calculateChangeBetweenTwoNumbers = (
     change: n2 > n1 ? 'up' : 'down',
   };
 };
+
+// Helper function to process each result set
+export const processContentDayWise = (
+  counts: any,
+  type: 'movies' | 'tvShows' | 'games',
+  dailyDataMap: any
+) => {
+  counts.forEach((item) => {
+    const date = item._id;
+    if (!dailyDataMap.has(date)) {
+      dailyDataMap.set(date, { movies: 0, tvShows: 0, games: 0 });
+    }
+    dailyDataMap.get(date)[type] = item.count;
+  });
+};
