@@ -161,6 +161,8 @@ const updateGameById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         //update the game by id
         const updatedGame = yield game_model_1.default.findByIdAndUpdate((_b = req.params) === null || _b === void 0 ? void 0 : _b.id, req.validatedData, {
             new: true,
+            runValidators: true,
+            context: 'query',
         })
             .lean()
             .exec();
@@ -180,6 +182,9 @@ const updateGameById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         // handle unexpected error
         (0, handle_error_1.handleError)(res, {
             error: err,
+            message: (0, mongo_errors_1.isDuplicateKeyError)(err)
+                ? 'Game already exists'
+                : 'Server down please try again later',
         });
     }
 });
@@ -289,8 +294,8 @@ const searchGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         ];
         // get the games
         const games = yield game_model_1.default.aggregate(pipeline)
-            .limit(limit)
             .skip(start)
+            .limit(limit)
             .exec();
         //send response
         res.status(200).json({

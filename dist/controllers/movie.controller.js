@@ -160,6 +160,8 @@ const updateMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function
         // update the movie
         const updatedMovie = yield movie_model_1.default.findByIdAndUpdate(id, req.validatedData, {
             new: true,
+            runValidators: true,
+            context: 'query',
         })
             .lean()
             .exec();
@@ -179,6 +181,9 @@ const updateMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function
         // handle unexpected error
         (0, handle_error_1.handleError)(res, {
             error: err,
+            message: (0, mongo_errors_1.isDuplicateKeyError)(err)
+                ? 'Movie already exists'
+                : 'Server down please try again later',
         });
     }
 });
@@ -286,7 +291,7 @@ const searchMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             },
         ];
         // search for movies
-        const movies = yield movie_model_1.default.aggregate(pipeline).limit(limit).skip(start);
+        const movies = yield movie_model_1.default.aggregate(pipeline).skip(start).limit(limit);
         // return the movies
         res.status(200).json({
             success: true,

@@ -133,6 +133,8 @@ const updateEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, functi
         //find and update the episode by id
         const updatedEpisode = yield tv_episode_1.default.findByIdAndUpdate(id, req.validatedData, {
             new: true,
+            runValidators: true,
+            context: 'query',
         })
             .lean()
             .exec();
@@ -152,6 +154,9 @@ const updateEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, functi
         //handle unexpected error
         (0, handle_error_1.handleError)(res, {
             error: err,
+            message: (0, mongo_errors_1.isDuplicateKeyError)(err)
+                ? 'Episode already exists'
+                : 'Server down please try again later',
         });
     }
 });

@@ -64,42 +64,96 @@ const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, 
                 },
             }),
         ]);
+        //get total count of movies , users , tv-show , games added in last 30 days
+        const [moviesCountLast30Days, tvShowsCountLast30Days, gamesCountLast] = yield Promise.all([
+            //aggregate movies
+            movie_model_1.default.aggregate([
+                {
+                    $match: {
+                        createdAt: {
+                            $gte: (0, date_1.getDaysAgo)(29).toDate(),
+                        },
+                    },
+                },
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: {
+                                format: '%Y-%m-%d',
+                                date: '$createdAt',
+                                timezone: 'UTC',
+                            },
+                        },
+                        count: { $sum: 1 },
+                    },
+                },
+            ]),
+            //aggregate tv-shows
+            tv_show_mode_1.default.aggregate([
+                {
+                    $match: {
+                        createdAt: {
+                            $gte: (0, date_1.getDaysAgo)(29).toDate(),
+                        },
+                    },
+                },
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: {
+                                format: '%Y-%m-%d',
+                                date: '$createdAt',
+                                timezone: 'UTC',
+                            },
+                        },
+                        count: { $sum: 1 },
+                    },
+                },
+            ]),
+            game_model_1.default.aggregate([
+                {
+                    $match: {
+                        createdAt: {
+                            $gte: (0, date_1.getDaysAgo)(29).toDate(),
+                        },
+                    },
+                },
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: {
+                                format: '%Y-%m-%d',
+                                date: '$createdAt',
+                                timezone: 'UTC',
+                            },
+                        },
+                        count: { $sum: 1 },
+                    },
+                },
+            ]),
+        ]);
+        // Merge the results into a single data structure
+        const dailyDataMap = new Map();
+        (0, analytics_1.processContentDayWise)(moviesCountLast30Days, 'movies', dailyDataMap);
+        (0, analytics_1.processContentDayWise)(tvShowsCountLast30Days, 'tvShows', dailyDataMap);
+        (0, analytics_1.processContentDayWise)(gamesCountLast, 'games', dailyDataMap);
         const currentMonthData = [];
         //generate day wise data for past 30 days
         for (let i = 30; i >= 0; i--) {
-            //get target date
             const targetDate = (0, date_1.getDaysAgo)(i);
-            //get start and end of day
-            const startOfDay = targetDate.clone().startOf('day');
-            const endOfDay = targetDate.clone().endOf('day');
-            //get movie , tv-show , game count
-            const [movies, tvShows, games] = yield Promise.all([
-                movie_model_1.default.countDocuments({
-                    createdAt: {
-                        $gte: startOfDay.toDate(),
-                        $lt: endOfDay.toDate(),
-                    },
-                }),
-                tv_show_mode_1.default.countDocuments({
-                    createdAt: {
-                        $gte: startOfDay.toDate(),
-                        $lt: endOfDay.toDate(),
-                    },
-                }),
-                game_model_1.default.countDocuments({
-                    createdAt: {
-                        $gte: startOfDay.toDate(),
-                        $lt: endOfDay.toDate(),
-                    },
-                }),
-            ]);
-            //push formatted data
+            const dateString = targetDate.utc().format('YYYY-MM-DD');
+            // Get data from the map or default to zeros if no media was added on that day
+            const dataForDay = dailyDataMap.get(dateString) || {
+                movies: 0,
+                tvShows: 0,
+                games: 0,
+            };
             currentMonthData.push({
                 date: targetDate.toDate(),
-                movies,
-                tvShows,
-                games,
                 weekday: targetDate.format('ddd'),
+                movies: dataForDay.movies,
+                tvShows: dataForDay.tvShows,
+                games: dataForDay.games,
             });
         }
         //extract weekly data for past 7 days
