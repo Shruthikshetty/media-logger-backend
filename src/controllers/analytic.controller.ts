@@ -77,7 +77,7 @@ export const dashboardAdminAnalytics = async (
           {
             $match: {
               createdAt: {
-                $gte: getDaysAgo(30).toDate(),
+                $gte: getDaysAgo(29).toDate(),
               },
             },
           },
@@ -87,6 +87,7 @@ export const dashboardAdminAnalytics = async (
                 $dateToString: {
                   format: '%Y-%m-%d',
                   date: '$createdAt',
+                  timezone: 'UTC',
                 },
               },
               count: { $sum: 1 },
@@ -98,7 +99,7 @@ export const dashboardAdminAnalytics = async (
           {
             $match: {
               createdAt: {
-                $gte: getDaysAgo(30).toDate(),
+                $gte: getDaysAgo(29).toDate(),
               },
             },
           },
@@ -108,6 +109,7 @@ export const dashboardAdminAnalytics = async (
                 $dateToString: {
                   format: '%Y-%m-%d',
                   date: '$createdAt',
+                  timezone: 'UTC',
                 },
               },
               count: { $sum: 1 },
@@ -118,7 +120,7 @@ export const dashboardAdminAnalytics = async (
           {
             $match: {
               createdAt: {
-                $gte: getDaysAgo(30).toDate(),
+                $gte: getDaysAgo(29).toDate(),
               },
             },
           },
@@ -128,6 +130,7 @@ export const dashboardAdminAnalytics = async (
                 $dateToString: {
                   format: '%Y-%m-%d',
                   date: '$createdAt',
+                  timezone: 'UTC',
                 },
               },
               count: { $sum: 1 },
