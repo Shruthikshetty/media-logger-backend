@@ -184,6 +184,8 @@ export const updateGameById = async (
       req.validatedData!,
       {
         new: true,
+        runValidators: true,
+        context: 'query',
       }
     )
       .lean()
@@ -205,6 +207,9 @@ export const updateGameById = async (
     // handle unexpected error
     handleError(res, {
       error: err,
+      message: isDuplicateKeyError(err)
+        ? 'Game already exists'
+        : 'Server down please try again later',
     });
   }
 };
@@ -331,8 +336,8 @@ export const searchGame = async (req: ValidatedRequest<{}>, res: Response) => {
 
     // get the games
     const games = await Game.aggregate(pipeline)
-      .limit(limit)
       .skip(start)
+      .limit(limit)
       .exec();
 
     //send response

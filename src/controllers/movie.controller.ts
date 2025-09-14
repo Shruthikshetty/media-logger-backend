@@ -193,6 +193,8 @@ export const updateMovieById = async (
     // update the movie
     const updatedMovie = await Movie.findByIdAndUpdate(id, req.validatedData!, {
       new: true,
+      runValidators: true,
+      context: 'query',
     })
       .lean()
       .exec();
@@ -213,6 +215,9 @@ export const updateMovieById = async (
     // handle unexpected error
     handleError(res, {
       error: err,
+      message: isDuplicateKeyError(err)
+        ? 'Movie already exists'
+        : 'Server down please try again later',
     });
   }
 };
@@ -341,7 +346,7 @@ export const searchMovies = async (
     ];
 
     // search for movies
-    const movies = await Movie.aggregate(pipeline).limit(limit).skip(start);
+    const movies = await Movie.aggregate(pipeline).skip(start).limit(limit);
 
     // return the movies
     res.status(200).json({
