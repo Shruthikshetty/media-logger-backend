@@ -70,7 +70,7 @@ export const dashboardAdminAnalytics = async (
     ]);
 
     //get total count of movies , users , tv-show , games added in last 30 days
-    const [moviesCountLast30Days, tvShowsCountLast30Days, gamesCountLast] =
+    const [moviesCountLast30Days, tvShowsCountLast30Days, gamesCountLast30Days] =
       await Promise.all([
         //aggregate movies
         Movie.aggregate([
@@ -143,7 +143,7 @@ export const dashboardAdminAnalytics = async (
     const dailyDataMap: DailyCountsMap = new Map();
     processContentDayWise(moviesCountLast30Days, 'movies', dailyDataMap);
     processContentDayWise(tvShowsCountLast30Days, 'tvShows', dailyDataMap);
-    processContentDayWise(gamesCountLast, 'games', dailyDataMap);
+    processContentDayWise(gamesCountLast30Days, 'games', dailyDataMap);
 
     const currentMonthData: {
       date: Date;
