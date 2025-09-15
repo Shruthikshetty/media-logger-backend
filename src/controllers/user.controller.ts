@@ -286,6 +286,11 @@ export const filterUsers = async (
   try {
     //destructure validated data
     const { role, searchText } = req.validatedData!;
+    // get pagination params
+    const { limit, start } = getPaginationParams(
+      req.query,
+      GET_ALL_USER_LIMITS
+    );
     //define filters and pipeline
     const pipeline: any[] = [];
 
@@ -311,23 +316,42 @@ export const filterUsers = async (
         },
       });
     }
-
-    // filter the fields
+    // Use $facet to get both data and total count in one query
     pipeline.push({
-      $project: {
-        //exclude
-        __v: 0,
-        password: 0,
+      $facet: {
+        // get the paginated data
+        data: [
+          { $sort: { createdAt: -1 } }, // Sort before skipping/limiting
+          { $skip: start },
+          { $limit: limit },
+          {
+            // Project to shape the output and remove sensitive fields
+            $project: {
+              //exclude
+              password: 0,
+              __v: 0,
+            },
+          },
+        ],
+        // get the total count of matched documents
+        totalCount: [{ $count: 'total' }],
       },
     });
 
     //execute the aggregation pipeline
-    const filteredUsers = await User.aggregate(pipeline);
+    const results = await User.aggregate(pipeline);
+
+    // extract the users and pagination details from result
+    const users = results[0].data;
+    const total = results[0].totalCount[0]?.total || 0;
 
     //send response
     res.status(200).json({
       success: true,
-      data: filteredUsers,
+      data: {
+        users,
+        pagination: getPaginationResponse(total, limit, start),
+      },
     });
   } catch (err) {
     // handle unexpected error

@@ -62,7 +62,24 @@ route.post('/', validateReq(AddUserZodSchema), addUser);
  */
 route.get('/', requireAuth(), getUserDetail);
 
-// used to get user by name search and filters
+/**
+ * @swagger
+ * /api/user/filter:
+ *   post:
+ *     summary: Filter users and search by name
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/FilterUserRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllUsersSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get(
   '/filter',
   requireAuth('admin'),

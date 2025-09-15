@@ -146,6 +146,23 @@ components:
                 enum:
                   - user
                   - admin
+    FilterUserRequest:
+      description: request body for filtering users by name and role 
+      type: object
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              role:
+                type: string
+                enum:
+                  - user
+                  - admin
+                example: user
+              searchText:
+                type: string
+                example: john
 
   responses:
     AddUserSuccessResponse:
