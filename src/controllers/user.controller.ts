@@ -19,6 +19,7 @@ import { UpdateUserZodSchemaType } from '../common/validation-schema/user/update
 import { encrypt } from '../common/utils/hashing';
 import mongoose from 'mongoose';
 import { UpdateRoleZodSchemaType } from '../common/validation-schema/user/update-role';
+import { FilterUserZodType } from '../common/validation-schema/user/filter-user';
 
 // controller to add a new user
 export const addUser = async (
@@ -237,7 +238,7 @@ export const updateRoleById = async (
     //get id from params
     const { id } = req.params;
 
-    //incase invalid id
+    //in case invalid id
     if (!mongoose.isValidObjectId(id)) {
       handleError(res, { message: 'Invalid user id', statusCode: 400 });
       return;
@@ -269,6 +270,88 @@ export const updateRoleById = async (
       success: true,
       data: updatedRole,
       message: 'User role updated successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+export const filterUsers = async (
+  req: ValidatedRequest<FilterUserZodType>,
+  res: Response
+) => {
+  try {
+    //destructure validated data
+    const { role, searchText } = req.validatedData!;
+    // get pagination params
+    const { limit, start } = getPaginationParams(
+      req.query,
+      GET_ALL_USER_LIMITS
+    );
+    //define filters and pipeline
+    const pipeline: any[] = [];
+
+    //if name search text is present
+    if (searchText) {
+      //push search text to pipeline
+      pipeline.push({
+        $match: {
+          name: {
+            $regex: searchText,
+            $options: 'i', //case-insensitive
+          },
+        },
+      });
+    }
+
+    //if role is present
+    if (role) {
+      //push role to pipeline
+      pipeline.push({
+        $match: {
+          role,
+        },
+      });
+    }
+    // Use $facet to get both data and total count in one query
+    pipeline.push({
+      $facet: {
+        // get the paginated data
+        data: [
+          { $sort: { createdAt: -1 } }, // Sort before skipping/limiting
+          { $skip: start },
+          { $limit: limit },
+          {
+            // Project to shape the output and remove sensitive fields
+            $project: {
+              //exclude
+              password: 0,
+              __v: 0,
+            },
+          },
+        ],
+        // get the total count of matched documents
+        totalCount: [{ $count: 'total' }],
+      },
+    });
+
+    //execute the aggregation pipeline
+    const results = await User.aggregate(pipeline);
+
+    // extract the users and pagination details from result
+    const users = results[0].data;
+    const total = results[0].totalCount[0]?.total || 0;
+
+    //send response
+    res.status(200).json({
+      success: true,
+      data: {
+        users,
+        pagination: getPaginationResponse(total, limit, start),
+      },
     });
   } catch (err) {
     // handle unexpected error

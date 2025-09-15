@@ -10,12 +10,14 @@ import {
   deleteUserById,
   updateUser,
   updateRoleById,
+  filterUsers,
 } from '../controllers/user.controller';
 import { AddUserZodSchema } from '../common/validation-schema/user/add-user';
 import { validateReq } from '../common/middleware/handle-validation';
 import { requireAuth } from '../common/middleware/require-auth';
 import { UpdateUserZodSchema } from '../common/validation-schema/user/update-user';
 import { UpdateRoleZodSchema } from '../common/validation-schema/user/update-role';
+import { FilterUserZodSchema } from '../common/validation-schema/user/filter-user';
 
 // initialize router
 const route = Router();
@@ -59,6 +61,31 @@ route.post('/', validateReq(AddUserZodSchema), addUser);
  *         $ref: '#/components/responses/Unauthorized'
  */
 route.get('/', requireAuth(), getUserDetail);
+
+/**
+ * @swagger
+ * /api/user/filter:
+ *   post:
+ *     summary: Filter users and search by name
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/FilterUserRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllUsersSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+route.get(
+  '/filter',
+  requireAuth('admin'),
+  validateReq(FilterUserZodSchema),
+  filterUsers
+);
 
 /**
  * @swagger
