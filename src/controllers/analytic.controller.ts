@@ -70,74 +70,77 @@ export const dashboardAdminAnalytics = async (
     ]);
 
     //get total count of movies , users , tv-show , games added in last 30 days
-    const [moviesCountLast30Days, tvShowsCountLast30Days, gamesCountLast30Days] =
-      await Promise.all([
-        //aggregate movies
-        Movie.aggregate([
-          {
-            $match: {
-              createdAt: {
-                $gte: getDaysAgo(29).toDate(),
-              },
+    const [
+      moviesCountLast30Days,
+      tvShowsCountLast30Days,
+      gamesCountLast30Days,
+    ] = await Promise.all([
+      //aggregate movies
+      Movie.aggregate([
+        {
+          $match: {
+            createdAt: {
+              $gte: getDaysAgo(29).toDate(),
             },
           },
-          {
-            $group: {
-              _id: {
-                $dateToString: {
-                  format: '%Y-%m-%d',
-                  date: '$createdAt',
-                  timezone: 'UTC',
-                },
-              },
-              count: { $sum: 1 },
-            },
-          },
-        ]),
-        //aggregate tv-shows
-        TVShow.aggregate([
-          {
-            $match: {
-              createdAt: {
-                $gte: getDaysAgo(29).toDate(),
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: {
+                format: '%Y-%m-%d',
+                date: '$createdAt',
+                timezone: 'UTC',
               },
             },
+            count: { $sum: 1 },
           },
-          {
-            $group: {
-              _id: {
-                $dateToString: {
-                  format: '%Y-%m-%d',
-                  date: '$createdAt',
-                  timezone: 'UTC',
-                },
-              },
-              count: { $sum: 1 },
+        },
+      ]),
+      //aggregate tv-shows
+      TVShow.aggregate([
+        {
+          $match: {
+            createdAt: {
+              $gte: getDaysAgo(29).toDate(),
             },
           },
-        ]),
-        Game.aggregate([
-          {
-            $match: {
-              createdAt: {
-                $gte: getDaysAgo(29).toDate(),
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: {
+                format: '%Y-%m-%d',
+                date: '$createdAt',
+                timezone: 'UTC',
               },
             },
+            count: { $sum: 1 },
           },
-          {
-            $group: {
-              _id: {
-                $dateToString: {
-                  format: '%Y-%m-%d',
-                  date: '$createdAt',
-                  timezone: 'UTC',
-                },
-              },
-              count: { $sum: 1 },
+        },
+      ]),
+      Game.aggregate([
+        {
+          $match: {
+            createdAt: {
+              $gte: getDaysAgo(29).toDate(),
             },
           },
-        ]),
-      ]);
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: {
+                format: '%Y-%m-%d',
+                date: '$createdAt',
+                timezone: 'UTC',
+              },
+            },
+            count: { $sum: 1 },
+          },
+        },
+      ]),
+    ]);
 
     // Merge the results into a single data structure
     const dailyDataMap: DailyCountsMap = new Map();
