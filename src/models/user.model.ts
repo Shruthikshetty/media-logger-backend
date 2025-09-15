@@ -64,6 +64,10 @@ const UserSchema: Schema = new Schema(
       default: '',
       maxLength: 200,
     },
+    lastLogin: {
+      type: Date,
+      required: false,
+    },
   },
   { timestamps: true }
 );

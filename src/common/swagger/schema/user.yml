@@ -53,6 +53,10 @@ components:
           type: string
           description: User biography
           example: 'Movie buff and gamer.'
+        lastLogin:
+          type: date-time
+          readOnly: true
+          example: '2023-01-01T00:00:00.000Z'
         createdAt:
           type: string
           format: date-time
