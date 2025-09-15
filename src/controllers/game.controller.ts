@@ -376,14 +376,29 @@ export const filterGames = async (
       page,
       ageRating,
       limit,
+      searchText,
     } = req.validatedData!;
     //define filters and pipeline
-    const filters: any[] = [];
+    //define filters and pipeline
     const pipeline: any[] = [];
+    const searchClauses: any = {
+      must: [],
+      filter: [],
+    };
+    //search has to be first in pipeline
+    if (searchText) {
+      //push search text to pipeline
+      searchClauses.must.push({
+        text: {
+          query: searchText,
+          path: ['title'],
+        },
+      });
+    }
 
     // if genre is defined
     if (genre) {
-      filters.push({
+      searchClauses.filter.push({
         in: {
           path: 'genre',
           value: genre,
@@ -393,7 +408,7 @@ export const filterGames = async (
 
     //if platform is defined
     if (platforms) {
-      filters.push({
+      searchClauses.filter.push({
         in: {
           path: 'platforms',
           value: platforms,
@@ -403,7 +418,7 @@ export const filterGames = async (
 
     //if status is defined
     if (status) {
-      filters.push({
+      searchClauses.filter.push({
         in: {
           path: 'status',
           value: status,
@@ -413,7 +428,7 @@ export const filterGames = async (
 
     //if avgPlaytime is defined
     if (avgPlaytime) {
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'avgPlaytime',
           ...avgPlaytime,
@@ -423,7 +438,7 @@ export const filterGames = async (
 
     //if releaseDate is defined
     if (releaseDate) {
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'releaseDate',
           ...releaseDate,
@@ -433,7 +448,7 @@ export const filterGames = async (
 
     //if ageRating is defined
     if (ageRating) {
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'ageRating',
           ...ageRating,
@@ -443,7 +458,7 @@ export const filterGames = async (
 
     //if averageRating is defined
     if (averageRating) {
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'averageRating',
           gte: averageRating,
@@ -451,17 +466,19 @@ export const filterGames = async (
       });
     }
 
-    //if filters are defined
-    if (filters.length > 0) {
+    // build pipeline if filters are defined
+    // Only add a $search stage if there's something to search or filter by
+    const compound: any = {};
+    if (searchClauses.must.length) compound.must = searchClauses.must;
+    if (searchClauses.filter.length) compound.filter = searchClauses.filter;
+
+    if (Object.keys(compound).length) {
       pipeline.push({
-        $search: {
-          index: GAME_SEARCH_INDEX,
-          compound: {
-            filter: filters,
-          },
-        },
+        $search: { index: GAME_SEARCH_INDEX, compound },
       });
     }
+    // Ensure that the results are sorted by createdAt in descending order
+    pipeline.push({ $sort: { createdAt: -1 } });
 
     //Use $facet to get both paginated data and total count in one query
     const skip = (page - 1) * limit;

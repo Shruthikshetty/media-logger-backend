@@ -53,6 +53,11 @@ components:
           type: string
           description: User biography
           example: 'Movie buff and gamer.'
+        lastLogin:
+          type: string
+          format: date-time
+          readOnly: true
+          example: '2023-01-01T00:00:00.000Z'
         createdAt:
           type: string
           format: date-time
@@ -146,6 +151,22 @@ components:
                 enum:
                   - user
                   - admin
+    FilterUserRequest:
+      description: request body for filtering users by name and role
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              role:
+                type: string
+                enum:
+                  - user
+                  - admin
+                example: 'user'
+              searchText:
+                type: string
+                example: 'john'
 
   responses:
     AddUserSuccessResponse:

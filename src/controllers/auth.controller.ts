@@ -15,6 +15,7 @@ import {
 import { decrypt } from '../common/utils/hashing';
 import passport from '../common/passport';
 import { omit } from 'lodash';
+import { updateUserLastLogin } from '../common/utils/update-user-last-login';
 
 // controller to login
 export const login = async (
@@ -54,6 +55,9 @@ export const login = async (
         expiresIn: JWT_EXPIRES_IN,
       }
     );
+
+    //update user login time
+    updateUserLastLogin(user._id as string);
 
     // if validation is successful pass token jwt
     res.status(200).json({
