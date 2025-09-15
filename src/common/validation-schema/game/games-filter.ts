@@ -4,7 +4,6 @@
 
 import z from 'zod';
 import { GET_ALL_GAMES_LIMITS } from '../../constants/config.constants';
-import { omit } from 'lodash';
 
 //schema
 export const GamesFilterZodSchema = z
@@ -122,19 +121,12 @@ export const GamesFilterZodSchema = z
       })
       .min(1)
       .default(1),
+    searchText: z
+      .string({
+        message: 'Search text must be string',
+      })
+      .optional(),
   })
-  .superRefine((data, ctx) => {
-    const hasValue = Object.values(omit(data, 'limit', 'page')).some(
-      (val) => val !== undefined
-    );
-    if (!hasValue) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Provide filter for results to appear',
-        path: [],
-      });
-    }
-  });
 
 //export type
 export type GamesFilterZodSchemaType = z.infer<typeof GamesFilterZodSchema>;

@@ -210,6 +210,11 @@ components:
           schema:
             type: object
             properties:
+              searchText:
+                type: string
+                description: Text to search for in game title
+                example: 'Thw Witcher'
+
               averageRating:
                 type: number
                 description: Filter by average game rating
