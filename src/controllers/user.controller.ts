@@ -19,6 +19,7 @@ import { UpdateUserZodSchemaType } from '../common/validation-schema/user/update
 import { encrypt } from '../common/utils/hashing';
 import mongoose from 'mongoose';
 import { UpdateRoleZodSchemaType } from '../common/validation-schema/user/update-role';
+import { FilterUserZodType } from '../common/validation-schema/user/filter-user';
 
 // controller to add a new user
 export const addUser = async (
@@ -237,7 +238,7 @@ export const updateRoleById = async (
     //get id from params
     const { id } = req.params;
 
-    //incase invalid id
+    //in case invalid id
     if (!mongoose.isValidObjectId(id)) {
       handleError(res, { message: 'Invalid user id', statusCode: 400 });
       return;
@@ -269,6 +270,64 @@ export const updateRoleById = async (
       success: true,
       data: updatedRole,
       message: 'User role updated successfully',
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+export const filterUsers = async (
+  req: ValidatedRequest<FilterUserZodType>,
+  res: Response
+) => {
+  try {
+    //destructure validated data
+    const { role, searchText } = req.validatedData!;
+    //define filters and pipeline
+    const pipeline: any[] = [];
+
+    //if name search text is present
+    if (searchText) {
+      //push search text to pipeline
+      pipeline.push({
+        $match: {
+          name: {
+            $regex: searchText,
+            $options: 'i', //case-insensitive
+          },
+        },
+      });
+    }
+
+    //if role is present
+    if (role) {
+      //push role to pipeline
+      pipeline.push({
+        $match: {
+          role,
+        },
+      });
+    }
+
+    // filter the fields
+    pipeline.push({
+      $project: {
+        //exclude
+        __v: 0,
+        password: 0,
+      },
+    });
+
+    //execute the aggregation pipeline
+    const filteredUsers = await User.aggregate(pipeline);
+
+    //send response
+    res.status(200).json({
+      success: true,
+      data: filteredUsers,
     });
   } catch (err) {
     // handle unexpected error
