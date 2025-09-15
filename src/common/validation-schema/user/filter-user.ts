@@ -2,7 +2,7 @@
  * This @file contains the validation schema for filtering users
  */
 
-import z from 'zod';
+import { z } from 'zod';
 import { USER_ROLES } from '../../constants/model.constants';
 
 //schema

@@ -147,8 +147,7 @@ components:
                   - user
                   - admin
     FilterUserRequest:
-      description: request body for filtering users by name and role 
-      type: object
+      description: request body for filtering users by name and role
       content:
         application/json:
           schema:
@@ -159,10 +158,10 @@ components:
                 enum:
                   - user
                   - admin
-                example: user
+                example: 'user'
               searchText:
                 type: string
-                example: john
+                example: 'john'
 
   responses:
     AddUserSuccessResponse:
