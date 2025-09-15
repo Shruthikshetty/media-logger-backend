@@ -65,7 +65,7 @@ const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, 
             }),
         ]);
         //get total count of movies , users , tv-show , games added in last 30 days
-        const [moviesCountLast30Days, tvShowsCountLast30Days, gamesCountLast] = yield Promise.all([
+        const [moviesCountLast30Days, tvShowsCountLast30Days, gamesCountLast30Days,] = yield Promise.all([
             //aggregate movies
             movie_model_1.default.aggregate([
                 {
@@ -136,7 +136,7 @@ const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, 
         const dailyDataMap = new Map();
         (0, analytics_1.processContentDayWise)(moviesCountLast30Days, 'movies', dailyDataMap);
         (0, analytics_1.processContentDayWise)(tvShowsCountLast30Days, 'tvShows', dailyDataMap);
-        (0, analytics_1.processContentDayWise)(gamesCountLast, 'games', dailyDataMap);
+        (0, analytics_1.processContentDayWise)(gamesCountLast30Days, 'games', dailyDataMap);
         const currentMonthData = [];
         //generate day wise data for past 30 days
         for (let i = 30; i >= 0; i--) {

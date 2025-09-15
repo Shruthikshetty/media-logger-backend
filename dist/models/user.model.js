@@ -61,6 +61,10 @@ const UserSchema = new mongoose_1.Schema({
         default: '',
         maxLength: 200,
     },
+    lastLogin: {
+        type: Date,
+        required: false,
+    },
 }, { timestamps: true });
 /**
  * Pre-save hook to hash the password if it is modified.

@@ -10,6 +10,7 @@ const handle_validation_1 = require("../common/middleware/handle-validation");
 const require_auth_1 = require("../common/middleware/require-auth");
 const update_user_1 = require("../common/validation-schema/user/update-user");
 const update_role_1 = require("../common/validation-schema/user/update-role");
+const filter_user_1 = require("../common/validation-schema/user/filter-user");
 // initialize router
 const route = (0, express_1.Router)();
 /**
@@ -50,6 +51,25 @@ route.post('/', (0, handle_validation_1.validateReq)(add_user_1.AddUserZodSchema
  *         $ref: '#/components/responses/Unauthorized'
  */
 route.get('/', (0, require_auth_1.requireAuth)(), user_controller_1.getUserDetail);
+/**
+ * @swagger
+ * /api/user/filter:
+ *   post:
+ *     summary: Filter users and search by name
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/FilterUserRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllUsersSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+route.get('/filter', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(filter_user_1.FilterUserZodSchema), user_controller_1.filterUsers);
 /**
  * @swagger
  * /api/user/all:

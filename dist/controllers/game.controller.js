@@ -322,13 +322,27 @@ const filterGames = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     var _a, _b, _c;
     try {
         //destructure the filters from validated data
-        const { genre, platforms, status, avgPlaytime, releaseDate, averageRating, page, ageRating, limit, } = req.validatedData;
+        const { genre, platforms, status, avgPlaytime, releaseDate, averageRating, page, ageRating, limit, searchText, } = req.validatedData;
         //define filters and pipeline
-        const filters = [];
+        //define filters and pipeline
         const pipeline = [];
+        const searchClauses = {
+            must: [],
+            filter: [],
+        };
+        //search has to be first in pipeline
+        if (searchText) {
+            //push search text to pipeline
+            searchClauses.must.push({
+                text: {
+                    query: searchText,
+                    path: ['title'],
+                },
+            });
+        }
         // if genre is defined
         if (genre) {
-            filters.push({
+            searchClauses.filter.push({
                 in: {
                     path: 'genre',
                     value: genre,
@@ -337,7 +351,7 @@ const filterGames = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         //if platform is defined
         if (platforms) {
-            filters.push({
+            searchClauses.filter.push({
                 in: {
                     path: 'platforms',
                     value: platforms,
@@ -346,7 +360,7 @@ const filterGames = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         //if status is defined
         if (status) {
-            filters.push({
+            searchClauses.filter.push({
                 in: {
                     path: 'status',
                     value: status,
@@ -355,42 +369,45 @@ const filterGames = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         //if avgPlaytime is defined
         if (avgPlaytime) {
-            filters.push({
+            searchClauses.filter.push({
                 range: Object.assign({ path: 'avgPlaytime' }, avgPlaytime),
             });
         }
         //if releaseDate is defined
         if (releaseDate) {
-            filters.push({
+            searchClauses.filter.push({
                 range: Object.assign({ path: 'releaseDate' }, releaseDate),
             });
         }
         //if ageRating is defined
         if (ageRating) {
-            filters.push({
+            searchClauses.filter.push({
                 range: Object.assign({ path: 'ageRating' }, ageRating),
             });
         }
         //if averageRating is defined
         if (averageRating) {
-            filters.push({
+            searchClauses.filter.push({
                 range: {
                     path: 'averageRating',
                     gte: averageRating,
                 },
             });
         }
-        //if filters are defined
-        if (filters.length > 0) {
+        // build pipeline if filters are defined
+        // Only add a $search stage if there's something to search or filter by
+        const compound = {};
+        if (searchClauses.must.length)
+            compound.must = searchClauses.must;
+        if (searchClauses.filter.length)
+            compound.filter = searchClauses.filter;
+        if (Object.keys(compound).length) {
             pipeline.push({
-                $search: {
-                    index: config_constants_1.GAME_SEARCH_INDEX,
-                    compound: {
-                        filter: filters,
-                    },
-                },
+                $search: { index: config_constants_1.GAME_SEARCH_INDEX, compound },
             });
         }
+        // Ensure that the results are sorted by createdAt in descending order
+        pipeline.push({ $sort: { createdAt: -1 } });
         //Use $facet to get both paginated data and total count in one query
         const skip = (page - 1) * limit;
         pipeline.push({

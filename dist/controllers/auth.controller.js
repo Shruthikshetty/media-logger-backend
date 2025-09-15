@@ -23,6 +23,7 @@ const config_constants_1 = require("../common/constants/config.constants");
 const hashing_1 = require("../common/utils/hashing");
 const passport_1 = __importDefault(require("../common/passport"));
 const lodash_1 = require("lodash");
+const update_user_last_login_1 = require("../common/utils/update-user-last-login");
 // controller to login
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -51,6 +52,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }, (_a = process.env.JWT_SECRET) !== null && _a !== void 0 ? _a : config_constants_1.JWT_SECRET_DEFAULT, {
             expiresIn: config_constants_1.JWT_EXPIRES_IN,
         });
+        //update user login time
+        (0, update_user_last_login_1.updateUserLastLogin)(user._id);
         // if validation is successful pass token jwt
         res.status(200).json({
             success: true,

@@ -15,7 +15,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateRoleById = exports.updateUser = exports.deleteUserById = exports.deleteUser = exports.getUserDetail = exports.getAllUsers = exports.addUser = void 0;
+exports.filterUsers = exports.updateRoleById = exports.updateUser = exports.deleteUserById = exports.deleteUser = exports.getUserDetail = exports.getAllUsers = exports.addUser = void 0;
 const handle_error_1 = require("../common/utils/handle-error");
 const user_model_1 = __importDefault(require("../models/user.model"));
 const mongo_errors_1 = require("../common/utils/mongo-errors");
@@ -214,7 +214,7 @@ const updateRoleById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         //get id from params
         const { id } = req.params;
-        //incase invalid id
+        //in case invalid id
         if (!mongoose_1.default.isValidObjectId(id)) {
             (0, handle_error_1.handleError)(res, { message: 'Invalid user id', statusCode: 400 });
             return;
@@ -248,3 +248,76 @@ const updateRoleById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.updateRoleById = updateRoleById;
+const filterUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        //destructure validated data
+        const { role, searchText } = req.validatedData;
+        // get pagination params
+        const { limit, start } = (0, pagination_1.getPaginationParams)(req.query, config_constants_1.GET_ALL_USER_LIMITS);
+        //define filters and pipeline
+        const pipeline = [];
+        //if name search text is present
+        if (searchText) {
+            //push search text to pipeline
+            pipeline.push({
+                $match: {
+                    name: {
+                        $regex: searchText,
+                        $options: 'i', //case-insensitive
+                    },
+                },
+            });
+        }
+        //if role is present
+        if (role) {
+            //push role to pipeline
+            pipeline.push({
+                $match: {
+                    role,
+                },
+            });
+        }
+        // Use $facet to get both data and total count in one query
+        pipeline.push({
+            $facet: {
+                // get the paginated data
+                data: [
+                    { $sort: { createdAt: -1 } }, // Sort before skipping/limiting
+                    { $skip: start },
+                    { $limit: limit },
+                    {
+                        // Project to shape the output and remove sensitive fields
+                        $project: {
+                            //exclude
+                            password: 0,
+                            __v: 0,
+                        },
+                    },
+                ],
+                // get the total count of matched documents
+                totalCount: [{ $count: 'total' }],
+            },
+        });
+        //execute the aggregation pipeline
+        const results = yield user_model_1.default.aggregate(pipeline);
+        // extract the users and pagination details from result
+        const users = results[0].data;
+        const total = ((_a = results[0].totalCount[0]) === null || _a === void 0 ? void 0 : _a.total) || 0;
+        //send response
+        res.status(200).json({
+            success: true,
+            data: {
+                users,
+                pagination: (0, pagination_1.getPaginationResponse)(total, limit, start),
+            },
+        });
+    }
+    catch (err) {
+        // handle unexpected error
+        (0, handle_error_1.handleError)(res, {
+            error: err,
+        });
+    }
+});
+exports.filterUsers = filterUsers;
