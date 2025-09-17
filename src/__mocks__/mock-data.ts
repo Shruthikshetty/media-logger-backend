@@ -52,7 +52,7 @@ export const mockTestMovies = Array.from({ length: 10 }).map((_, i) => ({
   languages: ['english', 'hindi'],
   backdropUrl: `https://example.com/backdrops/journey-to-self-${i + 1}.jpg`,
   isActive: true,
-  tags: ['Coming of Age', 'Character-driven', 'Feel-Good'],
+  tags: ['Coming of Age', 'Character-Driven', 'Feel-Good'],
   ageRating: 12,
   youtubeVideoId: `weweqwef-${i + 1}`,
   releaseDate: new Date(
