@@ -49,6 +49,7 @@ components:
           type: string
           description: User’s location
           example: 'San Francisco, CA'
+          maxLength: 100
         bio:
           type: string
           description: User biography
@@ -97,8 +98,7 @@ components:
                 example: 'Avid TV show fan.'
               location:
                 type: string
-                minLength: 3
-                maxLength: 50
+                maxLength: 100
                 example: 'New York'
               profileImg:
                 type: string
@@ -129,8 +129,7 @@ components:
                 maxLength: 200
               location:
                 type: string
-                minLength: 3
-                maxLength: 50
+                maxLength: 100
               profileImg:
                 type: string
                 format: uri
