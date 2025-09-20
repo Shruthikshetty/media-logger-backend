@@ -25,6 +25,7 @@ export const FilterUserZodSchema = z.object({
     .number({
       message: 'Limit must be number',
     })
+    .int()
     .max(GET_ALL_USER_LIMITS.limit.max)
     .min(GET_ALL_USER_LIMITS.limit.min)
     .default(GET_ALL_USER_LIMITS.limit.default),
@@ -33,6 +34,7 @@ export const FilterUserZodSchema = z.object({
     .number({
       message: 'Page must be number',
     })
+    .int()
     .min(1)
     .default(1),
 });
