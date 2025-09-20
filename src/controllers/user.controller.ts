@@ -285,12 +285,8 @@ export const filterUsers = async (
 ) => {
   try {
     //destructure validated data
-    const { role, searchText } = req.validatedData!;
-    // get pagination params
-    const { limit, start } = getPaginationParams(
-      req.query,
-      GET_ALL_USER_LIMITS
-    );
+    const { role, searchText, limit, page } = req.validatedData!;
+
     //define filters and pipeline
     const pipeline: any[] = [];
 
@@ -316,13 +312,15 @@ export const filterUsers = async (
         },
       });
     }
+    //calculate skip
+    const skip = (page - 1) * limit;
     // Use $facet to get both data and total count in one query
     pipeline.push({
       $facet: {
         // get the paginated data
         data: [
           { $sort: { createdAt: -1 } }, // Sort before skipping/limiting
-          { $skip: start },
+          { $skip: skip },
           { $limit: limit },
           {
             // Project to shape the output and remove sensitive fields
@@ -350,7 +348,7 @@ export const filterUsers = async (
       success: true,
       data: {
         users,
-        pagination: getPaginationResponse(total, limit, start),
+        pagination: getPaginationResponse(total, limit, skip),
       },
     });
   } catch (err) {

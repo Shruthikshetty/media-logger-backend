@@ -80,7 +80,7 @@ route.get('/', requireAuth(), getUserDetail);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.get(
+route.post(
   '/filter',
   requireAuth('admin'),
   validateReq(FilterUserZodSchema),
