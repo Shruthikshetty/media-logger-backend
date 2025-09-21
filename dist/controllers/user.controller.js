@@ -252,9 +252,7 @@ const filterUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     var _a;
     try {
         //destructure validated data
-        const { role, searchText } = req.validatedData;
-        // get pagination params
-        const { limit, start } = (0, pagination_1.getPaginationParams)(req.query, config_constants_1.GET_ALL_USER_LIMITS);
+        const { role, searchText, limit, page } = req.validatedData;
         //define filters and pipeline
         const pipeline = [];
         //if name search text is present
@@ -278,13 +276,15 @@ const filterUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 },
             });
         }
+        //calculate skip
+        const skip = (page - 1) * limit;
         // Use $facet to get both data and total count in one query
         pipeline.push({
             $facet: {
                 // get the paginated data
                 data: [
                     { $sort: { createdAt: -1 } }, // Sort before skipping/limiting
-                    { $skip: start },
+                    { $skip: skip },
                     { $limit: limit },
                     {
                         // Project to shape the output and remove sensitive fields
@@ -309,7 +309,7 @@ const filterUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             success: true,
             data: {
                 users,
-                pagination: (0, pagination_1.getPaginationResponse)(total, limit, start),
+                pagination: (0, pagination_1.getPaginationResponse)(total, limit, skip),
             },
         });
     }

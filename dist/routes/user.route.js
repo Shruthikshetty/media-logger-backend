@@ -69,7 +69,7 @@ route.get('/', (0, require_auth_1.requireAuth)(), user_controller_1.getUserDetai
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.get('/filter', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(filter_user_1.FilterUserZodSchema), user_controller_1.filterUsers);
+route.post('/filter', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(filter_user_1.FilterUserZodSchema), user_controller_1.filterUsers);
 /**
  * @swagger
  * /api/user/all:
