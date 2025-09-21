@@ -4,6 +4,7 @@
 
 import { z } from 'zod';
 import { USER_ROLES } from '../../constants/model.constants';
+import { GET_ALL_USER_LIMITS } from '../../constants/config.constants';
 
 //schema
 export const FilterUserZodSchema = z.object({
@@ -20,6 +21,22 @@ export const FilterUserZodSchema = z.object({
       message: 'Search text must be string',
     })
     .optional(),
+  limit: z
+    .number({
+      message: 'Limit must be number',
+    })
+    .int()
+    .max(GET_ALL_USER_LIMITS.limit.max)
+    .min(GET_ALL_USER_LIMITS.limit.min)
+    .default(GET_ALL_USER_LIMITS.limit.default),
+
+  page: z
+    .number({
+      message: 'Page must be number',
+    })
+    .int()
+    .min(1)
+    .default(1),
 });
 
 //export type

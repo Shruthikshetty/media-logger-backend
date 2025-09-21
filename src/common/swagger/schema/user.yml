@@ -167,6 +167,13 @@ components:
               searchText:
                 type: string
                 example: 'john'
+              limit:
+                type: number
+                example: 10
+              page:
+                description: Page number has a default value of 1
+                type: number
+                example: 1
 
   responses:
     AddUserSuccessResponse:
