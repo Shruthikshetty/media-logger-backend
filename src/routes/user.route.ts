@@ -123,6 +123,8 @@ route.get('/all', requireAuth('admin'), getAllUsers);
  *         $ref: '#/components/responses/GetUserDetailSuccessResponse'
  *       '401':
  *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
  *       '404':
  *         $ref: '#/components/responses/NotFound'
  *       '500':
