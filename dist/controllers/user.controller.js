@@ -15,7 +15,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.filterUsers = exports.updateRoleById = exports.updateUser = exports.deleteUserById = exports.deleteUser = exports.getUserDetail = exports.getAllUsers = exports.addUser = void 0;
+exports.filterUsers = exports.updateRoleById = exports.updateUser = exports.deleteUserById = exports.deleteUser = exports.getUserById = exports.getUserDetail = exports.getAllUsers = exports.addUser = void 0;
 const handle_error_1 = require("../common/utils/handle-error");
 const user_model_1 = __importDefault(require("../models/user.model"));
 const mongo_errors_1 = require("../common/utils/mongo-errors");
@@ -110,6 +110,41 @@ const getUserDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.getUserDetail = getUserDetail;
+//controller to get user by id
+const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        //get id from params
+        const { id } = req.params;
+        // validate id
+        if (!(0, mongo_errors_1.isMongoIdValid)(id)) {
+            (0, handle_error_1.handleError)(res, { message: 'Invalid user id', statusCode: 400 });
+            return;
+        }
+        // get the user
+        const user = yield user_model_1.default.findById(id).lean().exec();
+        // in case user is not found
+        if (!user) {
+            (0, handle_error_1.handleError)(res, { message: 'User not found', statusCode: 404 });
+            return;
+        }
+        //sanitize the user details show only details required as per access level
+        const uerObject = req.userData.role === 'admin'
+            ? (0, lodash_1.omit)(user, ['password'])
+            : (0, lodash_1.omit)(user, ['password', '__v', 'updatedAt']);
+        // return the user
+        res.status(200).json({
+            success: true,
+            data: uerObject,
+        });
+    }
+    catch (err) {
+        // handle unexpected error
+        (0, handle_error_1.handleError)(res, {
+            error: err,
+        });
+    }
+});
+exports.getUserById = getUserById;
 //controller to delete the logged in user
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

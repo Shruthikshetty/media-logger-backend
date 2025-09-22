@@ -89,6 +89,31 @@ route.post('/filter', (0, require_auth_1.requireAuth)('admin'), (0, handle_valid
 route.get('/all', (0, require_auth_1.requireAuth)('admin'), user_controller_1.getAllUsers);
 /**
  * @swagger
+ * /api/user/{id}:
+ *   get:
+ *     summary: Get user by id
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetUserDetailSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+route.get('/:id', (0, require_auth_1.requireAuth)(), user_controller_1.getUserById);
+/**
+ * @swagger
  * /api/user:
  *   delete:
  *     summary: Delete logged in user
