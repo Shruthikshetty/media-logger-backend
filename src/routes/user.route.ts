@@ -11,6 +11,7 @@ import {
   updateUser,
   updateRoleById,
   filterUsers,
+  getUserById,
 } from '../controllers/user.controller';
 import { AddUserZodSchema } from '../common/validation-schema/user/add-user';
 import { validateReq } from '../common/middleware/handle-validation';
@@ -104,6 +105,30 @@ route.post(
  *         $ref: '#/components/responses/InternalServerError'
  */
 route.get('/all', requireAuth('admin'), getAllUsers);
+
+/**
+ * @swagger
+ * /api/user/{id}:
+ *   get:
+ *     summary: Get user by id
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetUserDetailSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+route.get('/:id', requireAuth(), getUserById);
 
 /**
  * @swagger

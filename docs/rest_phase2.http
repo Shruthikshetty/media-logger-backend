@@ -17,3 +17,20 @@ Authorization: {{authToken}}
 ### use post man 
 POST {{baseUrl}}/api/upload/image
 Authorization: {{authToken}}
+
+#-----------------------------------------------User-------------------------------------------------------
+### get user details by id
+### some details are not returned for normal users
+GET {{baseUrl}}/api/user/{id}
+Authorization: {{authToken}}
+
+### get users by filter this requires admin access 
+## can filter based on role , name 
+POST {{baseUrl}}/api/user/filter
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+    "role":"user",
+    "searchText":"Marco"
+}

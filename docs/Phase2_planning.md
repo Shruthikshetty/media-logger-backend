@@ -13,6 +13,11 @@
 
 - **POST /api/upload/image**: upload an image (used for profile images, etc.)
 
+## Users
+
+- **GET /api/user/{id}**: get user details by id details returned varies based on access level
+- **GET /api/user/filter**: get all users with filter like role and name search
+
 # Timeline Estimates
 
 ## Auth
@@ -52,7 +57,18 @@
 | Swagger docs (uploads)     | 0.5            | Example queries + schema                                                              |
 | Buffer/Debug/Refactor      | 1              | Polish, debug, optimize queries                                                       |
 
-**Total Estimated Phase 2 Time:** **~5-6 days** (solo effort; pace may vary depending on final endpoint count and feature depth)
+### Users
+
+| Feature/Area                                 | Estimated Days | Notes                                                                                                                 |
+| :------------------------------------------- | :------------- | :-------------------------------------------------------------------------------------------------------------------- |
+| User detail endpoint (`/api/user/{id}`)      | 1              | Implement the endpoint, including access level logic to vary the response data based on the requester's role.         |
+| User filtering endpoint (`/api/user/filter`) | 1.5            | Implement the endpoint with filtering capabilities for role and name search, as well as pagination support.           |
+| Error handling consistency                   | 0              | Ensure a standard error format is used across all user-related endpoints for not-found or invalid requests.           |
+| Unit testing (users)                         | 1              | Write Jest tests to cover access control scenarios, various filtering combinations, pagination, and other edge cases. |
+| Swagger docs (users)                         | 0.5            | Document the schemas, all query and path parameters, and provide clear request and response examples.                 |
+| Buffer/Debug/Refactor                        | 1              | Allocate time for final polishing, debugging, and optimizing database queries for the user endpoints.                 |
+
+**Total Estimated Phase 2 Time:** **~9-10 days** (solo effort; pace may vary depending on final endpoint count and feature depth)
 
 ## Tasks Specific to Swagger Docs & Testing
 
