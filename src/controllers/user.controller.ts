@@ -6,7 +6,10 @@ import { Response } from 'express';
 import { ValidatedRequest } from '../types/custom-types';
 import { handleError } from '../common/utils/handle-error';
 import User from '../models/user.model';
-import { isDuplicateKeyError } from '../common/utils/mongo-errors';
+import {
+  isDuplicateKeyError,
+  isMongoIdValid,
+} from '../common/utils/mongo-errors';
 import { AddUserZodSchemaType } from '../common/validation-schema/user/add-user';
 import { omit } from 'lodash';
 import { GET_ALL_USER_LIMITS } from '../common/constants/config.constants';
@@ -106,6 +109,46 @@ export const getUserDetail = async (
     res.status(200).json({
       success: true,
       data: userDetails,
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//controller to get user by id
+export const getUserById = async (req: ValidatedRequest<{}>, res: Response) => {
+  try {
+    //get id from params
+    const { id } = req.params;
+
+    // validate id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid user id', statusCode: 400 });
+      return;
+    }
+
+    // get the user
+    const user = await User.findById(id).lean().exec();
+
+    // in case user is not found
+    if (!user) {
+      handleError(res, { message: 'User not found', statusCode: 404 });
+      return;
+    }
+
+    //sanitize the user details show only details required as per access level
+    const uerObject =
+      req.userData!.role === 'admin'
+        ? omit(user, ['password'])
+        : omit(user, ['password', '__v', 'updatedAt']);
+
+    // return the user
+    res.status(200).json({
+      success: true,
+      data: uerObject,
     });
   } catch (err) {
     // handle unexpected error
