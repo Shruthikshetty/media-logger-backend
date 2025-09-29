@@ -124,7 +124,7 @@ export const AddGameZodSchema = z.object({
     })
     .optional(),
 
-  trailerYoutubeUrl: z
+  youtubeVideoId: z
     .string({
       message: 'Trailer youtube url must be string',
     })
