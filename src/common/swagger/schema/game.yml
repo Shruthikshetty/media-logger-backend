@@ -127,10 +127,10 @@ components:
           type: number
           example: 18
           description: Game age rating
-        trailerYoutubeUrl:
+        youtubeVideoId:
           type: string
-          format: uri
-          example: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+          format: youtube video id
+          example: 'dQw4w9WgXcQ'
           description: Game trailer YouTube URL
         createdAt:
           type: string
@@ -192,8 +192,7 @@ components:
           example: 18
         trailerYoutubeUrl:
           type: string
-          format: uri
-          example: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+          example: 'Qw4w9WgXcQ'
   requestBodies:
     AddGameRequest:
       description: Request body for adding a game
