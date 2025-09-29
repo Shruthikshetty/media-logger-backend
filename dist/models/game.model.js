@@ -67,7 +67,7 @@ const GameSchema = new mongoose_1.Schema({
         type: Number,
         required: false,
     },
-    trailerYoutubeUrl: {
+    youtubeVideoId: {
         type: String,
         required: false,
         default: '',

@@ -98,7 +98,7 @@ exports.AddGameZodSchema = zod_1.default.object({
         message: 'Age rating must be number',
     })
         .optional(),
-    trailerYoutubeUrl: zod_1.default
+    youtubeVideoId: zod_1.default
         .string({
         message: 'Trailer youtube url must be string',
     })
