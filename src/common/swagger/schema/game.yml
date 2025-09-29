@@ -190,7 +190,7 @@ components:
         ageRating:
           type: number
           example: 18
-        trailerYoutubeUrl:
+        youtubeVideoId:
           type: string
           example: 'Qw4w9WgXcQ'
   requestBodies:
