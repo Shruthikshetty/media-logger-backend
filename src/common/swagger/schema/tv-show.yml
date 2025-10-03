@@ -445,3 +445,22 @@ components:
                 properties:
                   deletedCount:
                     $ref: '#/components/schemas/TvShowDeleteCount'
+
+    BulkAddTvShowSuccessResponse: 
+      description: Success response for bulk adding tv shows
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Tv shows added successfully'
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TvShowResponseFull'
+                  

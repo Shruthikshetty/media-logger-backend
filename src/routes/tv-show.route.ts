@@ -69,7 +69,38 @@ route.post(
   addTvShow
 );
 
-// route to bulk add tv shows
+/**
+ * @swagger
+ * /api/tv-show/bulk:
+ *   post:
+ *     summary: Bulk add tv shows
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               tvShowDataFile:
+ *                 type: string
+ *                 format: binary
+ *                 description: JSON file containing an array of tv shows
+ *           encoding:
+ *             tvShowDataFile:
+ *               contentType: application/json
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/BulkAddTvShowSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post(
   '/bulk',
   requireAuth('admin'),
@@ -468,7 +499,7 @@ route.delete('/season/:id', requireAuth('admin'), deleteSeasonById);
  *         $ref: '#/components/responses/BulkDeleteTvShowSuccessResponse'
  *       '401':
  *         $ref: '#/components/responses/Unauthorized'
- *       '400': 
+ *       '400':
  *         $ref: '#/components/responses/BadRequest'
  *       '404':
  *         $ref: '#/components/responses/NotFound'
