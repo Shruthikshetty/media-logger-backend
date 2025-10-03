@@ -69,7 +69,38 @@ route.post(
   addTvShow
 );
 
-// route to bulk add tv shows
+/**
+ * @swagger
+ * /api/tv-show/bulk:
+ *   post:
+ *     summary: Bulk add tv shows
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               tvShowDataFile:
+ *                 type: string
+ *                 format: binary
+ *                 description: JSON file containing an array of tv shows
+ *           encoding:
+ *             tvShowDataFile:
+ *               contentType: application/json
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/BulkAddTvShowSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post(
   '/bulk',
   requireAuth('admin'),
@@ -77,19 +108,153 @@ route.post(
   ValidateJsonFile(BulkAddTvShowZodSchema),
   bulkAddTvShow
 );
-//get all the tv shows
+/**
+ * @swagger
+ * /api/tv-show:
+ *   get:
+ *     summary: Get all TV Shows
+ *     tags: [TV Shows]
+ *     parameters:
+ *       - name: limit
+ *         in: query
+ *         default: 20
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: page
+ *         in: query
+ *         default: 1
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: start
+ *         in: query
+ *         default: 0
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: fullDetails
+ *         in: query
+ *         required: false
+ *         default: false
+ *         schema:
+ *           type: boolean
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllTvShowsSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/', getAllTvShows);
 
-//get tv show by search text
+/**
+ * @swagger
+ * /api/tv-show/search:
+ *   get:
+ *     summary: Search for TV Shows
+ *     tags: [TV Shows]
+ *     parameters:
+ *       - name: limit
+ *         in: query
+ *         default: 20
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: page
+ *         in: query
+ *         default: 1
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: start
+ *         in: query
+ *         default: 0
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: text
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetTvShowsBySearchSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/search', searchTvShow);
 
-//get tv show by filters
+/**
+ * @swagger
+ * /api/tv-show/filter:
+ *   post:
+ *     summary: Filter TV Shows
+ *     tags: [TV Shows]
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/FilterTvShowBody'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetTvShowsBySearchSuccessResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post('/filter', validateReq(FilterTvShowZodSchema), filterTvShow);
 
-//Route to get tv show by id
+/**
+ * @swagger
+ * /api/tv-show/{id}:
+ *   get:
+ *     summary: Get tv show by id
+ *     tags: [TV Shows]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: valid mongo id
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetTvShowSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ */
 route.get('/:id', getTvShowById);
 
-//Route to update a tv show by id
+/**
+ * @swagger
+ * /api/tv-show/{id}:
+ *   patch:
+ *     summary: Update a tv show
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/UpdateTvShowRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/TvShowResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ */
 route.patch(
   '/:id',
   requireAuth('admin'),
@@ -345,7 +510,28 @@ route.patch(
  */
 route.delete('/season/:id', requireAuth('admin'), deleteSeasonById);
 
-//Route to bulk delete tv shows
+/**
+ * @swagger
+ * /api/tv-show/bulk:
+ *   delete:
+ *     summary: Delete multiple tv shows by ID
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/BulkDeleteTvShowRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/BulkDeleteTvShowSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete(
   '/bulk',
   requireAuth('admin'),
@@ -353,7 +539,33 @@ route.delete(
   bulkDeleteTvShow
 );
 
-// Route to delete a tv show by id
+/**
+ * @swagger
+ * /api/tv-show/{id}:
+ *   delete:
+ *     summary: Delete a tv show by ID
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteTvShowSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete('/:id', requireAuth('admin'), deleteTvShowById);
 
 //export all the routes

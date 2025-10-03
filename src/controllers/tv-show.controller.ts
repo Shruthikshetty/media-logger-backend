@@ -115,6 +115,12 @@ export const getTvShowById = async (
     // get id from params
     const { id } = req.params;
 
+    // check if id is a valid mongo id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid tv show id', statusCode: 400 });
+      return;
+    }
+
     // get the tv show details
     const tvShow = await TVShow.findById(id).lean<ITVShow>().exec();
 
@@ -133,10 +139,8 @@ export const getTvShowById = async (
     res.status(200).json({
       success: true,
       data: {
-        tvShow: {
-          ...tvShow,
-          seasons: seasonsWithEpisodes,
-        },
+        ...tvShow,
+        seasons: seasonsWithEpisodes,
       },
     });
   } catch (error) {
@@ -313,19 +317,38 @@ export const searchTvShow = async (
           },
         },
       },
+      {
+        $facet: {
+          //  Get the paginated data
+          paginatedResults: [{ $skip: start }, { $limit: limit }],
+          //  Get the total count of matched documents
+          totalCount: [
+            {
+              $count: 'count',
+            },
+          ],
+        },
+      },
     ];
 
     //get the tv shows
-    const tvShows = await TVShow.aggregate(pipeline)
-      .limit(limit)
-      .skip(start)
-      .exec();
+    const results = await TVShow.aggregate(pipeline);
+
+    //get the tv shows
+    const resultDoc = results[0];
+    const tvShows = resultDoc.paginatedResults;
+    const total =
+      resultDoc.totalCount.length > 0 ? resultDoc.totalCount[0].count : 0;
+
+    // get pagination details
+    const pagination = getPaginationResponse(total, limit, start);
 
     //send response
     res.status(200).json({
       success: true,
       data: {
         tvShows,
+        pagination,
       },
     });
   } catch (error) {
@@ -353,15 +376,30 @@ export const filterTvShow = async (
       tags,
       totalEpisodes,
       totalSeasons,
+      searchText,
     } = req.validatedData!;
 
     //define filters and pipeline
-    const filters: any[] = [];
     const pipeline: any[] = [];
+    const searchClauses: any = {
+      must: [],
+      filter: [],
+    };
+
+    //search has to be first in pipeline
+    if (searchText) {
+      //push search text to pipeline
+      searchClauses.must.push({
+        text: {
+          query: searchText,
+          path: ['title'],
+        },
+      });
+    }
 
     //check if genre is defined
     if (genre) {
-      filters.push({
+      searchClauses.filter.push({
         in: {
           path: 'genre',
           value: genre,
@@ -371,7 +409,7 @@ export const filterTvShow = async (
 
     //check if tags is defined
     if (tags) {
-      filters.push({
+      searchClauses.filter.push({
         in: {
           path: 'tags',
           value: tags,
@@ -381,7 +419,7 @@ export const filterTvShow = async (
 
     //check if status is defined
     if (status) {
-      filters.push({
+      searchClauses.filter.push({
         in: {
           path: 'status',
           value: status,
@@ -391,7 +429,7 @@ export const filterTvShow = async (
 
     //check if averageRating is defined
     if (averageRating) {
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'averageRating',
           gte: averageRating,
@@ -401,7 +439,7 @@ export const filterTvShow = async (
 
     //check if releaseDate is defined
     if (releaseDate) {
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'releaseDate',
           ...releaseDate,
@@ -411,7 +449,7 @@ export const filterTvShow = async (
 
     //check if runTime is defined
     if (runTime) {
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'runTime',
           ...runTime,
@@ -421,7 +459,7 @@ export const filterTvShow = async (
 
     //check if totalEpisodes is defined
     if (totalEpisodes) {
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'totalEpisodes',
           ...totalEpisodes,
@@ -431,7 +469,7 @@ export const filterTvShow = async (
 
     //check if totalSeasons is defined
     if (totalSeasons) {
-      filters.push({
+      searchClauses.filter.push({
         range: {
           path: 'totalSeasons',
           ...totalSeasons,
@@ -442,7 +480,7 @@ export const filterTvShow = async (
     //check if languages is defined
     if (languages) {
       //push language filter to filters
-      filters.push({
+      searchClauses.filter.push({
         in: {
           value: languages,
           path: 'languages',
@@ -450,17 +488,20 @@ export const filterTvShow = async (
       });
     }
 
-    //if filters are defined
-    if (filters.length > 0) {
+    // build pipeline if filters are defined
+    // Only add a $search stage if there's something to search or filter by
+    const compound: any = {};
+    if (searchClauses.must.length) compound.must = searchClauses.must;
+    if (searchClauses.filter.length) compound.filter = searchClauses.filter;
+
+    if (Object.keys(compound).length) {
       pipeline.push({
-        $search: {
-          index: TV_SHOW_SEARCH_INDEX,
-          compound: {
-            filter: filters,
-          },
-        },
+        $search: { index: TV_SHOW_SEARCH_INDEX, compound },
       });
     }
+
+    // Ensure that the results are sorted by createdAt in descending order
+    pipeline.push({ $sort: { createdAt: -1 } });
 
     //Use $facet to get both paginated data and total count in one query
     const skip = (page - 1) * limit;
