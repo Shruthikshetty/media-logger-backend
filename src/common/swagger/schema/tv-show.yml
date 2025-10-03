@@ -97,16 +97,6 @@ components:
           type: integer
           description: Suggested viewer age rating.
           example: 18
-
-    TvShowResponseFlat:
-      allOf:
-        - $ref: '#/components/schemas/TvShow'
-      properties:
-        seasons:
-          type: array
-          items:
-            $ref: '#/components/schemas/SeasonResponseFlat'
-
     TvShowResponseFull:
       allOf:
         - $ref: '#/components/schemas/TvShow'
@@ -228,3 +218,21 @@ components:
                         description: 'With the cafe struggling, Fleabag asks her sister for money...'
                         episodeNumber: 2
                         runTime: 26
+
+    GetAllTvShowsSuccessResponse:
+      description: Success response for getting all tv shows
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+              data:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/TvShow'
+                    - $ref: '#/components/schemas/TvShowResponseFull'

@@ -77,7 +77,45 @@ route.post(
   ValidateJsonFile(BulkAddTvShowZodSchema),
   bulkAddTvShow
 );
-//get all the tv shows
+/**
+ * @swagger
+ * /api/tv-show:
+ *   get:
+ *     summary: Get all TV Shows
+ *     tags: [TV Shows]
+ *     parameters:
+ *       - name: limit
+ *         in: query
+ *         default: 20
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: page
+ *         in: query
+ *         default: 1
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: start
+ *         in: query
+ *         default: 0
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: fullDetails
+ *         in: query
+ *         required: false
+ *         default: false
+ *         schema:
+ *           type: boolean
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllTvShowsSuccessResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/', getAllTvShows);
 
 //get tv show by search text
