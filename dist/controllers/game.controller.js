@@ -324,7 +324,6 @@ const filterGames = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         //destructure the filters from validated data
         const { genre, platforms, status, avgPlaytime, releaseDate, averageRating, page, ageRating, limit, searchText, } = req.validatedData;
         //define filters and pipeline
-        //define filters and pipeline
         const pipeline = [];
         const searchClauses = {
             must: [],

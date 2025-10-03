@@ -9,11 +9,9 @@ exports.FilterTvShowZodSchema = void 0;
  */
 const zod_1 = __importDefault(require("zod"));
 const config_constants_1 = require("../../constants/config.constants");
-const lodash_1 = require("lodash");
 //@TODO handle lte > gte
 //schema
-exports.FilterTvShowZodSchema = zod_1.default
-    .object({
+exports.FilterTvShowZodSchema = zod_1.default.object({
     averageRating: zod_1.default
         .number({
         message: 'Average rating must be number',
@@ -148,14 +146,9 @@ exports.FilterTvShowZodSchema = zod_1.default
     })
         .min(1)
         .default(1),
-})
-    .superRefine((data, ctx) => {
-    const hasValue = Object.values((0, lodash_1.omit)(data, 'limit', 'page')).some((val) => val !== undefined);
-    if (!hasValue) {
-        ctx.addIssue({
-            code: zod_1.default.ZodIssueCode.custom,
-            message: 'Provide filter for results to appear',
-            path: [],
-        });
-    }
+    searchText: zod_1.default
+        .string({
+        message: 'Search text must be string',
+    })
+        .optional(),
 });
