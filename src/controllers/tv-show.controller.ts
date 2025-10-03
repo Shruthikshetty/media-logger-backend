@@ -139,8 +139,8 @@ export const getTvShowById = async (
     res.status(200).json({
       success: true,
       data: {
-          ...tvShow,
-          seasons: seasonsWithEpisodes,
+        ...tvShow,
+        seasons: seasonsWithEpisodes,
       },
     });
   } catch (error) {
