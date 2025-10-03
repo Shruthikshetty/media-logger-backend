@@ -289,6 +289,14 @@ components:
                     '630f06f6f80f0c456d5d3e15',
                     '630f06f6f80f0c456d5d3e14',
                   ]
+    UpdateTvShowRequest: 
+      description: The request body for updating a TV Show.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TvShow'
+  
   responses:
     TvShowResponse:
       description: A single TV Show object including seasons and episodes.
@@ -462,5 +470,5 @@ components:
               data:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TvShowResponseFull'
+                  $ref: '#/components/schemas/TvShow'
                   

@@ -228,7 +228,33 @@ route.post('/filter', validateReq(FilterTvShowZodSchema), filterTvShow);
  */
 route.get('/:id', getTvShowById);
 
-//Route to update a tv show by id
+/**
+ * @swagger
+ * /api/tv-show/{id}:
+ *   patch:
+ *     summary: Update a tv show
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/UpdateTvShowRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/TvShowResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ */
 route.patch(
   '/:id',
   requireAuth('admin'),
