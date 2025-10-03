@@ -172,7 +172,29 @@ route.get('/search', searchTvShow);
  */
 route.post('/filter', validateReq(FilterTvShowZodSchema), filterTvShow);
 
-//Route to get tv show by id
+/**
+ * @swagger
+ * /api/tv-show/{id}:
+ *   get:
+ *     summary: Get tv show by id
+ *     tags: [TV Shows]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required:
+ *         schema:
+ *           type: string
+ *         description: valid mongo id
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetTvShowSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ */
 route.get('/:id', getTvShowById);
 
 //Route to update a tv show by id

@@ -115,6 +115,12 @@ export const getTvShowById = async (
     // get id from params
     const { id } = req.params;
 
+    // check if id is a valid mongo id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid tv show id', statusCode: 400 });
+      return;
+    }
+
     // get the tv show details
     const tvShow = await TVShow.findById(id).lean<ITVShow>().exec();
 
@@ -133,10 +139,8 @@ export const getTvShowById = async (
     res.status(200).json({
       success: true,
       data: {
-        tvShow: {
           ...tvShow,
           seasons: seasonsWithEpisodes,
-        },
       },
     });
   } catch (error) {
