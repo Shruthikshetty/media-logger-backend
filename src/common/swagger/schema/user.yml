@@ -71,14 +71,14 @@ components:
   requestBodies:
     AddUserRequest:
       description: Request body for adding a new user
-      required:
-        - name
-        - email
-        - password
       content:
         application/json:
           schema:
             type: object
+            required:
+              - name
+              - email
+              - password
             properties:
               name:
                 type: string
