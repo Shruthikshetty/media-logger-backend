@@ -281,7 +281,7 @@ components:
               tvShowIds:
                 type: array
                 items:
-                  type: integer
+                  type: string
                 description: An array of TV Show IDs to delete.
                 example:
                   [
@@ -451,7 +451,7 @@ components:
               data:
                 type: object
                 properties:
-                  deletedCount:
+                  deleteCount:
                     $ref: '#/components/schemas/TvShowDeleteCount'
 
     BulkAddTvShowSuccessResponse:

@@ -212,7 +212,7 @@ route.post('/filter', validateReq(FilterTvShowZodSchema), filterTvShow);
  *     parameters:
  *       - name: id
  *         in: path
- *         required:
+ *         required: true
  *         schema:
  *           type: string
  *         description: valid mongo id
