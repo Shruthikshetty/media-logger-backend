@@ -155,6 +155,109 @@ components:
                     description: 'With the cafe struggling...'
                     episodeNumber: 2
                     runTime: 26
+    FilterTvShowBody:
+      description: The request body for filtering TV Shows.
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                description: Filter by the title of the TV show.
+                example: 'The Office'
+              averageRating:
+                type: number
+                format: float
+                description: Filter by the minimum average rating (0-10).
+                example: 8.5
+              genre:
+                type: array
+                items:
+                  type: string
+                description: Filter by a list of genres.
+                example: ['Comedy', 'Documentary']
+              releaseDate:
+                type: object
+                description: Filter by a release date range.
+                properties:
+                  gte:
+                    type: string
+                    format: date-time
+                    description: 'The minimum release date (inclusive).'
+                  lte:
+                    type: string
+                    format: date-time
+                    description: 'The maximum release date (inclusive).'
+                example:
+                  gte: '2005-03-24T00:00:00Z'
+              totalEpisodes:
+                type: object
+                description: Filter by a range for the total number of episodes.
+                properties:
+                  gte:
+                    type: integer
+                    description: The minimum number of episodes.
+                  lte:
+                    type: integer
+                    description: The maximum number of episodes.
+                example:
+                  gte: 150
+              runTime:
+                type: object
+                description: Filter by a range for the episode run time in minutes.
+                properties:
+                  gte:
+                    type: integer
+                    description: The minimum run time.
+                  lte:
+                    type: integer
+                    description: The maximum run time.
+                example:
+                  lte: 30
+              status:
+                type: string
+                description: Filter by the current status of the TV show.
+                example: 'Ended'
+              languages:
+                type: array
+                items:
+                  type: string
+                description: Filter by a list of languages.
+                example: ['English']
+              tags:
+                type: array
+                items:
+                  type: string
+                description: Filter by a list of tags.
+                example: ['workplace', 'mockumentary']
+              totalSeasons:
+                type: object
+                description: Filter by a range for the total number of seasons.
+                properties:
+                  gte:
+                    type: integer
+                    description: The minimum number of seasons.
+                  lte:
+                    type: integer
+                    description: The maximum number of seasons.
+                example:
+                  gte: 9
+              limit:
+                type: integer
+                description: The maximum number of results to return per page.
+                default: 10
+                example: 20
+              page:
+                type: integer
+                description: The page number of the results.
+                default: 1
+                example: 1
+              searchText:
+                type: string
+                description: A general text search across multiple fields.
+                example: 'Dunder Mifflin'
 
   responses:
     TvShowResponse:

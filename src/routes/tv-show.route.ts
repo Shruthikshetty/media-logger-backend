@@ -111,8 +111,6 @@ route.post(
  *     responses:
  *       '200':
  *         $ref: '#/components/responses/GetAllTvShowsSuccessResponse'
- *       '400':
- *         $ref: '#/components/responses/BadRequest'
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -151,14 +149,27 @@ route.get('/', getAllTvShows);
  *     responses:
  *       '200':
  *         $ref: '#/components/responses/GetTvShowsBySearchSuccessResponse'
- *       '400':
- *         $ref: '#/components/responses/BadRequest'
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
 route.get('/search', searchTvShow);
 
-//get tv show by filters
+/**
+ * @swagger
+ * /api/tv-show/filter:
+ *   post:
+ *     summary: Filter TV Shows
+ *     tags: [TV Shows]
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/FilterTvShowBody'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetTvShowsBySearchSuccessResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post('/filter', validateReq(FilterTvShowZodSchema), filterTvShow);
 
 //Route to get tv show by id
