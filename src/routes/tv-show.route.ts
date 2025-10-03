@@ -118,7 +118,44 @@ route.post(
  */
 route.get('/', getAllTvShows);
 
-//get tv show by search text
+/**
+ * @swagger
+ * /api/tv-show/search:
+ *   get:
+ *     summary: Search for TV Shows
+ *     tags: [TV Shows]
+ *     parameters:
+ *       - name: limit
+ *         in: query
+ *         default: 20
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: page
+ *         in: query
+ *         default: 1
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: start
+ *         in: query
+ *         default: 0
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: text
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetTvShowsBySearchSuccessResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/search', searchTvShow);
 
 //get tv show by filters

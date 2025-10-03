@@ -313,19 +313,38 @@ export const searchTvShow = async (
           },
         },
       },
+      {
+        $facet: {
+          //  Get the paginated data
+          paginatedResults: [{ $skip: start }, { $limit: limit }],
+          //  Get the total count of matched documents
+          totalCount: [
+            {
+              $count: 'count',
+            },
+          ],
+        },
+      },
     ];
 
     //get the tv shows
-    const tvShows = await TVShow.aggregate(pipeline)
-      .limit(limit)
-      .skip(start)
-      .exec();
+    const results = await TVShow.aggregate(pipeline);
+
+    //get the tv shows
+    const resultDoc = results[0];
+    const tvShows = resultDoc.paginatedResults;
+    const total =
+      resultDoc.totalCount.length > 0 ? resultDoc.totalCount[0].count : 0;
+
+    // get pagination details
+    const pagination = getPaginationResponse(total, limit, start);
 
     //send response
     res.status(200).json({
       success: true,
       data: {
         tvShows,
+        pagination,
       },
     });
   } catch (error) {

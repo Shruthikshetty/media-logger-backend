@@ -231,8 +231,34 @@ components:
               message:
                 type: string
               data:
-                type: array
-                items:
-                  oneOf:
-                    - $ref: '#/components/schemas/TvShow'
-                    - $ref: '#/components/schemas/TvShowResponseFull'
+                type: object
+                properties:
+                  tvShows:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/TvShow'
+                        - $ref: '#/components/schemas/TvShowResponseFull'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+
+    GetTvShowsBySearchSuccessResponse:
+      description: Success response for getting tv shows by search
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  tvShows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TvShow'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
