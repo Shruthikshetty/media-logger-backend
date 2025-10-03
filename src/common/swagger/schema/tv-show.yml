@@ -97,16 +97,6 @@ components:
           type: integer
           description: Suggested viewer age rating.
           example: 18
-
-    TvShowResponseFlat:
-      allOf:
-        - $ref: '#/components/schemas/TvShow'
-      properties:
-        seasons:
-          type: array
-          items:
-            $ref: '#/components/schemas/SeasonResponseFlat'
-
     TvShowResponseFull:
       allOf:
         - $ref: '#/components/schemas/TvShow'
@@ -115,6 +105,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SeasonResponseFull'
+    TvShowDeleteCount:
+      type: object
+      properties:
+        tvShow:
+          type: integer
+          example: 1
+        seasons:
+          type: integer
+          example: 1
+        episodes:
+          type: integer
+          example: 1
 
   requestBodies:
     AddTvShowBody:
@@ -165,6 +167,135 @@ components:
                     description: 'With the cafe struggling...'
                     episodeNumber: 2
                     runTime: 26
+    FilterTvShowBody:
+      description: The request body for filtering TV Shows.
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                description: Filter by the title of the TV show.
+                example: 'The Office'
+              averageRating:
+                type: number
+                format: float
+                description: Filter by the minimum average rating (0-10).
+                example: 8.5
+              genre:
+                type: array
+                items:
+                  type: string
+                description: Filter by a list of genres.
+                example: ['Comedy', 'Documentary']
+              releaseDate:
+                type: object
+                description: Filter by a release date range.
+                properties:
+                  gte:
+                    type: string
+                    format: date-time
+                    description: 'The minimum release date (inclusive).'
+                  lte:
+                    type: string
+                    format: date-time
+                    description: 'The maximum release date (inclusive).'
+                example:
+                  gte: '2005-03-24T00:00:00Z'
+              totalEpisodes:
+                type: object
+                description: Filter by a range for the total number of episodes.
+                properties:
+                  gte:
+                    type: integer
+                    description: The minimum number of episodes.
+                  lte:
+                    type: integer
+                    description: The maximum number of episodes.
+                example:
+                  gte: 150
+              runTime:
+                type: object
+                description: Filter by a range for the episode run time in minutes.
+                properties:
+                  gte:
+                    type: integer
+                    description: The minimum run time.
+                  lte:
+                    type: integer
+                    description: The maximum run time.
+                example:
+                  lte: 30
+              status:
+                type: string
+                description: Filter by the current status of the TV show.
+                example: 'Ended'
+              languages:
+                type: array
+                items:
+                  type: string
+                description: Filter by a list of languages.
+                example: ['English']
+              tags:
+                type: array
+                items:
+                  type: string
+                description: Filter by a list of tags.
+                example: ['workplace', 'mockumentary']
+              totalSeasons:
+                type: object
+                description: Filter by a range for the total number of seasons.
+                properties:
+                  gte:
+                    type: integer
+                    description: The minimum number of seasons.
+                  lte:
+                    type: integer
+                    description: The maximum number of seasons.
+                example:
+                  gte: 9
+              limit:
+                type: integer
+                description: The maximum number of results to return per page.
+                default: 10
+                example: 20
+              page:
+                type: integer
+                description: The page number of the results.
+                default: 1
+                example: 1
+              searchText:
+                type: string
+                description: A general text search across multiple fields.
+                example: 'Dunder Mifflin'
+    BulkDeleteTvShowRequest:
+      description: The request body for bulk deleting TV Shows.
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              tvShowIds:
+                type: array
+                items:
+                  type: string
+                description: An array of TV Show IDs to delete.
+                example:
+                  [
+                    '630f06f6f80f0c456d5d3e11',
+                    '630f06f6f80f0c456d5d3e15',
+                    '630f06f6f80f0c456d5d3e14',
+                  ]
+    UpdateTvShowRequest:
+      description: The request body for updating a TV Show.
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TvShow'
 
   responses:
     TvShowResponse:
@@ -228,3 +359,115 @@ components:
                         description: 'With the cafe struggling, Fleabag asks her sister for money...'
                         episodeNumber: 2
                         runTime: 26
+
+    GetAllTvShowsSuccessResponse:
+      description: Success response for getting all tv shows
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  tvShows:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/TvShow'
+                        - $ref: '#/components/schemas/TvShowResponseFull'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+
+    GetTvShowsBySearchSuccessResponse:
+      description: Success response for getting tv shows by search
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  tvShows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TvShow'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+
+    GetTvShowSuccessResponse:
+      description: Success response for getting a single tv show
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              data:
+                $ref: '#/components/schemas/TvShowResponseFull'
+
+    DeleteTvShowSuccessResponse:
+      description: Success response for deleting a single tv show
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  deleteCount:
+                    $ref: '#/components/schemas/TvShowDeleteCount'
+              message:
+                type: string
+                example: 'Tv show deleted successfully'
+
+    BulkDeleteTvShowSuccessResponse:
+      description: Success response for bulk deleting tv shows
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Tv shows deleted successfully'
+              data:
+                type: object
+                properties:
+                  deleteCount:
+                    $ref: '#/components/schemas/TvShowDeleteCount'
+
+    BulkAddTvShowSuccessResponse:
+      description: Success response for bulk adding tv shows
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Tv shows added successfully'
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TvShow'

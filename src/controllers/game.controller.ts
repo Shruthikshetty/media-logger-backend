@@ -378,7 +378,7 @@ export const filterGames = async (
       limit,
       searchText,
     } = req.validatedData!;
-    //define filters and pipeline
+
     //define filters and pipeline
     const pipeline: any[] = [];
     const searchClauses: any = {
