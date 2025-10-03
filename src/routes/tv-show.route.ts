@@ -461,7 +461,33 @@ route.delete(
   bulkDeleteTvShow
 );
 
-// Route to delete a tv show by id
+/**
+ * @swagger
+ * /api/tv-show/{id}:
+ *   delete:
+ *     summary: Delete a tv show by ID
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteTvShowSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete('/:id', requireAuth('admin'), deleteTvShowById);
 
 //export all the routes

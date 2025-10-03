@@ -377,3 +377,32 @@ components:
                 type: boolean
               data:
                 $ref: '#/components/schemas/TvShowResponseFull'
+
+    DeleteTvShowSuccessResponse:
+      description: Success response for deleting a single tv show
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  deletedCount:
+                    type: object
+                    properties:
+                      tvShow:
+                        type: integer
+                        example: 1
+                      seasons:
+                        type: integer
+                        example: 1
+                      episodes:
+                        type: integer
+                        example: 1
+              message:
+                type: string
+                example: 'Tv show deleted successfully'
