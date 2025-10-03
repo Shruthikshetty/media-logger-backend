@@ -270,7 +270,25 @@ components:
                 type: string
                 description: A general text search across multiple fields.
                 example: 'Dunder Mifflin'
-
+    BulkDeleteTvShowRequest:
+      description: The request body for bulk deleting TV Shows.
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              tvShowIds:
+                type: array
+                items:
+                  type: integer
+                description: An array of TV Show IDs to delete.
+                example:
+                  [
+                    '630f06f6f80f0c456d5d3e11',
+                    '630f06f6f80f0c456d5d3e15',
+                    '630f06f6f80f0c456d5d3e14',
+                  ]
   responses:
     TvShowResponse:
       description: A single TV Show object including seasons and episodes.
@@ -408,3 +426,22 @@ components:
               message:
                 type: string
                 example: 'Tv show deleted successfully'
+
+    BulkDeleteTvShowSuccessResponse:
+      description: Success response for bulk deleting tv shows
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'Tv shows deleted successfully'
+              data:
+                type: object
+                properties:
+                  deletedCount:
+                    $ref: '#/components/schemas/TvShowDeleteCount'

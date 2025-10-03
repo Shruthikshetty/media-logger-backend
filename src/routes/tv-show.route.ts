@@ -453,7 +453,28 @@ route.patch(
  */
 route.delete('/season/:id', requireAuth('admin'), deleteSeasonById);
 
-//Route to bulk delete tv shows
+/**
+ * @swagger
+ * /api/tv-show/bulk:
+ *   delete:
+ *     summary: Delete multiple tv shows by ID
+ *     tags: [TV Shows]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/BulkDeleteTvShowRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/BulkDeleteTvShowSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400': 
+ *         $ref: '#/components/responses/BadRequest'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete(
   '/bulk',
   requireAuth('admin'),
