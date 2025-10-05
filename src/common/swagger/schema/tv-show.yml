@@ -138,7 +138,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/TvShowResponseFull'
-  
+
     FilterTvShowBody:
       description: The request body for filtering TV Shows.
       required: true
@@ -286,7 +286,7 @@ components:
                 properties:
                   tvShow:
                     $ref: '#/components/schemas/TvShowResponseFull'
-          
+
     GetAllTvShowsSuccessResponse:
       description: Success response for getting all tv shows
       content:
