@@ -73,7 +73,7 @@ export const FilterTvShowZodSchema = z.object({
     })
     .optional(),
 
-  runTime: z
+  avgRunTime: z
     .object({
       gte: z
         .number({

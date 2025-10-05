@@ -21,18 +21,28 @@ The following is a description of the database models used in the application ph
 
 #### Table: TV Shows
 
-| Field Name    | Data Type     | Description                             |
-| ------------- | ------------- | --------------------------------------- |
-| title         | string        | TV show title                           |
-| description   | string        | TV show description                     |
-| averageRating | number        | TV show average rating                  |
-| genre         | array[string] | TV show genres (enum: `GENRE_MOVIE_TV`) |
-| releaseDate   | date          | TV show release date                    |
-| cast          | array[string] | TV show cast                            |
-| directors     | array[string] | TV show directors                       |
-| runTime       | number        | TV show run time                        |
-| languages     | array[string] | TV show languages                       |
-| posterUrl     | string        | TV show poster URL                      |
+| Field Name     | Data Type     | Description                             |
+| -------------- | ------------- | --------------------------------------- |
+| title          | string        | TV show title                           |
+| description    | string        | TV show description                     |
+| averageRating  | number        | TV show average rating                  |
+| genre          | array[string] | TV show genres (enum: `GENRE_MOVIE_TV`) |
+| releaseDate    | date          | TV show release date                    |
+| cast           | array[string] | TV show cast                            |
+| directors      | array[string] | TV show directors                       |
+| avgRunTime     | number        | TV show average run time                |
+| languages      | array[string] | TV show languages                       |
+| posterUrl      | string        | TV show poster URL                      |
+| backdropUrl    | string        | TV show backdrop URL                    |
+| isActive       | boolean       | TV show active status                   |
+| status         | string        | TV show status (enum: `MEDIA_STATUS`)   |
+| tags           | array[string] | TV show tags (enum: `TAGS`)             |
+| totalSeasons   | number        | TV show total seasons                   |
+| totalEpisodes  | number        | TV show total episodes                  |
+| ageRating      | number        | TV show age rating                      |
+| youtubeVideoId | string        | TV show trailer youtube embed ID        |
+| tmdbId         | string        | TV show tmdb id                         |
+| imdbId         | string        | TV show imdb id                         |
 
 ### TV Season Model
 

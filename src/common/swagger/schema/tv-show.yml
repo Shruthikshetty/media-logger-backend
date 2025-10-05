@@ -11,7 +11,6 @@ components:
         - description
         - genre
         - releaseDate
-        - runTime
         - status
         - totalSeasons
         - totalEpisodes
@@ -29,6 +28,7 @@ components:
           description: The average rating of the TV show, on a scale of 0 to 10.
           format: float
           maximum: 10
+          minimum: 0
           example: 9.5
         genre:
           type: array
@@ -52,7 +52,7 @@ components:
           items:
             type: string
           example: ['Vince Gilligan']
-        runTime:
+        avgRunTime:
           type: integer
           description: Runtime of each episode, in minutes.
           example: 47
@@ -97,6 +97,18 @@ components:
           type: integer
           description: Suggested viewer age rating.
           example: 18
+        youtubeVideoId:
+          type: string
+          format: youtube video id
+          example: 'dQw4w9WgXcQ'
+        tmdbId:
+          type: string
+          format: tmdb id
+          example: '1399'
+        imdbId:
+          type: string
+          format: imdb id
+          example: 'tt0903747'
     TvShowResponseFull:
       allOf:
         - $ref: '#/components/schemas/TvShow'
@@ -126,47 +138,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/TvShowResponseFull'
-          example:
-            title: 'Fleabag'
-            description: 'A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy.'
-            averageRating: 8.7
-            genre: ['Comedy', 'Drama']
-            releaseDate: '2016-07-21T00:00:00.000Z'
-            cast: ['Phoebe Waller-Bridge', 'Sian Clifford', 'Olivia Colman']
-            directors: ['Harry Bradbeer']
-            runTime: 27
-            languages: ['English']
-            posterUrl: 'https://m.media-amazon.com/images/M/MV5B...'
-            backdropUrl: 'https://www.themoviedb.org/t/p/original/...'
-            isActive: true
-            status: 'released'
-            tags:
-              - 'Award-winning'
-              - 'Character-driven'
-              - 'Dialogue-heavy'
-              - 'Satirical'
-            totalSeasons: 2
-            totalEpisodes: 12
-            ageRating: 16
-            seasons:
-              - seasonNumber: 1
-                title: 'Season 1'
-                description: 'Fleabag navigates...'
-                releaseDate: '2016-07-21T00:00:00.000Z'
-                noOfEpisodes: 6
-                posterUrl: 'https://www.themoviedb.org/t/p/w220_and_h330_face/ohh0255e0x9a8y6eSyrDLi2hM96.jpg'
-                seasonRating: 8.5
-                status: ended
-                trailerYoutubeUrl: 'https://www.youtube.com/watch?v=I5Uv6cb9YRs'
-                episodes:
-                  - title: 'Episode 1'
-                    description: 'Fleabag tries...'
-                    episodeNumber: 1
-                    runTime: 27
-                  - title: 'Episode 2'
-                    description: 'With the cafe struggling...'
-                    episodeNumber: 2
-                    runTime: 26
+  
     FilterTvShowBody:
       description: The request body for filtering TV Shows.
       required: true
@@ -216,9 +188,9 @@ components:
                     description: The maximum number of episodes.
                 example:
                   gte: 150
-              runTime:
+              avgRunTime:
                 type: object
-                description: Filter by a range for the episode run time in minutes.
+                description: Filter by a range for the average episode run time in minutes.
                 properties:
                   gte:
                     type: integer
@@ -314,52 +286,7 @@ components:
                 properties:
                   tvShow:
                     $ref: '#/components/schemas/TvShowResponseFull'
-          example:
-            success: true
-            message: 'Tv show created successfully'
-            data:
-              tvShow:
-                title: 'Fleabag'
-                description: 'A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy.'
-                averageRating: 8.7
-                genre: ['Comedy', 'Drama']
-                releaseDate: '2016-07-21'
-                cast: ['Phoebe Waller-Bridge', 'Sian Clifford', 'Olivia Colman']
-                directors: ['Harry Bradbeer']
-                runTime: 27
-                languages: ['English']
-                posterUrl: 'https://m.media-amazon.com/images/...jpg'
-                backdropUrl: 'https://www.themoviedb.org/t/p/original/...jpg'
-                isActive: true
-                status: 'released'
-                tags:
-                  - 'Award-winning'
-                  - 'Character-driven'
-                  - 'Dialogue-heavy'
-                  - 'Satirical'
-                totalSeasons: 2
-                totalEpisodes: 12
-                ageRating: 16
-                seasons:
-                  - seasonNumber: 1
-                    title: 'Season 1'
-                    description: 'Fleabag navigates the minefield of her family and dating life while dealing with the recent death of her best friend.'
-                    releaseDate: '2016-07-21'
-                    noOfEpisodes: 6
-                    posterUrl: 'https://www.themoviedb.org/t/...jpg'
-                    seasonRating: 8.5
-                    status: ended
-                    trailerYoutubeUrl: 'https://www.youtube.com/watch?v=I5Uv6cb9YRs'
-                    episodes:
-                      - title: 'Episode 1'
-                        description: 'Fleabag tries to navigate a tricky family lunch and a one-night stand.'
-                        episodeNumber: 1
-                        runTime: 27
-                      - title: 'Episode 2'
-                        description: 'With the cafe struggling, Fleabag asks her sister for money...'
-                        episodeNumber: 2
-                        runTime: 26
-
+          
     GetAllTvShowsSuccessResponse:
       description: Success response for getting all tv shows
       content:
