@@ -133,7 +133,7 @@ export const createMockEpisode = (overrides = {}) => ({
   title: 'Episode 1: A New Beginning',
   description: 'The story begins as new characters are introduced.',
   episodeNumber: 1,
-  releaseDate: '2025-01-15',
+  releaseDate: new Date('2025-01-15').toISOString(),
   runTime: 45,
   createdAt: new Date(),
   updatedAt: new Date(),

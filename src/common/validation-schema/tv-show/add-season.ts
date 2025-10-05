@@ -32,10 +32,13 @@ export const AddSeasonZodSchema = z.object({
     })
     .optional(),
 
-  releaseDate: z.string({
-    required_error: 'Release date is required',
-    message: 'Release date must be string',
-  }),
+  releaseDate: z
+    .string({
+      message: 'Release date must be  iso date string',
+    })
+    .datetime({ message: 'Release date must be in iso format' })
+    .transform((val) => new Date(val))
+    .optional(),
 
   noOfEpisodes: z.number({
     required_error: 'No of episodes is required',
@@ -62,10 +65,18 @@ export const AddSeasonZodSchema = z.object({
       message: `Status must be one of the following: ${SEASON_STATUS.join(', ')}`,
     }),
 
-  trailerYoutubeUrl: z
+  youtubeVideoId: z
     .string({
-      message: 'Trailer youtube url must be string',
+      message: 'Youtube id must be string',
     })
+    .optional(),
+
+  averageRating: z
+    .number({
+      message: 'Average rating must be a number',
+    })
+    .min(0, { message: 'Rating cannot be negative' })
+    .max(10, { message: 'Rating cannot be greater than 10' })
     .optional(),
 
   episodes: z.array(AddEpisodeZodSchema.omit({ season: true })).optional(),

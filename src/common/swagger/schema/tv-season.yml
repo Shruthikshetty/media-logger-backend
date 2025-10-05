@@ -9,7 +9,6 @@ components:
       required:
         - seasonNumber
         - title
-        - releaseDate
         - noOfEpisodes
         - status
       properties:
@@ -28,7 +27,8 @@ components:
         releaseDate:
           type: string
           description: Release date (ISO format, YYYY-MM-DD).
-          example: '2022-02-15'
+          format: date-time
+          example: '2022-02-15T00:00:00.000Z'
         noOfEpisodes:
           type: integer
           description: Number of episodes in the season.
@@ -48,10 +48,15 @@ components:
           description: Status of the season.
           enum: ['ended', 'upcoming', 'on-going']
           example: 'ended'
-        trailerYoutubeUrl:
+        youtubeVideoId:
           type: string
-          description: Optional trailer YouTube URL.
-          example: 'https://youtube.com/watch?v=trailer'
+          description: Optional trailer YouTube embed ID.
+          example: '1232133dew'
+        averageRating:
+          type: number
+          format: float
+          description: Optional average rating (0-10).
+          example: 8.7
     UpdateSeason:
       type: object
       description: Schema for updating an existing season. All fields are optional.
@@ -72,7 +77,7 @@ components:
         releaseDate:
           type: string
           description: Release date (ISO format, YYYY-MM-DD).
-          example: '2022-02-15'
+          example: '2022-02-15T00:00:00.000Z'
         noOfEpisodes:
           type: integer
           description: Number of episodes in the season.
@@ -92,10 +97,15 @@ components:
           description: Status of the season.
           enum: ['ended', 'upcoming', 'on-going']
           example: 'on-going'
-        trailerYoutubeUrl:
+        youtubeVideoId:
           type: string
-          description: Optional trailer YouTube URL.
-          example: 'https://youtube.com/watch?v=trailer'
+          description: Optional trailer YouTube embed ID.
+          example: '1232133dew'
+        averageRating:
+          type: number
+          format: float
+          description: Optional average rating (0-10).
+          example: 8.7
         tvShow:
           type: string
           description: MongoDB ObjectId string reference to the TV show.

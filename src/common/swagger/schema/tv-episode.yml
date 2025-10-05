@@ -9,7 +9,6 @@ components:
       required:
         - title
         - episodeNumber
-        - runTime
       properties:
         _id:
           type: string
@@ -36,6 +35,16 @@ components:
           type: integer
           description: Duration of the episode in minutes.
           example: 47
+        stillUrl:
+          type: string
+          description: URL of the episode's still image.
+          example: 'https://example.com/still.jpg'
+        averageRating:
+          type: number
+          description: Average rating of the episode.
+          maximum: 10
+          minimum: 0
+          example: 8.5
         createdAt:
           type: string
           format: date-time
@@ -58,15 +67,25 @@ components:
           example: '60e9ef67af7b8a0015e3b4bc'
         title:
           type: string
+          example: 'Pilot'
         description:
           type: string
+          example: 'Walter White, a high school chemistry teacher, learns he has cancer and starts making meth.'
         episodeNumber:
           type: integer
+          example: 1
         releaseDate:
           type: string
           format: date
+          example: '2008-01-20'
         runTime:
           type: integer
+        stillUrl:
+          type: string
+        averageRating:
+          type: number
+          maximum: 10
+          minimum: 0
 
     EpisodeResponseFlat:
       allOf:
@@ -138,16 +157,6 @@ components:
                 oneOf:
                   - $ref: '#/components/schemas/EpisodeResponseFlat'
                   - $ref: '#/components/schemas/EpisodeResponsePopulated'
-            example:
-              success: true
-              data:
-                _id: '60e9ef67af7b8a0015e3b4bc'
-                season: '60e9ef67af7b8a0015e3b4bb'
-                title: 'Pilot'
-                description: 'Walter White, a high school chemistry teacher, learns he has cancer and starts making meth.'
-                episodeNumber: 1
-                releaseDate: '2008-01-20'
-                runTime: 47
 
     DeleteEpisodeSuccessResponse:
       description: Success response for deleting an episode
