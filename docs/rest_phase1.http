@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzI4NzdjMDkwZGJjZTI5NGViY2Q2NSIsImlhdCI6MTc1OTY0MTQwNiwiZXhwIjoxNzU5NzI3ODA2fQ.QDNKw42-GIQAcl8OnevolpL7tRrdskSCv1Ub9x5PGuQ
+@authToken = Bearer <token>
 ##-------------------------------------------- USER -------------------------------------------------------------
 ### add user
 POST {{baseUrl}}/api/user
