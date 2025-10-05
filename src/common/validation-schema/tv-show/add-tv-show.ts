@@ -155,8 +155,8 @@ export const AddTvShowZodSchema = z.object({
     .optional(),
 
   tmdbId: z
-    .number({
-      message: 'Tmdb id must be number',
+    .string({
+      message: 'Tmdb id must be string',
     })
     .optional(),
 
