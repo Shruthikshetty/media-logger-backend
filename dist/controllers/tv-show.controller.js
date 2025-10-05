@@ -296,7 +296,7 @@ const filterTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     var _a, _b, _c;
     try {
         //destructure validated data
-        const { genre, limit, page, languages, status, averageRating, releaseDate, runTime, tags, totalEpisodes, totalSeasons, searchText, } = req.validatedData;
+        const { genre, limit, page, languages, status, averageRating, releaseDate, avgRunTime, tags, totalEpisodes, totalSeasons, searchText, } = req.validatedData;
         //define filters and pipeline
         const pipeline = [];
         const searchClauses = {
@@ -356,9 +356,9 @@ const filterTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
         }
         //check if runTime is defined
-        if (runTime) {
+        if (avgRunTime) {
             searchClauses.filter.push({
-                range: Object.assign({ path: 'runTime' }, runTime),
+                range: Object.assign({ path: 'avgRunTime' }, avgRunTime),
             });
         }
         //check if totalEpisodes is defined

@@ -24,12 +24,21 @@ const EpisodeSchema = new mongoose_1.Schema({
         required: true,
     },
     releaseDate: {
-        type: String,
-        default: '',
+        type: Date,
     },
     runTime: {
         type: Number,
-        required: true,
+        required: false,
+    },
+    stillUrl: {
+        type: String,
+        required: false,
+    },
+    averageRating: {
+        type: Number,
+        required: false,
+        max: 10,
+        min: 0,
     },
 }, { timestamps: true });
 // create model from schema

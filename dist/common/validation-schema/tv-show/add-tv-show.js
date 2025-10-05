@@ -24,6 +24,7 @@ exports.AddTvShowZodSchema = zod_1.default.object({
         .number({
         message: 'Average rating must be number',
     })
+        .min(0, 'Average rating cannot be negative')
         .max(10, 'Average rating can be at most 10')
         .optional(),
     genre: zod_1.default.array(zod_1.default
@@ -55,10 +56,11 @@ exports.AddTvShowZodSchema = zod_1.default.object({
     directors: zod_1.default.array(zod_1.default.string({ message: 'Directors must be string' }), {
         message: 'Directors must be an array of strings',
     }),
-    runTime: zod_1.default.number({
-        required_error: 'Run time is required',
+    avgRunTime: zod_1.default
+        .number({
         message: 'Run time must be number (in minutes)',
-    }),
+    })
+        .optional(),
     languages: zod_1.default
         .array(zod_1.default
         .string({ message: 'Languages must be string' })
@@ -108,6 +110,21 @@ exports.AddTvShowZodSchema = zod_1.default.object({
     ageRating: zod_1.default
         .number({
         message: 'Age rating must be number',
+    })
+        .optional(),
+    youtubeVideoId: zod_1.default
+        .string({
+        message: 'Youtube id must be string',
+    })
+        .optional(),
+    imdbId: zod_1.default
+        .string({
+        message: 'Imdb id must be string',
+    })
+        .optional(),
+    tmdbId: zod_1.default
+        .string({
+        message: 'Tmdb id must be string',
     })
         .optional(),
     seasons: zod_1.default.array(add_season_1.AddSeasonZodSchema.omit({ tvShow: true })).optional(),

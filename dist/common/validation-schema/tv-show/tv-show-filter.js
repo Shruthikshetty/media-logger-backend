@@ -72,7 +72,7 @@ exports.FilterTvShowZodSchema = zod_1.default.object({
         message: 'Total episodes must include at least one of gte or lte',
     })
         .optional(),
-    runTime: zod_1.default
+    avgRunTime: zod_1.default
         .object({
         gte: zod_1.default
             .number({

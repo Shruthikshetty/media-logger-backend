@@ -32,10 +32,13 @@ exports.AddSeasonZodSchema = zod_1.default.object({
         message: 'Description must be string',
     })
         .optional(),
-    releaseDate: zod_1.default.string({
-        required_error: 'Release date is required',
-        message: 'Release date must be string',
-    }),
+    releaseDate: zod_1.default
+        .string({
+        message: 'Release date must be  iso date string',
+    })
+        .datetime({ message: 'Release date must be in iso format' })
+        .transform((val) => new Date(val))
+        .optional(),
     noOfEpisodes: zod_1.default.number({
         required_error: 'No of episodes is required',
         message: 'No of episodes must be number',
@@ -57,10 +60,17 @@ exports.AddSeasonZodSchema = zod_1.default.object({
         .refine((val) => model_constants_1.SEASON_STATUS.includes(val), {
         message: `Status must be one of the following: ${model_constants_1.SEASON_STATUS.join(', ')}`,
     }),
-    trailerYoutubeUrl: zod_1.default
+    youtubeVideoId: zod_1.default
         .string({
-        message: 'Trailer youtube url must be string',
+        message: 'Youtube id must be string',
     })
+        .optional(),
+    averageRating: zod_1.default
+        .number({
+        message: 'Average rating must be a number',
+    })
+        .min(0, { message: 'Rating cannot be negative' })
+        .max(10, { message: 'Rating cannot be greater than 10' })
         .optional(),
     episodes: zod_1.default.array(add_episode_1.AddEpisodeZodSchema.omit({ season: true })).optional(),
 });

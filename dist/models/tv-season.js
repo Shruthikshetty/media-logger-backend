@@ -25,8 +25,8 @@ const SeasonSchema = new mongoose_1.Schema({
         default: '',
     },
     releaseDate: {
-        type: String,
-        required: true,
+        type: Date,
+        required: false,
     },
     noOfEpisodes: {
         type: Number,
@@ -45,10 +45,15 @@ const SeasonSchema = new mongoose_1.Schema({
         required: true,
         enum: model_constants_1.SEASON_STATUS,
     },
-    trailerYoutubeUrl: {
+    youtubeVideoId: {
         type: String,
         required: false,
-        default: '',
+    },
+    averageRating: {
+        type: Number,
+        required: false,
+        max: 10,
+        min: 0,
     },
 }, { timestamps: true });
 // create the model from above schema

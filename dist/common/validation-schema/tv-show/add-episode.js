@@ -35,9 +35,25 @@ exports.AddEpisodeZodSchema = zod_1.default.object({
         .string({
         message: 'Release date must be  iso date string',
     })
+        .datetime({ message: 'Release date must be in iso format' })
+        .transform((val) => new Date(val))
         .optional(),
-    runTime: zod_1.default.number({
-        required_error: 'Run time is required',
+    runTime: zod_1.default
+        .number({
         message: 'Run time must be number (minutes)',
-    }),
+    })
+        .optional(),
+    stillUrl: zod_1.default
+        .string({
+        message: 'Still URL must be a valid URL',
+    })
+        .url()
+        .optional(),
+    averageRating: zod_1.default
+        .number({
+        message: 'Average rating must be a number',
+    })
+        .min(0, { message: 'Rating cannot be negative' })
+        .max(10, { message: 'Rating cannot be greater than 10' })
+        .optional(),
 });

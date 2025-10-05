@@ -19,6 +19,7 @@ const TVShowSchema = new mongoose_1.Schema({
     averageRating: {
         type: Number,
         required: false,
+        min: 0,
         max: 10,
     },
     genre: {
@@ -40,9 +41,9 @@ const TVShowSchema = new mongoose_1.Schema({
         required: false,
         default: [],
     },
-    runTime: {
+    avgRunTime: {
         type: Number,
-        required: true,
+        required: false,
     },
     languages: {
         type: [String],
@@ -84,6 +85,19 @@ const TVShowSchema = new mongoose_1.Schema({
     },
     ageRating: {
         type: Number,
+        required: false,
+    },
+    youtubeVideoId: {
+        type: String,
+        required: false,
+        default: '',
+    },
+    tmdbId: {
+        type: String,
+        required: false,
+    },
+    imdbId: {
+        type: String,
         required: false,
     },
 }, { timestamps: true });
