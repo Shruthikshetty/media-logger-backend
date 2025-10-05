@@ -37,10 +37,26 @@ export const AddEpisodeZodSchema = z.object({
     })
     .optional(),
 
-  runTime: z.number({
-    required_error: 'Run time is required',
-    message: 'Run time must be number (minutes)',
-  }),
+  runTime: z
+    .number({
+      message: 'Run time must be number (minutes)',
+    })
+    .optional(),
+
+  stillUrl: z
+    .string({
+      message: 'Still URL must be a valid URL',
+    })
+    .url()
+    .optional(),
+
+  averageRating: z
+    .number({
+      message: 'Average rating must be a number',
+    })
+    .min(0, { message: 'Rating cannot be negative' })
+    .max(10, { message: 'Rating cannot be greater than 10' })
+    .optional(),
 });
 
 // export the type

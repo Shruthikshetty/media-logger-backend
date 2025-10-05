@@ -11,7 +11,9 @@ export interface IEpisode {
   description: string;
   episodeNumber: number;
   releaseDate: string;
-  runTime: number;
+  runTime?: number;
+  stillUrl?: string;
+  averageRating?: number;
 }
 
 // schema
@@ -40,7 +42,17 @@ const EpisodeSchema: Schema = new Schema(
     },
     runTime: {
       type: Number,
-      required: true,
+      required: false,
+    },
+    stillUrl: {
+      type: String,
+      required: false,
+    },
+    averageRating: {
+      type: Number,
+      required: false,
+      max: 10,
+      min: 0,
     },
   },
   { timestamps: true }

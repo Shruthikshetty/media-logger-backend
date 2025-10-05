@@ -53,16 +53,16 @@ The following is a description of the database models used in the application ph
 
 ### TV Episode Model
 
-#### Table: TV Episodes
-
-| Field Name    | Data Type | Description                |
-| ------------- | --------- | -------------------------- |
-| season        | ObjectId  | Reference to the TV season |
-| title         | string    | Episode title              |
-| description   | string    | Episode description        |
-| episodeNumber | number    | Episode number             |
-| releaseDate   | date      | Episode release date       |
-| runTime       | number    | Episode run time           |
+| Field Name    | Data Type | Description                                  |
+| ------------- | --------- | -------------------------------------------- |
+| season        | ObjectId  | Reference to the TV season                   |
+| title         | string    | Episode title                                |
+| description   | string    | Episode description                          |
+| episodeNumber | number    | Episode number within the season             |
+| releaseDate   | date      | Episode release date                         |
+| runTime       | number    | Episode run time in minutes                  |
+| stillUrl      | string    | URL for a still image from the episode       |
+| averageRating | number    | Average rating of the episode (from 0 to 10) |
 
 ### Movie Model
 
