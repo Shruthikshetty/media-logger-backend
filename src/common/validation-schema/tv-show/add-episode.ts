@@ -35,6 +35,8 @@ export const AddEpisodeZodSchema = z.object({
     .string({
       message: 'Release date must be  iso date string',
     })
+    .datetime({ message: 'Release date must be in iso format' })
+    .transform((val) => new Date(val))
     .optional(),
 
   runTime: z

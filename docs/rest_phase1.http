@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer <token>
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzI4NzdjMDkwZGJjZTI5NGViY2Q2NSIsImlhdCI6MTc1OTY0MTQwNiwiZXhwIjoxNzU5NzI3ODA2fQ.QDNKw42-GIQAcl8OnevolpL7tRrdskSCv1Ub9x5PGuQ
 ##-------------------------------------------- USER -------------------------------------------------------------
 ### add user
 POST {{baseUrl}}/api/user
@@ -437,31 +437,34 @@ Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "season": "687b48f792163a363d52d841",
+  "season": "688ba5819f1d3f352d1b1efa",
   "title": "The Launch",
   "description": "The team prepares for the big product launch.",
-  "episodeNumber": 1,
-  "releaseDate": "2023-09-10",
-  "runTime": 30
+  "episodeNumber": 3,
+  "releaseDate": "2023-09-10T00:00:00.000Z",
+  "runTime": 30 ,
+  "stillUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/yb4F1Oocq8GfQt6iIuAgYEBokhG.jpg",
+  "averageRating": 9
 }
 
 ### get episode by id 
-GET {{baseUrl}}/api/tv-show/episode/68791c6b786a8844dec84b06
+GET {{baseUrl}}/api/tv-show/episode/688ba5819f1d3f352d1b1efc
 
 ### get episode by id with full details (show and season details)
-GET {{baseUrl}}/api/tv-show/episode/68791c6b786a8844dec84b06?fullDetails=true
+GET {{baseUrl}}/api/tv-show/episode/688ba5819f1d3f352d1b1efc?fullDetails=true
 
 ### delete a episode by id 
-DELETE {{baseUrl}}/api/tv-show/episode/68791c6c786a8844dec84b08
+DELETE {{baseUrl}}/api/tv-show/episode/68e201d9cc744a25f6b7029c
 Authorization: {{authToken}}
 
 ### update a episode by id 
-PATCH {{baseUrl}}/api/tv-show/episode/68791c6b786a8844dec84b06
+PATCH {{baseUrl}}/api/tv-show/episode/68e200e06f12ecf0dec48e55
 Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-   "description": "A young woman discovers the library's for the first time."
+   "description": "A young woman discovers the library's for the first time.",
+   "averageRating": 9
 }
 
 ### get season by id 
