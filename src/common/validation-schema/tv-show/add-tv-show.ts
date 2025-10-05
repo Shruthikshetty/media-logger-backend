@@ -154,9 +154,9 @@ export const AddTvShowZodSchema = z.object({
     })
     .optional(),
 
-  imdbRating: z
+  tmdbId: z
     .number({
-      message: 'Imdb rating must be number',
+      message: 'Tmdb id must be number',
     })
     .optional(),
 
