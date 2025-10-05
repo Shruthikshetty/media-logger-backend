@@ -13,12 +13,12 @@ import {
 export interface ITVShow extends Document {
   title: string;
   description: string;
-  averageRating: number;
+  averageRating?: number;
   genre: string[];
   releaseDate: Date;
   cast: string[];
   directors: string[];
-  runTime: number;
+  avgRunTime?: number;
   languages: string[];
   posterUrl: string;
   backdropUrl: string;
@@ -27,7 +27,10 @@ export interface ITVShow extends Document {
   tags: string[];
   totalSeasons: number;
   totalEpisodes: number;
-  ageRating: number;
+  ageRating?: number;
+  youtubeVideoId?: string;
+  tmdbId?: string;
+  imdbId?: string;
 }
 
 //schema
@@ -45,6 +48,7 @@ const TVShowSchema: Schema = new Schema(
     averageRating: {
       type: Number,
       required: false,
+      min: 0,
       max: 10,
     },
     genre: {
@@ -66,9 +70,9 @@ const TVShowSchema: Schema = new Schema(
       required: false,
       default: [],
     },
-    runTime: {
+    avgRunTime: {
       type: Number,
-      required: true,
+      required: false,
     },
     languages: {
       type: [String],
@@ -110,6 +114,19 @@ const TVShowSchema: Schema = new Schema(
     },
     ageRating: {
       type: Number,
+      required: false,
+    },
+    youtubeVideoId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    tmdbId: {
+      type: String,
+      required: false,
+    },
+    imdbId: {
+      type: String,
       required: false,
     },
   },

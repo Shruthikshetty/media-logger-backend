@@ -372,7 +372,7 @@ export const filterTvShow = async (
       status,
       averageRating,
       releaseDate,
-      runTime,
+      avgRunTime,
       tags,
       totalEpisodes,
       totalSeasons,
@@ -448,11 +448,11 @@ export const filterTvShow = async (
     }
 
     //check if runTime is defined
-    if (runTime) {
+    if (avgRunTime) {
       searchClauses.filter.push({
         range: {
-          path: 'runTime',
-          ...runTime,
+          path: 'avgRunTime',
+          ...avgRunTime,
         },
       });
     }

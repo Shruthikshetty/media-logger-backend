@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer <token>
+@authToken = Bearer <TOKEN>
 ##-------------------------------------------- USER -------------------------------------------------------------
 ### add user
 POST {{baseUrl}}/api/user
@@ -282,7 +282,7 @@ GET {{baseUrl}}/api/tv-show?limit=2&start=0
 GET {{baseUrl}}/api/tv-show?limit=2&page=1&fullDetails=true
 
 ### get tv-show by id
-GET {{baseUrl}}/api/tv-show/68791c6b786a8844dec84b02
+GET {{baseUrl}}/api/tv-show/68e246153a5074bc7af65d3a
 
 ### get tv show by search title (pagination default limit = 20)
 GET {{baseUrl}}/api/tv-show/search?text=Fleabag
@@ -303,9 +303,9 @@ Content-Type: application/json
     "gte": "2016-01-13T00:00:00.000Z",
     "lte": "2017-01-13T00:00:00.000Z"
   },
-  "runTime":{
-    "gte": 200,
-    "lte": 300
+  "avgRunTime":{
+    "gte": 10,
+    "lte": 100
   },
   "totalEpisodes":{
     "gte": 5,
@@ -325,46 +325,56 @@ Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "title": "Fleabag small bug",
+  "title": "Fleabag small bug 55",
   "description": "A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy.",
   "averageRating": 8.7,
   "genre": ["Comedy", "Action"],
   "releaseDate": "2016-01-13T00:00:00.000Z",
   "cast": ["Phoebe Waller-Bridge", "Sian Clifford", "Olivia Colman"],
   "directors": ["Harry Bradbeer"],
-  "runTime": 230,
+  "avgRunTime": 60,
   "languages": ["English"],
-  "posterUrl": "https://m.media-amazon.com/images/M/MV5BMjA4ODU3OTEzMl5BMl5BanBnXkFtZTgwMjc4NzA4OTE@._V1_QL75_UX380_CR0,0,380,562_.jpg",
-  "backdropUrl": "https://www.themoviedb.org/t/p/original/4FV98Rj42n22I5OQ6dM2p12lT1z.jpg",
+  "posterUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/yb4F1Oocq8GfQt6AgYEBokhG.jpg",
+  "backdropUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/yb4F1Oocq8GfiIuAgYEBokhG.jpg",
   "isActive": true,
   "status": "released",
-  "tags": ["Award-winning", "Character-driven", "Dialogue-heavy", "Satirical"],
-  "totalSeasons": 2,
-  "totalEpisodes": 12,
+  "tags": ["Award-winning"],
+  "totalSeasons": 1,
+  "totalEpisodes": 2,
   "ageRating": 16,
+  "tmdbId":"1236470",
+  "imdbId":"tt13443470",
+  "youtubeVideoId": "CrtcTnmuKhE",
   "seasons": [
     {
-      "seasonNumber": 1,
-      "title": "Season 1",
-      "description": "Fleabag navigates the minefield of her family and dating life while dealing with the recent death of her best friend.",
-      "releaseDate": "2016-07-21",
-      "noOfEpisodes": 6,
-      "posterUrl": "https://www.themoviedb.org/t/p/w220_and_h330_face/ohh0255e0x9a8y6eSyrDLi2hM96.jpg",
-      "seasonRating": 8.5,
+      "seasonNumber": 2,
+      "title": "Season 2",
+      "description": "The first season of The Startup.",
+      "releaseDate": "2023-09-10T00:00:00.000Z",
+      "noOfEpisodes": 2,
+      "posterUrl": "",
+      "seasonRating": 7.8,
       "status": "ended",
-      "trailerYoutubeUrl": "https://www.youtube.com/watch?v=I5Uv6cb9YRs",
+      "averageRating": 9,
+      "youtubeVideoId": "CrtcTnmuKhE",
       "episodes": [
         {
-          "title": "Episode 1",
-          "description": "Fleabag tries to navigate a tricky family lunch and a one-night stand.",
+          "title": "Launch Day",
+          "description": "The team scrambles to fix bugs before their big product launch.",
           "episodeNumber": 1,
-          "runTime": 27
+          "releaseDate": "2023-09-10T00:00:00.000Z",
+          "runTime": 30 ,
+          "stillUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/yb4F1Oocq8GfQt6iIuAgYEBokhG.jpg",
+          "averageRating": 9
         },
         {
-          "title": "Episode 2",
-          "description": "With the cafe struggling, Fleabag asks her sister for money, which results in a cringeworthy encounter with her brother-in-law.",
+          "title": "First Customer",
+          "description": "The startup gets its first customer, but things don't go as planned.",
           "episodeNumber": 2,
-          "runTime": 26
+          "releaseDate": "2023-09-10T00:00:00.000Z",
+          "runTime": 30 ,
+          "stillUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/yb4F1Oocq8GfQt6iIuAgYEBokhG.jpg",
+          "averageRating": 9
         }
       ]
     }
@@ -376,16 +386,17 @@ Content-Type: application/json
 POST {{baseUrl}}/api/tv-show/bulk
 
 ### update a tv show details (only meta data can be updated )
-PATCH {{baseUrl}}/api/tv-show/68791c6b786a8844dec84b02
+PATCH {{baseUrl}}/api/tv-show/68e246153a5074bc7af65d3a
 Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "description": "A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy."
+  "description": "A dry-witted woman, known only as Fleabag, navigates life and love in London while trying to cope with tragedy.",
+  "avgRunTime": 40
 }
 
 ### delete a tv show (this will remove all the associated seasons and episodes)
-DELETE  {{baseUrl}}/api/tv-show/688658dbbe58cf4bf7ade6ce
+DELETE  {{baseUrl}}/api/tv-show/68e246153a5074bc7af65d3a
 Authorization: {{authToken}}
 
 ### bulk delete tv show

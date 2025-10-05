@@ -26,8 +26,10 @@ export const AddTvShowZodSchema = z.object({
     .number({
       message: 'Average rating must be number',
     })
+    .min(0, 'Average rating cannot be negative')
     .max(10, 'Average rating can be at most 10')
     .optional(),
+
   genre: z.array(
     z
       .string({
@@ -68,10 +70,11 @@ export const AddTvShowZodSchema = z.object({
     message: 'Directors must be an array of strings',
   }),
 
-  runTime: z.number({
-    required_error: 'Run time is required',
-    message: 'Run time must be number (in minutes)',
-  }),
+  avgRunTime: z
+    .number({
+      message: 'Run time must be number (in minutes)',
+    })
+    .optional(),
 
   languages: z
     .array(
@@ -136,6 +139,24 @@ export const AddTvShowZodSchema = z.object({
   ageRating: z
     .number({
       message: 'Age rating must be number',
+    })
+    .optional(),
+
+  youtubeVideoId: z
+    .string({
+      message: 'Youtube id must be string',
+    })
+    .optional(),
+
+  imdbId: z
+    .string({
+      message: 'Imdb id must be string',
+    })
+    .optional(),
+
+  tmdbId: z
+    .string({
+      message: 'Tmdb id must be string',
     })
     .optional(),
 

@@ -117,7 +117,7 @@
       "releaseDate": {
         "type": "date"
       },
-      "runTime": {
+      "avgRunTime": {
         "type": "number"
       },
       "status": {
