@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer <token>
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzI4NzdjMDkwZGJjZTI5NGViY2Q2NSIsImlhdCI6MTc1OTY0MTQwNiwiZXhwIjoxNzU5NzI3ODA2fQ.QDNKw42-GIQAcl8OnevolpL7tRrdskSCv1Ub9x5PGuQ
 ##-------------------------------------------- USER -------------------------------------------------------------
 ### add user
 POST {{baseUrl}}/api/user
@@ -403,30 +403,35 @@ Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "tvShow": "687b38b2fda2a91d0f01d59a",
-  "seasonNumber": 1,
-  "title": "Season 1",
+  "tvShow": "688ba5819f1d3f352d1b1ef8",
+  "seasonNumber": 2,
+  "title": "Season 2",
   "description": "The first season of The Startup.",
-  "releaseDate": "2023-09-10",
+  "releaseDate": "2023-09-10T00:00:00.000Z",
   "noOfEpisodes": 2,
-  "posterUrl": "https://example.com/posters/startup-s1.jpg",
+  "posterUrl": "",
   "seasonRating": 7.8,
   "status": "ended",
-  "trailerYoutubeUrl": "https://www.youtube.com/watch?v=example",
+  "averageRating": 9,
+  "youtubeVideoId": "CrtcTnmuKhE",
   "episodes": [
     {
       "title": "Launch Day",
       "description": "The team scrambles to fix bugs before their big product launch.",
       "episodeNumber": 1,
-      "releaseDate": "2023-09-10",
-      "runTime": 30
+      "releaseDate": "2023-09-10T00:00:00.000Z",
+      "runTime": 30 ,
+      "stillUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/yb4F1Oocq8GfQt6iIuAgYEBokhG.jpg",
+      "averageRating": 9
     },
     {
       "title": "First Customer",
       "description": "The startup gets its first customer, but things don't go as planned.",
       "episodeNumber": 2,
-      "releaseDate": "2023-09-17",
-      "runTime": 32
+      "releaseDate": "2023-09-10T00:00:00.000Z",
+      "runTime": 30 ,
+      "stillUrl": "https://image.tmdb.org/t/p/w600_and_h900_bestv2/yb4F1Oocq8GfQt6iIuAgYEBokhG.jpg",
+      "averageRating": 9
     }
   ]
 }
@@ -468,20 +473,21 @@ Content-Type: application/json
 }
 
 ### get season by id 
-GET {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c
+GET {{baseUrl}}/api/tv-show/season/68e234124a9e24bf643f7251
 
 ### get season by id with episode details 
-GET {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c?fullDetails=true
+GET {{baseUrl}}/api/tv-show/season/68e234124a9e24bf643f7251?fullDetails=true
 
 ### update a season by id 
-PATCH {{baseUrl}}/api/tv-show/season/687b38b2fda2a91d0f01d59c
+PATCH {{baseUrl}}/api/tv-show/season/68e234124a9e24bf643f7251
 Authorization: {{authToken}}
 Content-Type: application/json
 
 {
-  "description" : "updated title"
+  "description" : "updated title",
+  "averageRating": 8
 }
 
 ### delete the season by id (all the associated episodes will also be deleted)
-DELETE {{baseUrl}}/api/tv-show/season/688650616452857ec142d164
+DELETE {{baseUrl}}/api/tv-show/season/68e234124a9e24bf643f7251
 Authorization: {{authToken}}

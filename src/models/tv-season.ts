@@ -10,12 +10,13 @@ export interface ISeason extends Document {
   tvShow: string;
   seasonNumber: number;
   description: string;
-  releaseDate: string;
+  releaseDate?: Date;
   noOfEpisodes: number;
   posterUrl: string;
   seasonRating?: number;
   status: string;
-  trailerYoutubeUrl: string;
+  youtubeVideoId?: string;
+  averageRating?: number;
 }
 
 // schema
@@ -39,8 +40,8 @@ const SeasonSchema: Schema = new Schema(
       default: '',
     },
     releaseDate: {
-      type: String,
-      required: true,
+      type: Date,
+      required: false,
     },
     noOfEpisodes: {
       type: Number,
@@ -59,10 +60,15 @@ const SeasonSchema: Schema = new Schema(
       required: true,
       enum: SEASON_STATUS,
     },
-    trailerYoutubeUrl: {
+    youtubeVideoId: {
       type: String,
       required: false,
-      default: '',
+    },
+    averageRating: {
+      type: Number,
+      required: false,
+      max: 10,
+      min: 0,
     },
   },
   { timestamps: true }
