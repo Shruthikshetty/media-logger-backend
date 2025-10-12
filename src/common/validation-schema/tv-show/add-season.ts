@@ -51,10 +51,11 @@ export const AddSeasonZodSchema = z.object({
     })
     .optional(),
 
-  seasonRating: z.number({
-    required_error: 'Season rating is required',
-    message: 'Season rating must be number',
-  }),
+  seasonRating: z
+    .number({
+      message: 'Season rating must be number',
+    })
+    .optional(),
 
   status: z
     .string({
