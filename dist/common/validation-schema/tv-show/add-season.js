@@ -48,10 +48,6 @@ exports.AddSeasonZodSchema = zod_1.default.object({
         message: 'Poster url must be string',
     })
         .optional(),
-    seasonRating: zod_1.default.number({
-        required_error: 'Season rating is required',
-        message: 'Season rating must be number',
-    }),
     status: zod_1.default
         .string({
         required_error: 'Status is required',

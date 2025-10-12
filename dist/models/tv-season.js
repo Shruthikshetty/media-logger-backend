@@ -36,10 +36,6 @@ const SeasonSchema = new mongoose_1.Schema({
         type: String,
         default: '',
     },
-    seasonRating: {
-        type: Number,
-        required: false,
-    },
     status: {
         type: String,
         required: true,
