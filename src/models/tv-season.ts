@@ -12,6 +12,7 @@ export interface ISeason extends Document {
   description: string;
   releaseDate?: Date;
   noOfEpisodes: number;
+  posterUrl: string;
   status: string;
   youtubeVideoId?: string;
   averageRating?: number;
