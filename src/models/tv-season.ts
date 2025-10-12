@@ -12,8 +12,6 @@ export interface ISeason extends Document {
   description: string;
   releaseDate?: Date;
   noOfEpisodes: number;
-  posterUrl: string;
-  seasonRating?: number;
   status: string;
   youtubeVideoId?: string;
   averageRating?: number;
@@ -50,10 +48,6 @@ const SeasonSchema: Schema = new Schema(
     posterUrl: {
       type: String,
       default: '',
-    },
-    seasonRating: {
-      type: Number,
-      required: false,
     },
     status: {
       type: String,

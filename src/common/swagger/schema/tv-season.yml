@@ -37,12 +37,6 @@ components:
           type: string
           description: Optional poster image URL.
           example: 'http://example.com/season1-poster.jpg'
-        seasonRating:
-          type: number
-          format: float
-          description: Optional average rating (0-10).
-          example: 8.7
-          maximum: 10
         status:
           type: string
           description: Status of the season.
@@ -86,12 +80,6 @@ components:
           type: string
           description: Optional poster image URL.
           example: 'http://example.com/season1-poster.jpg'
-        seasonRating:
-          type: number
-          format: float
-          description: Optional average rating (0-10).
-          example: 8.7
-          maximum: 10
         status:
           type: string
           description: Status of the season.
