@@ -76,3 +76,5 @@ export const GET_ALL_TV_SHOW_LIMITS = {
     default: 0,
   },
 };
+
+export const HISTORY_RETENTION_DAYS = 180;
