@@ -3,7 +3,7 @@
  */
 
 import { handleError } from '../common/utils/handle-error';
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { ValidatedRequest } from '../types/custom-types';
 import Game from '../models/game.model';
 import {
@@ -23,6 +23,7 @@ import { UpdateGameZodSchemaType } from '../common/validation-schema/game/update
 import { BulkAddGameZodSchemaType } from '../common/validation-schema/game/bulk-add';
 import { BulkDeleteGameZodType } from '../common/validation-schema/game/bulk-delete';
 import { GamesFilterZodSchemaType } from '../common/validation-schema/game/games-filter';
+import { appendNewDoc } from '../common/utils/history-utils';
 
 //controller to get all the games
 export const getAllGames = async (req: ValidatedRequest<{}>, res: Response) => {
@@ -97,7 +98,8 @@ export const getGameById = async (req: ValidatedRequest<{}>, res: Response) => {
 // controller to add a game
 export const addGame = async (
   req: ValidatedRequest<AddGameZodSchemaType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // create a new game
@@ -118,6 +120,10 @@ export const addGame = async (
       data: savedGame,
       message: 'Game created successfully',
     });
+    // set the added game for history
+    appendNewDoc(res, savedGame);
+    // call next middleware
+    next();
   } catch (err) {
     const isDuplicate = isDuplicateKeyError(err);
     // handle unexpected error

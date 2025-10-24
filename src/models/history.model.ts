@@ -14,10 +14,10 @@ import { HISTORY_RETENTION_DAYS } from '../common/constants/config.constants';
 export type IHistory = {
   user: string;
   entityType: string;
-  entityId: string;
+  entityId?: string;
   action: string;
-  oldValue: any;
-  newValue: any;
+  oldValue?: any;
+  newValue?: any;
   title: string;
 };
 
@@ -36,7 +36,7 @@ const HistorySchema: Schema = new Schema(
     },
     entityId: {
       type: String,
-      required: true,
+      required: false,
     },
     action: {
       type: String,
@@ -68,4 +68,5 @@ HistorySchema.index(
 );
 
 // create model from the above schema
-export const History = model<IHistory>('History', HistorySchema);
+const History = model<IHistory>('History', HistorySchema);
+export default History;

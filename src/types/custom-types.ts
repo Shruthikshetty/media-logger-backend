@@ -1,7 +1,7 @@
 /**
  * custom defined types used in the app
  */
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { IUser } from '../models/user.model';
 
 /**
@@ -10,4 +10,12 @@ import { IUser } from '../models/user.model';
 export interface ValidatedRequest<T> extends Request {
   validatedData?: T;
   userData?: IUser;
+}
+
+/**
+ * custom Response with newValue and oldValue added to it
+ */
+export interface CustomResponse extends Response {
+  newValue?: any;
+  oldValue?: any;
 }

@@ -24,6 +24,7 @@ import { handleUpload } from '../common/middleware/handle-upload';
 import { ValidateJsonFile } from '../common/middleware/handle-json-file-validation';
 import { BulkDeleteGameZodSchema } from '../common/validation-schema/game/bulk-delete';
 import { GamesFilterZodSchema } from '../common/validation-schema/game/games-filter';
+import { recordHistory } from '../common/middleware/record-history';
 
 //initialize router
 const route = Router();
@@ -137,7 +138,13 @@ route.get('/:id', getGameById);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.post('/', requireAuth('admin'), validateReq(AddGameZodSchema), addGame);
+route.post(
+  '/',
+  requireAuth('admin'),
+  validateReq(AddGameZodSchema),
+  addGame,
+  recordHistory('Game')
+);
 
 /**
  * @swagger

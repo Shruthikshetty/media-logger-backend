@@ -16,6 +16,7 @@ export interface IUser extends Document {
   xp: number;
   location: string;
   bio: string;
+  _id: string;
 }
 
 // schema
