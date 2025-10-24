@@ -22,10 +22,8 @@ export const recordHistory = (entity: EntityType) => {
     res: CustomResponse,
     next: NextFunction
   ) => {
-    console.log('called');
     // track history once response is sent
     res.on('finish', async () => {
-      console.log('inside finish');
       // only track success responses 2XX
       if (res.statusCode < 200 || res.statusCode >= 300) {
         return;
