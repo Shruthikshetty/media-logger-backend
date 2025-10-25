@@ -16,7 +16,7 @@ export type EntityType =
   | 'User'
   | 'Tv Show';
 
-export const recordHistory = (entity: EntityType) => {
+export const recordHistory = (entity: EntityType, bulk: boolean = false) => {
   return (
     req: ValidatedRequest<{}>,
     res: CustomResponse,
@@ -42,7 +42,7 @@ export const recordHistory = (entity: EntityType) => {
         const newHistory = new History({
           action,
           user: _id,
-          title: generateHistoryTitle(action, entity),
+          title: generateHistoryTitle(action, entity, bulk),
           oldValue: res?.oldValue,
           newValue: res?.newValue,
           entityType: entity,

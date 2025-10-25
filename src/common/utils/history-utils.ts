@@ -57,7 +57,8 @@ export const appendOldAndNewDoc = ({
  */
 export const generateHistoryTitle = (
   action: 'Add' | 'Update' | 'Delete' | 'Read', // read is included for type safety but its not handled currently
-  entity: EntityType
+  entity: EntityType,
+  bulk: boolean
 ): string => {
   // Use past tense for a more natural log entry
   const actionVerb = {
@@ -65,6 +66,12 @@ export const generateHistoryTitle = (
     Update: 'Updated',
     Delete: 'Deleted',
   }[action];
+  // Handle bulk operations first
+  if (bulk) {
+    // Basic pluralization: add 's' if it doesn't already end with 's'.
+    const pluralEntity = entity.endsWith('s') ? entity : `${entity}s`;
+    return `${actionVerb} multiple ${pluralEntity}`;
+  }
 
   // For 'Update' and 'Delete', we refer to an existing entity
   if (action === 'Update' || action === 'Delete') {
