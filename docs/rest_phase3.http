@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001
-@authToken = Beare <token>
+@authToken = Bearer <token>
 
 #------------------------------------------------ History ---------------------------------------------------
 ### get all transaction 

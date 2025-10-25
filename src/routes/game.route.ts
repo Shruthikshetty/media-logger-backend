@@ -205,7 +205,8 @@ route.post(
   requireAuth('admin'),
   handleUpload(jsonUpload, 'gameDataFile'),
   ValidateJsonFile(BulkAddGameZodSchema),
-  bulkAddGames
+  bulkAddGames,
+  recordHistory('Game', true)
 );
 
 /**
@@ -234,7 +235,8 @@ route.delete(
   '/bulk',
   requireAuth('admin'),
   validateReq(BulkDeleteGameZodSchema),
-  bulkDeleteGames
+  bulkDeleteGames,
+  recordHistory('Game', true)
 );
 
 /**
@@ -261,7 +263,12 @@ route.delete(
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/:id', requireAuth('admin'), deleteGameById);
+route.delete(
+  '/:id',
+  requireAuth('admin'),
+  deleteGameById,
+  recordHistory('Game')
+);
 
 /**
  * @swagger
@@ -293,7 +300,8 @@ route.patch(
   '/:id',
   requireAuth('admin'),
   validateReq(UpdateGameZodSchema),
-  updateGameById
+  updateGameById,
+  recordHistory('Game')
 );
 
 //export all the routes

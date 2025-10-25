@@ -23,7 +23,11 @@ import { UpdateGameZodSchemaType } from '../common/validation-schema/game/update
 import { BulkAddGameZodSchemaType } from '../common/validation-schema/game/bulk-add';
 import { BulkDeleteGameZodType } from '../common/validation-schema/game/bulk-delete';
 import { GamesFilterZodSchemaType } from '../common/validation-schema/game/games-filter';
-import { appendNewDoc } from '../common/utils/history-utils';
+import {
+  appendNewDoc,
+  appendOldAndNewDoc,
+  appendOldDoc,
+} from '../common/utils/history-utils';
 
 //controller to get all the games
 export const getAllGames = async (req: ValidatedRequest<{}>, res: Response) => {
@@ -138,7 +142,8 @@ export const addGame = async (
 //controller to delete a game by id
 export const deleteGameById = async (
   req: ValidatedRequest<{}>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // check if id is a valid mongo id
@@ -164,6 +169,10 @@ export const deleteGameById = async (
       data: deletedGame,
       message: 'Game deleted successfully',
     });
+    // set the deleted game for history
+    appendOldDoc(res, deletedGame);
+    // call next middleware
+    next();
   } catch (err) {
     // handle unexpected error
     handleError(res, {
@@ -175,12 +184,22 @@ export const deleteGameById = async (
 //controller to update a game
 export const updateGameById = async (
   req: ValidatedRequest<UpdateGameZodSchemaType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // check if id is a valid mongo id
     if (!isMongoIdValid(req.params?.id)) {
       handleError(res, { message: 'Invalid game id', statusCode: 400 });
+      return;
+    }
+
+    // check if the game exists
+    const oldGame = await Game.findById(req.params.id).lean().exec();
+
+    //If the document doesn't exist, handle the error
+    if (!oldGame) {
+      handleError(res, { message: 'Game not found', statusCode: 404 });
       return;
     }
 
@@ -199,7 +218,7 @@ export const updateGameById = async (
 
     // in case game is not updated
     if (!updatedGame) {
-      handleError(res, { message: 'Game not found', statusCode: 404 });
+      handleError(res, { message: 'failed to update game', statusCode: 500 });
       return;
     }
 
@@ -209,6 +228,14 @@ export const updateGameById = async (
       data: updatedGame,
       message: 'Game updated successfully',
     });
+    // set the updated game for history
+    appendOldAndNewDoc({
+      res,
+      oldValue: oldGame,
+      newValue: updatedGame,
+    });
+    // call next middleware
+    next();
   } catch (err) {
     // handle unexpected error
     handleError(res, {
@@ -223,7 +250,8 @@ export const updateGameById = async (
 //controller to bulk add games by taking json
 export const bulkAddGames = async (
   req: ValidatedRequest<BulkAddGameZodSchemaType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // add all games
@@ -241,6 +269,10 @@ export const bulkAddGames = async (
       },
       message: 'Games added successfully',
     });
+
+    // set the added games for history
+    appendNewDoc(res, games);
+    next();
   } catch (err: any) {
     // Extract failed (duplicate) docs from error object
     const notAdded = err?.writeErrors
@@ -277,36 +309,44 @@ export const bulkAddGames = async (
 //controller to bulk delete games by taking ids
 export const bulkDeleteGames = async (
   req: ValidatedRequest<BulkDeleteGameZodType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     const gameIds = req.validatedData!.gameIds;
 
-    // delete all games
-    const games = await Game.deleteMany({
+    //get all existing game  by ids
+    const gamesToDelete = await Game.find({
       _id: { $in: gameIds },
-    });
+    })
+      .lean()
+      .exec();
 
-    // in case game is not found
-    if (games.deletedCount === 0) {
+    // This provides a clearer "not found" message.
+    if (gamesToDelete.length === 0) {
       handleError(res, {
-        message: 'No games found',
+        message: 'No matching games found for the provided IDs.',
         statusCode: 404,
       });
       return;
     }
 
+    // delete all games
+    const deleteResult = await Game.deleteMany({
+      _id: { $in: gameIds },
+    });
+
     // return the deleted games
     res.status(200).json({
       success: true,
       data: {
-        deleCount: games.deletedCount,
+        deleCount: deleteResult.deletedCount,
       },
-      message:
-        games.deletedCount === gameIds.length
-          ? 'All games deleted successfully'
-          : 'Some games could not be deleted (IDs not found or already deleted)',
+      message: `${deleteResult.deletedCount} game(s) deleted successfully.`,
     });
+    // set the deleted games for history
+    appendOldDoc(res, gamesToDelete);
+    next();
   } catch (err) {
     // handle unexpected error
     handleError(res, {
