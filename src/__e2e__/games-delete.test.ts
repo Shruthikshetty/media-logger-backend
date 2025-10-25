@@ -160,7 +160,7 @@ describe('all the games delete related endpoints', () => {
       // assertions
       expect(res.status).toBe(404);
       expect(res.body.success).toBe(false);
-      expect(res.body.message).toMatch(/No games found/);
+      expect(res.body.message).toMatch(/No matching games found/);
     });
   });
 });

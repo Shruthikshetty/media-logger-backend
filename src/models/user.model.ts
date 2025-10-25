@@ -1,7 +1,7 @@
 /**
  * This contains the user model
  */
-import { Schema, Document, model } from 'mongoose';
+import { Schema, Document, model, Types } from 'mongoose';
 import { USER_ROLES } from '../common/constants/model.constants';
 import { Regex } from '../common/constants/patterns.constants';
 import { encrypt } from '../common/utils/hashing';
@@ -16,7 +16,7 @@ export interface IUser extends Document {
   xp: number;
   location: string;
   bio: string;
-  _id: string;
+  _id: Types.ObjectId;
 }
 
 // schema

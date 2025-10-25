@@ -293,6 +293,9 @@ export const bulkAddGames = async (
         },
         message: 'Games partially added successfully',
       });
+      // set the added games for history
+      appendNewDoc(res, added);
+      next();
       return;
     }
 
@@ -340,7 +343,7 @@ export const bulkDeleteGames = async (
     res.status(200).json({
       success: true,
       data: {
-        deleCount: deleteResult.deletedCount,
+        deletedCount: deleteResult.deletedCount,
       },
       message: `${deleteResult.deletedCount} game(s) deleted successfully.`,
     });

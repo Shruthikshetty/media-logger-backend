@@ -64,7 +64,7 @@ const HistorySchema: Schema = new Schema(
 // Add the TTL index on the createdAt field
 HistorySchema.index(
   { createdAt: 1 },
-  { expireAfterSeconds: HISTORY_RETENTION_DAYS * 60 * 60 }
+  { expireAfterSeconds: HISTORY_RETENTION_DAYS * 24 * 60 * 60 }
 );
 
 // create model from the above schema

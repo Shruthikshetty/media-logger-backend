@@ -2,7 +2,6 @@
  * This @file contains a middleware that records the history of actions performed by a user.
  * update , delete , create
  */
-import { NextFunction } from 'express';
 import { CustomResponse, ValidatedRequest } from '../../types/custom-types';
 import History from '../../models/history.model';
 import { generateHistoryTitle, getHistoryMethod } from '../utils/history-utils';
@@ -17,11 +16,7 @@ export type EntityType =
   | 'Tv Show';
 
 export const recordHistory = (entity: EntityType, bulk: boolean = false) => {
-  return (
-    req: ValidatedRequest<{}>,
-    res: CustomResponse,
-    next: NextFunction
-  ) => {
+  return (req: ValidatedRequest<{}>, res: CustomResponse) => {
     // track history once response is sent
     res.on('finish', async () => {
       // only track success responses 2XX
@@ -54,8 +49,6 @@ export const recordHistory = (entity: EntityType, bulk: boolean = false) => {
       } catch (error) {
         logger.error(' failed to store history %s', error);
       }
-      // call the next middleware if it exists
-      next();
     });
   };
 };
