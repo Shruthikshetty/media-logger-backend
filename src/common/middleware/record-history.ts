@@ -42,6 +42,7 @@ export const recordHistory = (entity: EntityType, bulk: boolean = false) => {
           newValue: res?.newValue,
           entityType: entity,
           entityId: res?.newValue?._id, // no need to store old value id since they are invalid after deletion
+          bulk,
         });
 
         // save the history

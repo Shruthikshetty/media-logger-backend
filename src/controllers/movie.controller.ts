@@ -1,7 +1,7 @@
 /**
  * @file contains the movie controllers
  */
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { ValidatedRequest } from '../types/custom-types';
 import { handleError } from '../common/utils/handle-error';
 import { AddMovieZodSchemaType } from '../common/validation-schema/movie/add-movie';
@@ -21,11 +21,17 @@ import {
 import { BulkDeleteMovieZodSchemaType } from '../common/validation-schema/movie/bulk-delete';
 import { BulkAddMovieZodSchemaType } from '../common/validation-schema/movie/bulk-add';
 import { MovieFiltersZodType } from '../common/validation-schema/movie/movie-filters';
+import {
+  appendNewDoc,
+  appendOldAndNewDoc,
+  appendOldDoc,
+} from '../common/utils/history-utils';
 
 // controller to add a new movie
 export const addMovie = async (
   req: ValidatedRequest<AddMovieZodSchemaType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // create a new movie
@@ -44,6 +50,9 @@ export const addMovie = async (
       data: savedMovie,
       message: 'Movie created successfully',
     });
+    // set the added movie for history
+    appendNewDoc(res, savedMovie);
+    next();
   } catch (err) {
     // handle unexpected errors
     handleError(res, {
@@ -140,7 +149,8 @@ export const getAllMovies = async (
  */
 export const deleteMovieById = async (
   req: ValidatedRequest<{}>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // get id from params
@@ -167,6 +177,9 @@ export const deleteMovieById = async (
       data: deletedMovie,
       message: 'Movie deleted successfully',
     });
+    // set the deleted movie for history
+    appendOldDoc(res, deletedMovie);
+    next();
   } catch (err) {
     // handle unexpected error
     handleError(res, {
@@ -178,7 +191,8 @@ export const deleteMovieById = async (
 //update  movie by id
 export const updateMovieById = async (
   req: ValidatedRequest<AddMovieZodSchemaType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // get id from params
@@ -187,6 +201,14 @@ export const updateMovieById = async (
     // validate id
     if (!isMongoIdValid(id)) {
       handleError(res, { message: 'Invalid movie id', statusCode: 400 });
+      return;
+    }
+
+    // check if the movie exists
+    const oldMovie = await Movie.findById(id).lean().exec();
+    // in case movie is not found
+    if (!oldMovie) {
+      handleError(res, { message: 'Movie not found', statusCode: 404 });
       return;
     }
 
@@ -201,7 +223,7 @@ export const updateMovieById = async (
 
     // in case movie is not updated
     if (!updatedMovie) {
-      handleError(res, { message: 'Movie dose not exist', statusCode: 404 });
+      handleError(res, { message: 'failed to update movie', statusCode: 500 });
       return;
     }
 
@@ -211,6 +233,15 @@ export const updateMovieById = async (
       data: updatedMovie,
       message: 'Movie updated successfully',
     });
+
+    // set the updated movie for history
+    appendOldAndNewDoc({
+      res,
+      oldValue: oldMovie,
+      newValue: updatedMovie,
+    });
+    // call next middleware
+    next();
   } catch (err) {
     // handle unexpected error
     handleError(res, {
@@ -225,36 +256,48 @@ export const updateMovieById = async (
 //controller to bulk delete movies by taking list of ids
 export const bulkDeleteMovies = async (
   req: ValidatedRequest<BulkDeleteMovieZodSchemaType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // get movie ids
     const movieIds = req.validatedData!.movieIds;
 
+    //get all existing movie  by ids
+    const moviesToDelete = await Movie.find({
+      _id: { $in: movieIds },
+    })
+      .lean()
+      .exec();
+
+    //in case no movies are found
+    if (moviesToDelete.length === 0) {
+      handleError(res, {
+        message: 'No movies found for the provided IDs',
+        statusCode: 404,
+      });
+      return;
+    }
+
     //delete all the movies that are passed
-    const deletedMovies = await Movie.deleteMany({
+    const deletedResult = await Movie.deleteMany({
       _id: {
         $in: movieIds,
       },
     });
 
-    // in case no movies are deleted
-    if (deletedMovies.deletedCount === 0) {
-      handleError(res, { message: 'No movies found', statusCode: 404 });
-      return;
-    }
-
     // return the deleted movies
     res.status(200).json({
       success: true,
       data: {
-        deletedCount: deletedMovies.deletedCount,
+        deletedCount: deletedResult.deletedCount,
       },
-      message:
-        deletedMovies.deletedCount === movieIds.length
-          ? 'All movies deleted successfully'
-          : 'Some movies could not be deleted (IDs not found or already deleted)',
+      message: `${deletedResult.deletedCount} movies(s) deleted successfully`,
     });
+
+    // set the deleted movies for history
+    appendOldDoc(res, moviesToDelete);
+    next();
   } catch (err) {
     // handle unexpected error
     handleError(res, {
@@ -266,7 +309,8 @@ export const bulkDeleteMovies = async (
 //controller to add bulk movies by json
 export const addBulkMovies = async (
   req: ValidatedRequest<BulkAddMovieZodSchemaType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // continue inserting even if there are errors
@@ -284,6 +328,10 @@ export const addBulkMovies = async (
       },
       message: 'Movies added successfully',
     });
+
+    // set the added movies for history
+    appendNewDoc(res, savedMovies);
+    next();
   } catch (err: any) {
     // failed (duplicate) docs
     const notAdded = err?.writeErrors
@@ -303,6 +351,9 @@ export const addBulkMovies = async (
         },
         message: 'Movies partially added successfully',
       });
+      // set the added movies for history
+      appendNewDoc(res, added);
+      next();
       return;
     }
 

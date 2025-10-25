@@ -325,7 +325,7 @@ export const bulkDeleteGames = async (
       .lean()
       .exec();
 
-    // This provides a clearer "not found" message.
+    // In case no games are found.
     if (gamesToDelete.length === 0) {
       handleError(res, {
         message: 'No matching games found for the provided IDs.',

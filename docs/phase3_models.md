@@ -15,3 +15,4 @@ This model represents the history of media addition, update, and deletion.
 | oldValue   | Mixed    | The previous value of the entity before the action. Optional.                |
 | newValue   | Mixed    | The new value of the entity after the action. Optional.                      |
 | title      | String   | The title or description of the action. Optional.                            |
+| bulk       | Boolean  | Specify if the action performed was a bulk action                            |
