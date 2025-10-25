@@ -24,6 +24,7 @@ import { handleUpload } from '../common/middleware/handle-upload';
 import { ValidateJsonFile } from '../common/middleware/handle-json-file-validation';
 import { BulkDeleteGameZodSchema } from '../common/validation-schema/game/bulk-delete';
 import { GamesFilterZodSchema } from '../common/validation-schema/game/games-filter';
+import { recordHistory } from '../common/middleware/record-history';
 
 //initialize router
 const route = Router();
@@ -137,7 +138,13 @@ route.get('/:id', getGameById);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.post('/', requireAuth('admin'), validateReq(AddGameZodSchema), addGame);
+route.post(
+  '/',
+  requireAuth('admin'),
+  validateReq(AddGameZodSchema),
+  addGame,
+  recordHistory('Game')
+);
 
 /**
  * @swagger
@@ -198,7 +205,8 @@ route.post(
   requireAuth('admin'),
   handleUpload(jsonUpload, 'gameDataFile'),
   ValidateJsonFile(BulkAddGameZodSchema),
-  bulkAddGames
+  bulkAddGames,
+  recordHistory('Game', true)
 );
 
 /**
@@ -227,7 +235,8 @@ route.delete(
   '/bulk',
   requireAuth('admin'),
   validateReq(BulkDeleteGameZodSchema),
-  bulkDeleteGames
+  bulkDeleteGames,
+  recordHistory('Game', true)
 );
 
 /**
@@ -254,7 +263,12 @@ route.delete(
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/:id', requireAuth('admin'), deleteGameById);
+route.delete(
+  '/:id',
+  requireAuth('admin'),
+  deleteGameById,
+  recordHistory('Game')
+);
 
 /**
  * @swagger
@@ -286,7 +300,8 @@ route.patch(
   '/:id',
   requireAuth('admin'),
   validateReq(UpdateGameZodSchema),
-  updateGameById
+  updateGameById,
+  recordHistory('Game')
 );
 
 //export all the routes

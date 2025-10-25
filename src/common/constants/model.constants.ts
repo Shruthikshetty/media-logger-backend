@@ -199,3 +199,14 @@ export const GAME_PLATFORMS = [
   'Mac',
   'VR',
 ];
+
+export const HISTORY_ACTION = ['Update', 'Add', 'Delete'];
+
+export const HISTORY_ENTITY = [
+  'Game',
+  'Movie',
+  'Episode',
+  'Season',
+  'User',
+  'Tv Show',
+];

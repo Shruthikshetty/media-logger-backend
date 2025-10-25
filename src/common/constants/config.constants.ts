@@ -76,3 +76,17 @@ export const GET_ALL_TV_SHOW_LIMITS = {
     default: 0,
   },
 };
+
+export const GET_ALL_HISTORY_LIMITS = {
+  limit: {
+    min: 1,
+    max: 100,
+    default: 20,
+  },
+  start: {
+    min: 0,
+    default: 0,
+  },
+};
+
+export const HISTORY_RETENTION_DAYS = 180;
