@@ -208,7 +208,7 @@ export const updateMovieById = async (
     const oldMovie = await Movie.findById(id).lean().exec();
     // in case movie is not found
     if (!oldMovie) {
-      handleError(res, { message: 'Movie not found', statusCode: 404 });
+      handleError(res, { message: 'Movie dose not exist', statusCode: 404 });
       return;
     }
 
@@ -292,7 +292,7 @@ export const bulkDeleteMovies = async (
       data: {
         deletedCount: deletedResult.deletedCount,
       },
-      message: `${deletedResult.deletedCount} movies(s) deleted successfully`,
+      message: `${deletedResult.deletedCount} movie(s) deleted successfully`,
     });
 
     // set the deleted movies for history
