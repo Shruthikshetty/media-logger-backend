@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:3001
+@authToken = Bearer <token>
+
+#------------------------------------------------ History ---------------------------------------------------
+### get all transaction 
+GET {{baseUrl}}/api/history
+Authorization: {{authToken}}
