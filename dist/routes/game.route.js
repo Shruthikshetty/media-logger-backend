@@ -18,6 +18,7 @@ const handle_upload_1 = require("../common/middleware/handle-upload");
 const handle_json_file_validation_1 = require("../common/middleware/handle-json-file-validation");
 const bulk_delete_1 = require("../common/validation-schema/game/bulk-delete");
 const games_filter_1 = require("../common/validation-schema/game/games-filter");
+const record_history_1 = require("../common/middleware/record-history");
 //initialize router
 const route = (0, express_1.Router)();
 /**
@@ -126,7 +127,7 @@ route.get('/:id', game_controller_1.getGameById);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.post('/', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(add_game_1.AddGameZodSchema), game_controller_1.addGame);
+route.post('/', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(add_game_1.AddGameZodSchema), game_controller_1.addGame, (0, record_history_1.recordHistory)('Game'));
 /**
  * @swagger
  * /api/game/filter:
@@ -181,7 +182,7 @@ route.post('/filter', (0, handle_validation_1.validateReq)(games_filter_1.GamesF
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.post('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_upload_1.handleUpload)(json_upload_config_1.default, 'gameDataFile'), (0, handle_json_file_validation_1.ValidateJsonFile)(bulk_add_1.BulkAddGameZodSchema), game_controller_1.bulkAddGames);
+route.post('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_upload_1.handleUpload)(json_upload_config_1.default, 'gameDataFile'), (0, handle_json_file_validation_1.ValidateJsonFile)(bulk_add_1.BulkAddGameZodSchema), game_controller_1.bulkAddGames, (0, record_history_1.recordHistory)('Game', true));
 /**
  * @swagger
  * /api/game/bulk:
@@ -204,7 +205,7 @@ route.post('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_upload_
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(bulk_delete_1.BulkDeleteGameZodSchema), game_controller_1.bulkDeleteGames);
+route.delete('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(bulk_delete_1.BulkDeleteGameZodSchema), game_controller_1.bulkDeleteGames, (0, record_history_1.recordHistory)('Game', true));
 /**
  * @swagger
  * /api/game/{id}:
@@ -229,7 +230,7 @@ route.delete('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_valid
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/:id', (0, require_auth_1.requireAuth)('admin'), game_controller_1.deleteGameById);
+route.delete('/:id', (0, require_auth_1.requireAuth)('admin'), game_controller_1.deleteGameById, (0, record_history_1.recordHistory)('Game'));
 /**
  * @swagger
  * /api/game/{id}:
@@ -256,6 +257,6 @@ route.delete('/:id', (0, require_auth_1.requireAuth)('admin'), game_controller_1
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.patch('/:id', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(update_game_1.UpdateGameZodSchema), game_controller_1.updateGameById);
+route.patch('/:id', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(update_game_1.UpdateGameZodSchema), game_controller_1.updateGameById, (0, record_history_1.recordHistory)('Game'));
 //export all the routes
 exports.default = route;

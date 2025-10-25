@@ -118,7 +118,7 @@ describe('all the games delete related endpoints', () => {
             expect(res.status).toBe(200);
             expect(res.body.success).toBe(true);
             expect(res.body.message).toMatch(/deleted successfully/i);
-            expect(res.body.data).toEqual(expect.objectContaining({ deleCount: 1 }));
+            expect(res.body.data).toEqual(expect.objectContaining({ deletedCount: 1 }));
         }));
         it('should return 401 for unauthenticated user', () => __awaiter(void 0, void 0, void 0, function* () {
             // delete the created id
@@ -156,7 +156,7 @@ describe('all the games delete related endpoints', () => {
             // assertions
             expect(res.status).toBe(404);
             expect(res.body.success).toBe(false);
-            expect(res.body.message).toMatch(/No games found/);
+            expect(res.body.message).toMatch(/No matching games found/);
         }));
     });
 });

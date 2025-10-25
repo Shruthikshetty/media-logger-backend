@@ -14,6 +14,7 @@ const game_route_1 = __importDefault(require("./game.route"));
 const tv_show_route_1 = __importDefault(require("./tv-show.route"));
 const analytic_route_1 = __importDefault(require("./analytic.route"));
 const upload_route_1 = __importDefault(require("./upload.route"));
+const history_routes_1 = __importDefault(require("./history.routes"));
 //initialize router
 const route = (0, express_1.Router)();
 //User routes
@@ -30,5 +31,7 @@ route.use('/tv-show', tv_show_route_1.default);
 route.use('/analytic', analytic_route_1.default);
 //upload routes
 route.use('/upload', upload_route_1.default);
+//history routes
+route.use('/history', history_routes_1.default);
 // export all the routes
 exports.default = route;

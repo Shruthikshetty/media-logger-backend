@@ -21,6 +21,7 @@ const game_model_1 = __importDefault(require("../models/game.model"));
 const mongo_errors_1 = require("../common/utils/mongo-errors");
 const pagination_1 = require("../common/utils/pagination");
 const config_constants_1 = require("../common/constants/config.constants");
+const history_utils_1 = require("../common/utils/history-utils");
 //controller to get all the games
 const getAllGames = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // get pagination params
@@ -87,7 +88,7 @@ const getGameById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getGameById = getGameById;
 // controller to add a game
-const addGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const addGame = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // create a new game
         const newGame = new game_model_1.default(req.validatedData);
@@ -104,6 +105,10 @@ const addGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             data: savedGame,
             message: 'Game created successfully',
         });
+        // set the added game for history
+        (0, history_utils_1.appendNewDoc)(res, savedGame);
+        // call next middleware
+        next();
     }
     catch (err) {
         const isDuplicate = (0, mongo_errors_1.isDuplicateKeyError)(err);
@@ -117,7 +122,7 @@ const addGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.addGame = addGame;
 //controller to delete a game by id
-const deleteGameById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteGameById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
         // check if id is a valid mongo id
@@ -140,6 +145,10 @@ const deleteGameById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             data: deletedGame,
             message: 'Game deleted successfully',
         });
+        // set the deleted game for history
+        (0, history_utils_1.appendOldDoc)(res, deletedGame);
+        // call next middleware
+        next();
     }
     catch (err) {
         // handle unexpected error
@@ -150,12 +159,19 @@ const deleteGameById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.deleteGameById = deleteGameById;
 //controller to update a game
-const updateGameById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateGameById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
         // check if id is a valid mongo id
         if (!(0, mongo_errors_1.isMongoIdValid)((_a = req.params) === null || _a === void 0 ? void 0 : _a.id)) {
             (0, handle_error_1.handleError)(res, { message: 'Invalid game id', statusCode: 400 });
+            return;
+        }
+        // check if the game exists
+        const oldGame = yield game_model_1.default.findById(req.params.id).lean().exec();
+        //If the document doesn't exist, handle the error
+        if (!oldGame) {
+            (0, handle_error_1.handleError)(res, { message: 'Game not found', statusCode: 404 });
             return;
         }
         //update the game by id
@@ -168,7 +184,7 @@ const updateGameById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             .exec();
         // in case game is not updated
         if (!updatedGame) {
-            (0, handle_error_1.handleError)(res, { message: 'Game not found', statusCode: 404 });
+            (0, handle_error_1.handleError)(res, { message: 'failed to update game', statusCode: 500 });
             return;
         }
         // return the updated game
@@ -177,6 +193,14 @@ const updateGameById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             data: updatedGame,
             message: 'Game updated successfully',
         });
+        // set the updated game for history
+        (0, history_utils_1.appendOldAndNewDoc)({
+            res,
+            oldValue: oldGame,
+            newValue: updatedGame,
+        });
+        // call next middleware
+        next();
     }
     catch (err) {
         // handle unexpected error
@@ -190,7 +214,7 @@ const updateGameById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.updateGameById = updateGameById;
 //controller to bulk add games by taking json
-const bulkAddGames = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkAddGames = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // add all games
         const games = yield game_model_1.default.insertMany(req.validatedData, {
@@ -206,6 +230,9 @@ const bulkAddGames = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             },
             message: 'Games added successfully',
         });
+        // set the added games for history
+        (0, history_utils_1.appendNewDoc)(res, games);
+        next();
     }
     catch (err) {
         // Extract failed (duplicate) docs from error object
@@ -225,6 +252,9 @@ const bulkAddGames = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 },
                 message: 'Games partially added successfully',
             });
+            // set the added games for history
+            (0, history_utils_1.appendNewDoc)(res, added);
+            next();
             return;
         }
         // handle unexpected error
@@ -239,31 +269,38 @@ const bulkAddGames = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.bulkAddGames = bulkAddGames;
 //controller to bulk delete games by taking ids
-const bulkDeleteGames = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkDeleteGames = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const gameIds = req.validatedData.gameIds;
-        // delete all games
-        const games = yield game_model_1.default.deleteMany({
+        //get all existing game  by ids
+        const gamesToDelete = yield game_model_1.default.find({
             _id: { $in: gameIds },
-        });
-        // in case game is not found
-        if (games.deletedCount === 0) {
+        })
+            .lean()
+            .exec();
+        // This provides a clearer "not found" message.
+        if (gamesToDelete.length === 0) {
             (0, handle_error_1.handleError)(res, {
-                message: 'No games found',
+                message: 'No matching games found for the provided IDs.',
                 statusCode: 404,
             });
             return;
         }
+        // delete all games
+        const deleteResult = yield game_model_1.default.deleteMany({
+            _id: { $in: gameIds },
+        });
         // return the deleted games
         res.status(200).json({
             success: true,
             data: {
-                deleCount: games.deletedCount,
+                deletedCount: deleteResult.deletedCount,
             },
-            message: games.deletedCount === gameIds.length
-                ? 'All games deleted successfully'
-                : 'Some games could not be deleted (IDs not found or already deleted)',
+            message: `${deleteResult.deletedCount} game(s) deleted successfully.`,
         });
+        // set the deleted games for history
+        (0, history_utils_1.appendOldDoc)(res, gamesToDelete);
+        next();
     }
     catch (err) {
         // handle unexpected error
