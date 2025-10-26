@@ -3,7 +3,7 @@
  */
 
 import { handleError } from '../common/utils/handle-error';
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { ValidatedRequest } from '../types/custom-types';
 import { AddTvShowZodType } from '../common/validation-schema/tv-show/add-tv-show';
 import TVShow, { ITVShow } from '../models/tv-show.mode';
@@ -31,11 +31,17 @@ import { FilterTvShowZodType } from '../common/validation-schema/tv-show/tv-show
 import { addSingleTvShow } from '../common/utils/add-tv-show';
 import { BulkAddTvShowZodSchemaType } from '../common/validation-schema/tv-show/bulk-add-tv-show';
 import { ISeason } from '../models/tv-season';
+import {
+  appendNewDoc,
+  appendOldAndNewDoc,
+  appendOldDoc,
+} from '../common/utils/history-utils';
 
 // controller to add a new tv show
 export const addTvShow = async (
   req: ValidatedRequest<AddTvShowZodType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   // Start a Mongoose session for the transaction
   const session = await startSession();
@@ -54,6 +60,9 @@ export const addTvShow = async (
       data: savedTvShow,
       message: 'Tv show created successfully',
     });
+    // record the added tv show in history
+    appendNewDoc(res, savedTvShow);
+    next();
   } catch (error: any) {
     // If any error occurred, abort the entire transaction
     await session.abortTransaction();
@@ -152,7 +161,8 @@ export const getTvShowById = async (
 // controller to update tv show by id
 export const updateTvShowById = async (
   req: ValidatedRequest<UpdateTvShowZodType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     //extract id from params
@@ -160,6 +170,13 @@ export const updateTvShowById = async (
     // check if id is a valid mongo id
     if (!isMongoIdValid(id)) {
       handleError(res, { message: 'Invalid tv show id', statusCode: 400 });
+      return;
+    }
+    //get the old tv show record
+    const oldTvShow = await TVShow.findById(id).lean().exec();
+
+    if (!oldTvShow) {
+      handleError(res, { message: 'Tv show not found', statusCode: 404 });
       return;
     }
     //update the tv show by id
@@ -171,11 +188,6 @@ export const updateTvShowById = async (
       .lean()
       .exec();
 
-    // in case tv show is not updated
-    if (!updatedTvShow) {
-      handleError(res, { message: 'Tv show not found', statusCode: 404 });
-      return;
-    }
     // return the updated tv show
     res.status(200).json({
       success: true,
@@ -184,6 +196,9 @@ export const updateTvShowById = async (
       },
       message: 'Tv show updated successfully',
     });
+    // record the updated tv show in history
+    appendOldAndNewDoc({ res, newValue: updatedTvShow, oldValue: oldTvShow });
+    next();
   } catch (error) {
     // handle unexpected error
     handleError(res, { error: error });
@@ -193,7 +208,8 @@ export const updateTvShowById = async (
 // controller to delete tv show by id
 export const deleteTvShowById = async (
   req: ValidatedRequest<{}>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   //initialize transaction session
   const session = await startSession();
@@ -206,6 +222,18 @@ export const deleteTvShowById = async (
     //check if the id is a valid mongo id
     if (!isMongoIdValid(id)) {
       handleError(res, { message: 'Invalid tv show id', statusCode: 400 });
+      return;
+    }
+
+    // find the tv show by id
+    const tvShow = await TVShow.findById(id).lean().exec();
+
+    //in case tv show is not found
+    if (!tvShow) {
+      handleError(res, {
+        message: `TV show with id ${id} not found`,
+        statusCode: 404,
+      });
       return;
     }
 
@@ -223,6 +251,9 @@ export const deleteTvShowById = async (
       },
       message: 'Tv show deleted successfully',
     });
+    // record the deleted tv show in history
+    appendOldDoc(res, tvShow);
+    next();
   } catch (err: any) {
     session.abortTransaction();
     //handle unexpected error
@@ -239,7 +270,8 @@ export const deleteTvShowById = async (
 //controller to bulk delete tv show
 export const bulkDeleteTvShow = async (
   req: ValidatedRequest<BulkDeleteTvShowZodSchemaType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   // create a mongo transaction session
   const session = await startSession();
@@ -248,6 +280,17 @@ export const bulkDeleteTvShow = async (
   try {
     // get the ids from validated data
     const { tvShowIds } = req.validatedData!;
+
+    //get all the tv shows
+    const tvShows = await TVShow.find({ _id: { $in: tvShowIds } })
+      .lean()
+      .exec();
+
+    //in case no tv shows are found
+    if (tvShows.length === 0) {
+      handleError(res, { message: 'No tv shows found', statusCode: 404 });
+      return;
+    }
 
     const deleteCount = {
       tvShow: 0,
@@ -277,6 +320,9 @@ export const bulkDeleteTvShow = async (
       },
       message: "Tv show's deleted successfully",
     });
+    //record the deleted tv show in history
+    appendOldDoc(res, tvShows);
+    next();
   } catch (err: any) {
     session.abortTransaction();
     //handle unexpected error
@@ -537,7 +583,8 @@ export const filterTvShow = async (
 //controller to bulk add tv show
 export const bulkAddTvShow = async (
   req: ValidatedRequest<BulkAddTvShowZodSchemaType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   //start a mongoose transaction session
   const session = await startSession();
@@ -564,6 +611,9 @@ export const bulkAddTvShow = async (
       data: savedTvShows,
       message: 'Tv shows created successfully',
     });
+    //record the added tv shows in history
+    appendNewDoc(res, savedTvShows);
+    next(); //call next middleware
   } catch (error: any) {
     // handle unexpected error
     handleError(res, {

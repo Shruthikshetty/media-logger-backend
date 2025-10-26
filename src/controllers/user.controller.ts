@@ -2,7 +2,7 @@
  * this contains all user related controllers
  */
 
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { ValidatedRequest } from '../types/custom-types';
 import { handleError } from '../common/utils/handle-error';
 import User from '../models/user.model';
@@ -23,6 +23,10 @@ import { encrypt } from '../common/utils/hashing';
 import mongoose from 'mongoose';
 import { UpdateRoleZodSchemaType } from '../common/validation-schema/user/update-role';
 import { FilterUserZodType } from '../common/validation-schema/user/filter-user';
+import {
+  appendOldAndNewDoc,
+  appendOldDoc,
+} from '../common/utils/history-utils';
 
 // controller to add a new user
 export const addUser = async (
@@ -159,7 +163,11 @@ export const getUserById = async (req: ValidatedRequest<{}>, res: Response) => {
 };
 
 //controller to delete the logged in user
-export const deleteUser = async (req: ValidatedRequest<{}>, res: Response) => {
+export const deleteUser = async (
+  req: ValidatedRequest<{}>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     //delete the user
     const deletedUser = await User.findByIdAndDelete(req.userData!._id)
@@ -179,6 +187,9 @@ export const deleteUser = async (req: ValidatedRequest<{}>, res: Response) => {
       data: deletedUser,
       message: 'User deleted successfully',
     });
+    // record the deleted user in history
+    appendOldDoc(res, deletedUser);
+    next();
   } catch (err) {
     // handle unexpected error
     handleError(res, {
@@ -190,7 +201,8 @@ export const deleteUser = async (req: ValidatedRequest<{}>, res: Response) => {
 //controller to delete user by id
 export const deleteUserById = async (
   req: ValidatedRequest<{}>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     //get id from params
@@ -222,6 +234,9 @@ export const deleteUserById = async (
       data: deletedUser,
       message: 'User deleted successfully',
     });
+    // record the deleted user in history
+    appendOldDoc(res, deletedUser);
+    next();
   } catch (err) {
     // handle unexpected error
     handleError(res, {
@@ -275,7 +290,8 @@ export const updateUser = async (
 //controller to update role by id
 export const updateRoleById = async (
   req: ValidatedRequest<UpdateRoleZodSchemaType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     //get id from params
@@ -290,8 +306,17 @@ export const updateRoleById = async (
     // get new role from validated data
     const { role } = req.validatedData!;
 
+    //get the user
+    const user = await User.findById(id).select('-password').lean().exec();
+
+    // in case user is not found
+    if (!user) {
+      handleError(res, { message: 'User not found', statusCode: 404 });
+      return;
+    }
+
     // update the role
-    const updatedRole = await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       id,
       { role },
       {
@@ -302,18 +327,15 @@ export const updateRoleById = async (
       .lean()
       .exec();
 
-    // in case role is not updated
-    if (!updatedRole) {
-      handleError(res, { message: 'User not found', statusCode: 404 });
-      return;
-    }
-
     //send response
     res.status(200).json({
       success: true,
-      data: updatedRole,
+      data: updatedUser,
       message: 'User role updated successfully',
     });
+    // record the updated role in history
+    appendOldAndNewDoc({ res, oldValue: user, newValue: updatedUser });
+    next();
   } catch (err) {
     // handle unexpected error
     handleError(res, {

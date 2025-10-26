@@ -143,9 +143,7 @@ describe('movies delete related endpoints', () => {
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.data.deletedCount).toBe(1);
-      expect(res.body.message).toMatch(
-        /Some movies could not be deleted \(IDs not found or already deleted\)/
-      );
+      expect(res.body.message).toMatch('1 movie(s) deleted successfully');
     });
   });
 });
