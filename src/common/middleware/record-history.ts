@@ -23,6 +23,10 @@ export const recordHistory = (entity: EntityType, bulk: boolean = false) => {
       if (res.statusCode < 200 || res.statusCode >= 300) {
         return;
       }
+      // in case user is not logged in
+      if (!req.userData) {
+        return;
+      }
       // get user id
       const { _id } = req.userData!;
 
