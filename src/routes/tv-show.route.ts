@@ -40,6 +40,7 @@ import { BulkAddTvShowZodSchema } from '../common/validation-schema/tv-show/bulk
 import { ValidateJsonFile } from '../common/middleware/handle-json-file-validation';
 import { handleUpload } from '../common/middleware/handle-upload';
 import jsonUpload from '../common/config/json-upload.config';
+import { recordHistory } from '../common/middleware/record-history';
 
 //initialize router
 const route = Router();
@@ -66,7 +67,8 @@ route.post(
   '/',
   requireAuth('admin'),
   validateReq(AddTvShowZodSchema),
-  addTvShow
+  addTvShow,
+  recordHistory('Tv Show')
 );
 
 /**
@@ -106,7 +108,8 @@ route.post(
   requireAuth('admin'),
   handleUpload(jsonUpload, 'tvShowDataFile'),
   ValidateJsonFile(BulkAddTvShowZodSchema),
-  bulkAddTvShow
+  bulkAddTvShow,
+  recordHistory('Tv Show', true)
 );
 /**
  * @swagger
@@ -259,7 +262,8 @@ route.patch(
   '/:id',
   requireAuth('admin'),
   validateReq(UpdateTvShowZodSchema),
-  updateTvShowById
+  updateTvShowById,
+  recordHistory('Tv Show')
 );
 
 /**
@@ -536,7 +540,8 @@ route.delete(
   '/bulk',
   requireAuth('admin'),
   validateReq(BulkDeleteTvShowZodSchema),
-  bulkDeleteTvShow
+  bulkDeleteTvShow,
+  recordHistory('Tv Show', true)
 );
 
 /**
@@ -566,7 +571,12 @@ route.delete(
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/:id', requireAuth('admin'), deleteTvShowById);
+route.delete(
+  '/:id',
+  requireAuth('admin'),
+  deleteTvShowById,
+  recordHistory('Tv Show')
+);
 
 //export all the routes
 export default route;
