@@ -278,7 +278,7 @@ const bulkDeleteGames = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         })
             .lean()
             .exec();
-        // This provides a clearer "not found" message.
+        // In case no games are found.
         if (gamesToDelete.length === 0) {
             (0, handle_error_1.handleError)(res, {
                 message: 'No matching games found for the provided IDs.',

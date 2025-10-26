@@ -11,6 +11,7 @@ const require_auth_1 = require("../common/middleware/require-auth");
 const update_user_1 = require("../common/validation-schema/user/update-user");
 const update_role_1 = require("../common/validation-schema/user/update-role");
 const filter_user_1 = require("../common/validation-schema/user/filter-user");
+const record_history_1 = require("../common/middleware/record-history");
 // initialize router
 const route = (0, express_1.Router)();
 /**
@@ -128,7 +129,7 @@ route.get('/:id', (0, require_auth_1.requireAuth)(), user_controller_1.getUserBy
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/', (0, require_auth_1.requireAuth)(), user_controller_1.deleteUser);
+route.delete('/', (0, require_auth_1.requireAuth)(), user_controller_1.deleteUser, (0, record_history_1.recordHistory)('User'));
 /**
  * @swagger
  * /api/user/{id}:
@@ -153,7 +154,7 @@ route.delete('/', (0, require_auth_1.requireAuth)(), user_controller_1.deleteUse
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/:id', (0, require_auth_1.requireAuth)('admin'), user_controller_1.deleteUserById);
+route.delete('/:id', (0, require_auth_1.requireAuth)('admin'), user_controller_1.deleteUserById, (0, record_history_1.recordHistory)('User'));
 /**
  * @swagger
  * /api/user:
@@ -201,6 +202,6 @@ route.patch('/', (0, require_auth_1.requireAuth)(), (0, handle_validation_1.vali
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.put('/role/:id', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(update_role_1.UpdateRoleZodSchema), user_controller_1.updateRoleById);
+route.put('/role/:id', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(update_role_1.UpdateRoleZodSchema), user_controller_1.updateRoleById, (0, record_history_1.recordHistory)('User'));
 // export all routers clubbed
 exports.default = route;

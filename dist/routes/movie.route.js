@@ -18,6 +18,7 @@ const handle_json_file_validation_1 = require("../common/middleware/handle-json-
 const bulk_add_1 = require("../common/validation-schema/movie/bulk-add");
 const handle_upload_1 = require("../common/middleware/handle-upload");
 const movie_filters_1 = require("../common/validation-schema/movie/movie-filters");
+const record_history_1 = require("../common/middleware/record-history");
 // initialize router
 const route = (0, express_1.Router)();
 /**
@@ -147,7 +148,7 @@ route.get('/:id', movie_controller_1.getMovieById);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.post('/', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(add_movie_1.AddMovieZodSchema), movie_controller_1.addMovie);
+route.post('/', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(add_movie_1.AddMovieZodSchema), movie_controller_1.addMovie, (0, record_history_1.recordHistory)('Movie'));
 /**
  * @swagger
  * /api/movie/bulk:
@@ -187,7 +188,7 @@ route.post('/', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.post('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_upload_1.handleUpload)(json_upload_config_1.default, 'movieDataFile'), (0, handle_json_file_validation_1.ValidateJsonFile)(bulk_add_1.BulkAddMovieZodSchema), movie_controller_1.addBulkMovies);
+route.post('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_upload_1.handleUpload)(json_upload_config_1.default, 'movieDataFile'), (0, handle_json_file_validation_1.ValidateJsonFile)(bulk_add_1.BulkAddMovieZodSchema), movie_controller_1.addBulkMovies, (0, record_history_1.recordHistory)('Movie', true));
 /**
  * @swagger
  * /api/movie/bulk:
@@ -210,7 +211,7 @@ route.post('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_upload_
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(bulk_delete_1.BulkDeleteMovieZodSchema), movie_controller_1.bulkDeleteMovies);
+route.delete('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(bulk_delete_1.BulkDeleteMovieZodSchema), movie_controller_1.bulkDeleteMovies, (0, record_history_1.recordHistory)('Movie', true));
 /**
  * @swagger
  * /api/movie/{id}:
@@ -238,7 +239,7 @@ route.delete('/bulk', (0, require_auth_1.requireAuth)('admin'), (0, handle_valid
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/:id', (0, require_auth_1.requireAuth)('admin'), movie_controller_1.deleteMovieById);
+route.delete('/:id', (0, require_auth_1.requireAuth)('admin'), movie_controller_1.deleteMovieById, (0, record_history_1.recordHistory)('Movie'));
 /**
  * @swagger
  * /api/movie/{id}:
@@ -268,6 +269,6 @@ route.delete('/:id', (0, require_auth_1.requireAuth)('admin'), movie_controller_
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.patch('/:id', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(update_movie_1.updateMoveZodSchema), movie_controller_1.updateMovieById);
+route.patch('/:id', (0, require_auth_1.requireAuth)('admin'), (0, handle_validation_1.validateReq)(update_movie_1.updateMoveZodSchema), movie_controller_1.updateMovieById, (0, record_history_1.recordHistory)('Movie'));
 // export all the routes
 exports.default = route;

@@ -25,6 +25,10 @@ const recordHistory = (entity, bulk = false) => {
             if (res.statusCode < 200 || res.statusCode >= 300) {
                 return;
             }
+            // in case user is not logged in
+            if (!req.userData) {
+                return;
+            }
             // get user id
             const { _id } = req.userData;
             // in case user id is not found
@@ -42,6 +46,7 @@ const recordHistory = (entity, bulk = false) => {
                     newValue: res === null || res === void 0 ? void 0 : res.newValue,
                     entityType: entity,
                     entityId: (_a = res === null || res === void 0 ? void 0 : res.newValue) === null || _a === void 0 ? void 0 : _a._id, // no need to store old value id since they are invalid after deletion
+                    bulk,
                 });
                 // save the history
                 yield newHistory.save();

@@ -25,6 +25,7 @@ const pagination_1 = require("../common/utils/pagination");
 const delete_user_1 = require("../common/validation-schema/user/delete-user");
 const hashing_1 = require("../common/utils/hashing");
 const mongoose_1 = __importDefault(require("mongoose"));
+const history_utils_1 = require("../common/utils/history-utils");
 // controller to add a new user
 const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -146,7 +147,7 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getUserById = getUserById;
 //controller to delete the logged in user
-const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //delete the user
         const deletedUser = yield user_model_1.default.findByIdAndDelete(req.userData._id)
@@ -164,6 +165,9 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             data: deletedUser,
             message: 'User deleted successfully',
         });
+        // record the deleted user in history
+        (0, history_utils_1.appendOldDoc)(res, deletedUser);
+        next();
     }
     catch (err) {
         // handle unexpected error
@@ -174,7 +178,7 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.deleteUser = deleteUser;
 //controller to delete user by id
-const deleteUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteUserById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //get id from params
         const { id } = req.params;
@@ -200,6 +204,9 @@ const deleteUserById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             data: deletedUser,
             message: 'User deleted successfully',
         });
+        // record the deleted user in history
+        (0, history_utils_1.appendOldDoc)(res, deletedUser);
+        next();
     }
     catch (err) {
         // handle unexpected error
@@ -245,7 +252,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.updateUser = updateUser;
 //controller to update role by id
-const updateRoleById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateRoleById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //get id from params
         const { id } = req.params;
@@ -256,24 +263,29 @@ const updateRoleById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
         // get new role from validated data
         const { role } = req.validatedData;
+        //get the user
+        const user = yield user_model_1.default.findById(id).select('-password').lean().exec();
+        // in case user is not found
+        if (!user) {
+            (0, handle_error_1.handleError)(res, { message: 'User not found', statusCode: 404 });
+            return;
+        }
         // update the role
-        const updatedRole = yield user_model_1.default.findByIdAndUpdate(id, { role }, {
+        const updatedUser = yield user_model_1.default.findByIdAndUpdate(id, { role }, {
             new: true,
         })
             .select('-password -__v')
             .lean()
             .exec();
-        // in case role is not updated
-        if (!updatedRole) {
-            (0, handle_error_1.handleError)(res, { message: 'User not found', statusCode: 404 });
-            return;
-        }
         //send response
         res.status(200).json({
             success: true,
-            data: updatedRole,
+            data: updatedUser,
             message: 'User role updated successfully',
         });
+        // record the updated role in history
+        (0, history_utils_1.appendOldAndNewDoc)({ res, oldValue: user, newValue: updatedUser });
+        next();
     }
     catch (err) {
         // handle unexpected error

@@ -18,8 +18,9 @@ const movie_model_1 = __importDefault(require("../models/movie.model"));
 const mongo_errors_1 = require("../common/utils/mongo-errors");
 const pagination_1 = require("../common/utils/pagination");
 const config_constants_1 = require("../common/constants/config.constants");
+const history_utils_1 = require("../common/utils/history-utils");
 // controller to add a new movie
-const addMovie = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const addMovie = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // create a new movie
         const newMovie = new movie_model_1.default(req.validatedData);
@@ -34,6 +35,9 @@ const addMovie = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             data: savedMovie,
             message: 'Movie created successfully',
         });
+        // set the added movie for history
+        (0, history_utils_1.appendNewDoc)(res, savedMovie);
+        next();
     }
     catch (err) {
         // handle unexpected errors
@@ -116,7 +120,7 @@ exports.getAllMovies = getAllMovies;
 /**
  * delete movie by id
  */
-const deleteMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteMovieById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // get id from params
         const { id } = req.params;
@@ -138,6 +142,9 @@ const deleteMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function
             data: deletedMovie,
             message: 'Movie deleted successfully',
         });
+        // set the deleted movie for history
+        (0, history_utils_1.appendOldDoc)(res, deletedMovie);
+        next();
     }
     catch (err) {
         // handle unexpected error
@@ -148,13 +155,20 @@ const deleteMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.deleteMovieById = deleteMovieById;
 //update  movie by id
-const updateMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateMovieById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // get id from params
         const { id } = req.params;
         // validate id
         if (!(0, mongo_errors_1.isMongoIdValid)(id)) {
             (0, handle_error_1.handleError)(res, { message: 'Invalid movie id', statusCode: 400 });
+            return;
+        }
+        // check if the movie exists
+        const oldMovie = yield movie_model_1.default.findById(id).lean().exec();
+        // in case movie is not found
+        if (!oldMovie) {
+            (0, handle_error_1.handleError)(res, { message: 'Movie does not exist', statusCode: 404 });
             return;
         }
         // update the movie
@@ -167,7 +181,7 @@ const updateMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function
             .exec();
         // in case movie is not updated
         if (!updatedMovie) {
-            (0, handle_error_1.handleError)(res, { message: 'Movie dose not exist', statusCode: 404 });
+            (0, handle_error_1.handleError)(res, { message: 'Failed to update movie', statusCode: 500 });
             return;
         }
         // return the updated movie
@@ -176,6 +190,14 @@ const updateMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function
             data: updatedMovie,
             message: 'Movie updated successfully',
         });
+        // set the updated movie for history
+        (0, history_utils_1.appendOldAndNewDoc)({
+            res,
+            oldValue: oldMovie,
+            newValue: updatedMovie,
+        });
+        // call next middleware
+        next();
     }
     catch (err) {
         // handle unexpected error
@@ -189,31 +211,41 @@ const updateMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.updateMovieById = updateMovieById;
 //controller to bulk delete movies by taking list of ids
-const bulkDeleteMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkDeleteMovies = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // get movie ids
         const movieIds = req.validatedData.movieIds;
+        //get all existing movie  by ids
+        const moviesToDelete = yield movie_model_1.default.find({
+            _id: { $in: movieIds },
+        })
+            .lean()
+            .exec();
+        //in case no movies are found
+        if (moviesToDelete.length === 0) {
+            (0, handle_error_1.handleError)(res, {
+                message: 'No movies found for the provided IDs',
+                statusCode: 404,
+            });
+            return;
+        }
         //delete all the movies that are passed
-        const deletedMovies = yield movie_model_1.default.deleteMany({
+        const deletedResult = yield movie_model_1.default.deleteMany({
             _id: {
                 $in: movieIds,
             },
         });
-        // in case no movies are deleted
-        if (deletedMovies.deletedCount === 0) {
-            (0, handle_error_1.handleError)(res, { message: 'No movies found', statusCode: 404 });
-            return;
-        }
         // return the deleted movies
         res.status(200).json({
             success: true,
             data: {
-                deletedCount: deletedMovies.deletedCount,
+                deletedCount: deletedResult.deletedCount,
             },
-            message: deletedMovies.deletedCount === movieIds.length
-                ? 'All movies deleted successfully'
-                : 'Some movies could not be deleted (IDs not found or already deleted)',
+            message: `${deletedResult.deletedCount} movie(s) deleted successfully`,
         });
+        // set the deleted movies for history
+        (0, history_utils_1.appendOldDoc)(res, moviesToDelete);
+        next();
     }
     catch (err) {
         // handle unexpected error
@@ -224,7 +256,7 @@ const bulkDeleteMovies = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.bulkDeleteMovies = bulkDeleteMovies;
 //controller to add bulk movies by json
-const addBulkMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const addBulkMovies = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // continue inserting even if there are errors
         const savedMovies = yield movie_model_1.default.insertMany(req.validatedData, {
@@ -240,6 +272,9 @@ const addBulkMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             },
             message: 'Movies added successfully',
         });
+        // set the added movies for history
+        (0, history_utils_1.appendNewDoc)(res, savedMovies);
+        next();
     }
     catch (err) {
         // failed (duplicate) docs
@@ -258,6 +293,9 @@ const addBulkMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 },
                 message: 'Movies partially added successfully',
             });
+            // set the added movies for history
+            (0, history_utils_1.appendNewDoc)(res, added);
+            next();
             return;
         }
         (0, handle_error_1.handleError)(res, {

@@ -19,11 +19,12 @@ exports.updateEpisodeById = exports.deleteEpisodeById = exports.getEpisodeById =
 const api_error_1 = require("../common/utils/api-error");
 const get_episode_1 = require("../common/utils/get-episode");
 const handle_error_1 = require("../common/utils/handle-error");
+const history_utils_1 = require("../common/utils/history-utils");
 const mongo_errors_1 = require("../common/utils/mongo-errors");
 const tv_episode_1 = __importDefault(require("../models/tv-episode"));
 const tv_season_1 = __importDefault(require("../models/tv-season"));
 //controller to add a episode to a season
-const addEpisode = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const addEpisode = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // check if the season exists
         const season = yield tv_season_1.default.findById(req.validatedData.season)
@@ -42,6 +43,10 @@ const addEpisode = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             data: savedEpisode,
             message: 'Episode created successfully',
         });
+        // record the saved episode in history
+        (0, history_utils_1.appendNewDoc)(res, savedEpisode);
+        // call next middleware
+        next();
     }
     catch (err) {
         //handle unexpected error
@@ -89,7 +94,7 @@ const getEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.getEpisodeById = getEpisodeById;
 //controller to delete a episode by id
-const deleteEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteEpisodeById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // get id from params
         const { id } = req.params;
@@ -111,6 +116,10 @@ const deleteEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, functi
             data: deletedEpisode,
             message: 'Episode deleted successfully',
         });
+        //record the deleted episode in history
+        (0, history_utils_1.appendOldDoc)(res, deletedEpisode);
+        // call next middleware
+        next();
     }
     catch (err) {
         //handle unexpected error
@@ -121,13 +130,19 @@ const deleteEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.deleteEpisodeById = deleteEpisodeById;
 //controller to update a episode by id
-const updateEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateEpisodeById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // get id from params
         const { id } = req.params;
         // check if id is a valid mongo id
         if (!(0, mongo_errors_1.isMongoIdValid)(id)) {
             (0, handle_error_1.handleError)(res, { message: 'Invalid episode id', statusCode: 400 });
+            return;
+        }
+        //check if the episode exists
+        const episode = yield tv_episode_1.default.findById(id).lean().exec();
+        if (!episode) {
+            (0, handle_error_1.handleError)(res, { message: 'Episode does not exist', statusCode: 404 });
             return;
         }
         //find and update the episode by id
@@ -140,7 +155,10 @@ const updateEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, functi
             .exec();
         // in case episode is not updated
         if (!updatedEpisode) {
-            (0, handle_error_1.handleError)(res, { message: 'Episode does not exist', statusCode: 404 });
+            (0, handle_error_1.handleError)(res, {
+                message: 'Episode does not exist / failed to update',
+                statusCode: 500,
+            });
             return;
         }
         // return the updated episode
@@ -149,6 +167,9 @@ const updateEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, functi
             data: updatedEpisode,
             message: 'Episode updated successfully',
         });
+        //store the updated episode in history
+        (0, history_utils_1.appendOldAndNewDoc)({ res, oldValue: episode, newValue: updatedEpisode });
+        next();
     }
     catch (err) {
         //handle unexpected error

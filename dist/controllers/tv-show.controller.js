@@ -25,8 +25,9 @@ const config_constants_1 = require("../common/constants/config.constants");
 const get_tv_show_1 = require("../common/utils/get-tv-show");
 const delete_tv_show_1 = require("../common/utils/delete-tv-show");
 const add_tv_show_1 = require("../common/utils/add-tv-show");
+const history_utils_1 = require("../common/utils/history-utils");
 // controller to add a new tv show
-const addTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const addTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     // Start a Mongoose session for the transaction
     const session = yield (0, mongoose_1.startSession)();
     session.startTransaction();
@@ -41,6 +42,9 @@ const addTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             data: savedTvShow,
             message: 'Tv show created successfully',
         });
+        // record the added tv show in history
+        (0, history_utils_1.appendNewDoc)(res, savedTvShow);
+        next();
     }
     catch (error) {
         // If any error occurred, abort the entire transaction
@@ -115,7 +119,7 @@ const getTvShowById = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.getTvShowById = getTvShowById;
 // controller to update tv show by id
-const updateTvShowById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateTvShowById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //extract id from params
         const { id } = req.params;
@@ -124,15 +128,16 @@ const updateTvShowById = (req, res) => __awaiter(void 0, void 0, void 0, functio
             (0, handle_error_1.handleError)(res, { message: 'Invalid tv show id', statusCode: 400 });
             return;
         }
+        //get the old tv show record
+        const oldTvShow = yield tv_show_mode_1.default.findById(id).lean().exec();
+        if (!oldTvShow) {
+            (0, handle_error_1.handleError)(res, { message: 'Tv show not found', statusCode: 404 });
+            return;
+        }
         //update the tv show by id
         const updatedTvShow = yield tv_show_mode_1.default.findByIdAndUpdate(id, req.validatedData, { new: true })
             .lean()
             .exec();
-        // in case tv show is not updated
-        if (!updatedTvShow) {
-            (0, handle_error_1.handleError)(res, { message: 'Tv show not found', statusCode: 404 });
-            return;
-        }
         // return the updated tv show
         res.status(200).json({
             success: true,
@@ -141,6 +146,9 @@ const updateTvShowById = (req, res) => __awaiter(void 0, void 0, void 0, functio
             },
             message: 'Tv show updated successfully',
         });
+        // record the updated tv show in history
+        (0, history_utils_1.appendOldAndNewDoc)({ res, newValue: updatedTvShow, oldValue: oldTvShow });
+        next();
     }
     catch (error) {
         // handle unexpected error
@@ -149,7 +157,7 @@ const updateTvShowById = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.updateTvShowById = updateTvShowById;
 // controller to delete tv show by id
-const deleteTvShowById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteTvShowById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     //initialize transaction session
     const session = yield (0, mongoose_1.startSession)();
     //start transaction
@@ -160,6 +168,16 @@ const deleteTvShowById = (req, res) => __awaiter(void 0, void 0, void 0, functio
         //check if the id is a valid mongo id
         if (!(0, mongo_errors_1.isMongoIdValid)(id)) {
             (0, handle_error_1.handleError)(res, { message: 'Invalid tv show id', statusCode: 400 });
+            return;
+        }
+        // find the tv show by id
+        const tvShow = yield tv_show_mode_1.default.findById(id).lean().exec();
+        //in case tv show is not found
+        if (!tvShow) {
+            (0, handle_error_1.handleError)(res, {
+                message: `TV show with id ${id} not found`,
+                statusCode: 404,
+            });
             return;
         }
         // delete tv show
@@ -174,6 +192,9 @@ const deleteTvShowById = (req, res) => __awaiter(void 0, void 0, void 0, functio
             },
             message: 'Tv show deleted successfully',
         });
+        // record the deleted tv show in history
+        (0, history_utils_1.appendOldDoc)(res, tvShow);
+        next();
     }
     catch (err) {
         session.abortTransaction();
@@ -190,7 +211,7 @@ const deleteTvShowById = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.deleteTvShowById = deleteTvShowById;
 //controller to bulk delete tv show
-const bulkDeleteTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkDeleteTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     // create a mongo transaction session
     const session = yield (0, mongoose_1.startSession)();
     //start transaction
@@ -198,6 +219,15 @@ const bulkDeleteTvShow = (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         // get the ids from validated data
         const { tvShowIds } = req.validatedData;
+        //get all the tv shows
+        const tvShows = yield tv_show_mode_1.default.find({ _id: { $in: tvShowIds } })
+            .lean()
+            .exec();
+        //in case no tv shows are found
+        if (tvShows.length === 0) {
+            (0, handle_error_1.handleError)(res, { message: 'No tv shows found', statusCode: 404 });
+            return;
+        }
         const deleteCount = {
             tvShow: 0,
             seasons: 0,
@@ -221,6 +251,9 @@ const bulkDeleteTvShow = (req, res) => __awaiter(void 0, void 0, void 0, functio
             },
             message: "Tv show's deleted successfully",
         });
+        //record the deleted tv show in history
+        (0, history_utils_1.appendOldDoc)(res, tvShows);
+        next();
     }
     catch (err) {
         session.abortTransaction();
@@ -427,7 +460,7 @@ const filterTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.filterTvShow = filterTvShow;
 //controller to bulk add tv show
-const bulkAddTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkAddTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     //start a mongoose transaction session
     const session = yield (0, mongoose_1.startSession)();
     //start transaction
@@ -450,6 +483,9 @@ const bulkAddTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             data: savedTvShows,
             message: 'Tv shows created successfully',
         });
+        //record the added tv shows in history
+        (0, history_utils_1.appendNewDoc)(res, savedTvShows);
+        next(); //call next middleware
     }
     catch (error) {
         // handle unexpected error

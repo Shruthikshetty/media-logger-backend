@@ -36,8 +36,9 @@ const tv_show_mode_1 = __importDefault(require("../models/tv-show.mode"));
 const get_season_1 = require("../common/utils/get-season");
 const api_error_1 = require("../common/utils/api-error");
 const mongo_errors_1 = require("../common/utils/mongo-errors");
+const history_utils_1 = require("../common/utils/history-utils");
 //controller to add a tv season to a tv show
-const addSeason = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const addSeason = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     // create a mongo transaction session
     const session = yield (0, mongoose_1.startSession)();
     //start transaction
@@ -78,12 +79,16 @@ const addSeason = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // commit the transaction
         yield session.commitTransaction();
+        const seasonWithEpisodes = Object.assign(Object.assign({}, saveSeason.toObject()), { episodes: savedEpisodes });
         //send the response
         res.status(201).json({
             success: true,
-            data: Object.assign(Object.assign({}, saveSeason.toObject()), { episodes: savedEpisodes }),
+            data: seasonWithEpisodes,
             message: 'Season added successfully',
         });
+        //store the added season for history
+        (0, history_utils_1.appendNewDoc)(res, seasonWithEpisodes);
+        next();
     }
     catch (err) {
         // if any error abort the transaction
@@ -125,13 +130,19 @@ const getSeasonById = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.getSeasonById = getSeasonById;
 // controller to update a season
-const updateSeason = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateSeason = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // get id from params
         const { id } = req.params;
         // check if id is a valid mongo id
         if (!(0, mongo_errors_1.isMongoIdValid)(id)) {
             (0, handle_error_1.handleError)(res, { message: 'Invalid season id', statusCode: 400 });
+            return;
+        }
+        //Check if the season exists
+        const season = yield tv_season_1.default.findById(id).lean().exec();
+        if (!season) {
+            (0, handle_error_1.handleError)(res, { message: 'Season does not exist', statusCode: 404 });
             return;
         }
         //find and update the season by id
@@ -144,7 +155,10 @@ const updateSeason = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             .exec();
         // in case season is not updated
         if (!updatedSeason) {
-            (0, handle_error_1.handleError)(res, { message: 'Season does not exist', statusCode: 404 });
+            (0, handle_error_1.handleError)(res, {
+                message: 'Season does not exist / failed to update',
+                statusCode: 500,
+            });
             return;
         }
         // return the updated season
@@ -153,6 +167,9 @@ const updateSeason = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             data: updatedSeason,
             message: 'Season updated successfully',
         });
+        // record the updated season in history
+        (0, history_utils_1.appendOldAndNewDoc)({ res, oldValue: season, newValue: updatedSeason });
+        next();
     }
     catch (err) {
         // handle unexpected error
@@ -166,7 +183,7 @@ const updateSeason = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.updateSeason = updateSeason;
 //delete a season by id
-const deleteSeasonById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteSeasonById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     // create a mongo transaction session
     const session = yield (0, mongoose_1.startSession)();
     //start transaction
@@ -202,6 +219,9 @@ const deleteSeasonById = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 } }),
             message: 'Season and associated episodes deleted successfully',
         });
+        // record the deleted season in history
+        (0, history_utils_1.appendOldDoc)(res, deletedSeason);
+        next();
     }
     catch (err) {
         // in case of error abort the transaction

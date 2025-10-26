@@ -40,6 +40,11 @@ const HistorySchema = new mongoose_1.Schema({
         type: String,
         required: false,
     },
+    bulk: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
 }, {
     timestamps: true,
 });

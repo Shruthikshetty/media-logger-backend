@@ -210,7 +210,7 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
             // Assertions
             expect(res.status).toBe(404);
             expect(res.body.success).toBe(false);
-            expect(res.body.message).toMatch(/Movie dose not exist/);
+            expect(res.body.message).toMatch(/Movie does not exist/);
         }));
         it('should return 400 for invalid movie ID format', () => __awaiter(void 0, void 0, void 0, function* () {
             // Log in as admin
