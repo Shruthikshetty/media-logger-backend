@@ -290,7 +290,8 @@ route.post(
   '/season',
   requireAuth('admin'),
   validateReq(AddSeasonZodSchema),
-  addSeason
+  addSeason,
+  recordHistory('Season')
 );
 
 /**
@@ -489,7 +490,8 @@ route.patch(
   '/season/:id',
   requireAuth('admin'),
   validateReq(UpdateSeasonZodSchema),
-  updateSeason
+  updateSeason,
+  recordHistory('Season')
 );
 
 /**
@@ -519,7 +521,12 @@ route.patch(
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/season/:id', requireAuth('admin'), deleteSeasonById);
+route.delete(
+  '/season/:id',
+  requireAuth('admin'),
+  deleteSeasonById,
+  recordHistory('Season')
+);
 
 /**
  * @swagger

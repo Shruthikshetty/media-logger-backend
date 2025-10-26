@@ -4,7 +4,7 @@
 
 // import
 import { handleError } from '../common/utils/handle-error';
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { ValidatedRequest } from '../types/custom-types';
 import { AddSeasonZodType } from '../common/validation-schema/tv-show/add-season';
 import { startSession } from 'mongoose';
@@ -18,11 +18,17 @@ import {
   isMongoIdValid,
 } from '../common/utils/mongo-errors';
 import { UpdateSeasonZodType } from '../common/validation-schema/tv-show/update-season';
+import {
+  appendNewDoc,
+  appendOldAndNewDoc,
+  appendOldDoc,
+} from '../common/utils/history-utils';
 
 //controller to add a tv season to a tv show
 export const addSeason = async (
   req: ValidatedRequest<AddSeasonZodType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   // create a mongo transaction session
   const session = await startSession();
@@ -78,12 +84,19 @@ export const addSeason = async (
     // commit the transaction
     await session.commitTransaction();
 
+    const seasonWithEpisodes = {
+      ...saveSeason.toObject(),
+      episodes: savedEpisodes,
+    };
     //send the response
     res.status(201).json({
       success: true,
-      data: { ...saveSeason.toObject(), episodes: savedEpisodes },
+      data: seasonWithEpisodes,
       message: 'Season added successfully',
     });
+    //store the added season for history
+    appendNewDoc(res, seasonWithEpisodes);
+    next();
   } catch (err: any) {
     // if any error abort the transaction
     await session.abortTransaction();
@@ -134,7 +147,8 @@ export const getSeasonById = async (
 // controller to update a season
 export const updateSeason = async (
   req: ValidatedRequest<UpdateSeasonZodType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // get id from params
@@ -142,6 +156,13 @@ export const updateSeason = async (
     // check if id is a valid mongo id
     if (!isMongoIdValid(id)) {
       handleError(res, { message: 'Invalid season id', statusCode: 400 });
+      return;
+    }
+
+    //Check if the season exists
+    const season = await Season.findById(id).lean().exec();
+    if (!season) {
+      handleError(res, { message: 'Season does not exist', statusCode: 404 });
       return;
     }
 
@@ -160,7 +181,10 @@ export const updateSeason = async (
 
     // in case season is not updated
     if (!updatedSeason) {
-      handleError(res, { message: 'Season does not exist', statusCode: 404 });
+      handleError(res, {
+        message: 'Season does not exist / failed to update',
+        statusCode: 500,
+      });
       return;
     }
 
@@ -170,6 +194,9 @@ export const updateSeason = async (
       data: updatedSeason,
       message: 'Season updated successfully',
     });
+    // record the updated season in history
+    appendOldAndNewDoc({ res, oldValue: season, newValue: updatedSeason });
+    next();
   } catch (err: any) {
     // handle unexpected error
     handleError(res, {
@@ -184,7 +211,8 @@ export const updateSeason = async (
 //delete a season by id
 export const deleteSeasonById = async (
   req: ValidatedRequest<{}>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   // create a mongo transaction session
   const session = await startSession();
@@ -233,6 +261,9 @@ export const deleteSeasonById = async (
       },
       message: 'Season and associated episodes deleted successfully',
     });
+    // record the deleted season in history
+    appendOldDoc(res, deletedSeason);
+    next();
   } catch (err) {
     // in case of error abort the transaction
     await session.abortTransaction();
