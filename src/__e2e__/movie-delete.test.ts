@@ -143,7 +143,7 @@ describe('movies delete related endpoints', () => {
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.data.deletedCount).toBe(1);
-      expect(res.body.message).toMatch("1 movie(s) deleted successfully");
+      expect(res.body.message).toMatch('1 movie(s) deleted successfully');
     });
   });
 });
