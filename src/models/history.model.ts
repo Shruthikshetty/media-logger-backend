@@ -19,6 +19,7 @@ export type IHistory = {
   oldValue?: any;
   newValue?: any;
   title: string;
+  bulk: boolean;
 };
 
 //schema
@@ -54,6 +55,11 @@ const HistorySchema: Schema = new Schema(
     title: {
       type: String,
       required: false,
+    },
+    bulk: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   {

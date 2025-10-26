@@ -19,6 +19,7 @@ import { requireAuth } from '../common/middleware/require-auth';
 import { UpdateUserZodSchema } from '../common/validation-schema/user/update-user';
 import { UpdateRoleZodSchema } from '../common/validation-schema/user/update-role';
 import { FilterUserZodSchema } from '../common/validation-schema/user/filter-user';
+import { recordHistory } from '../common/middleware/record-history';
 
 // initialize router
 const route = Router();
@@ -148,7 +149,7 @@ route.get('/:id', requireAuth(), getUserById);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/', requireAuth(), deleteUser);
+route.delete('/', requireAuth(), deleteUser, recordHistory('User'));
 
 /**
  * @swagger
@@ -174,7 +175,12 @@ route.delete('/', requireAuth(), deleteUser);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/:id', requireAuth('admin'), deleteUserById);
+route.delete(
+  '/:id',
+  requireAuth('admin'),
+  deleteUserById,
+  recordHistory('User')
+);
 
 /**
  * @swagger
@@ -228,7 +234,8 @@ route.put(
   '/role/:id',
   requireAuth('admin'),
   validateReq(UpdateRoleZodSchema),
-  updateRoleById
+  updateRoleById,
+  recordHistory('User')
 );
 
 // export all routers clubbed

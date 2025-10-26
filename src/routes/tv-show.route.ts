@@ -40,6 +40,7 @@ import { BulkAddTvShowZodSchema } from '../common/validation-schema/tv-show/bulk
 import { ValidateJsonFile } from '../common/middleware/handle-json-file-validation';
 import { handleUpload } from '../common/middleware/handle-upload';
 import jsonUpload from '../common/config/json-upload.config';
+import { recordHistory } from '../common/middleware/record-history';
 
 //initialize router
 const route = Router();
@@ -66,7 +67,8 @@ route.post(
   '/',
   requireAuth('admin'),
   validateReq(AddTvShowZodSchema),
-  addTvShow
+  addTvShow,
+  recordHistory('Tv Show')
 );
 
 /**
@@ -106,7 +108,8 @@ route.post(
   requireAuth('admin'),
   handleUpload(jsonUpload, 'tvShowDataFile'),
   ValidateJsonFile(BulkAddTvShowZodSchema),
-  bulkAddTvShow
+  bulkAddTvShow,
+  recordHistory('Tv Show', true)
 );
 /**
  * @swagger
@@ -259,7 +262,8 @@ route.patch(
   '/:id',
   requireAuth('admin'),
   validateReq(UpdateTvShowZodSchema),
-  updateTvShowById
+  updateTvShowById,
+  recordHistory('Tv Show')
 );
 
 /**
@@ -286,7 +290,8 @@ route.post(
   '/season',
   requireAuth('admin'),
   validateReq(AddSeasonZodSchema),
-  addSeason
+  addSeason,
+  recordHistory('Season')
 );
 
 /**
@@ -313,7 +318,8 @@ route.post(
   '/episode',
   requireAuth('admin'),
   validateReq(AddEpisodeZodSchema),
-  addEpisode
+  addEpisode,
+  recordHistory('Episode')
 );
 
 /**
@@ -375,7 +381,12 @@ route.get('/episode/:id', getEpisodeById);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/episode/:id', requireAuth('admin'), deleteEpisodeById);
+route.delete(
+  '/episode/:id',
+  requireAuth('admin'),
+  deleteEpisodeById,
+  recordHistory('Episode')
+);
 
 /**
  * @swagger
@@ -410,7 +421,8 @@ route.patch(
   '/episode/:id',
   requireAuth('admin'),
   validateReq(UpdateEpisodeZodSchema),
-  updateEpisodeById
+  updateEpisodeById,
+  recordHistory('Episode')
 );
 
 /**
@@ -478,7 +490,8 @@ route.patch(
   '/season/:id',
   requireAuth('admin'),
   validateReq(UpdateSeasonZodSchema),
-  updateSeason
+  updateSeason,
+  recordHistory('Season')
 );
 
 /**
@@ -508,7 +521,12 @@ route.patch(
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/season/:id', requireAuth('admin'), deleteSeasonById);
+route.delete(
+  '/season/:id',
+  requireAuth('admin'),
+  deleteSeasonById,
+  recordHistory('Season')
+);
 
 /**
  * @swagger
@@ -536,7 +554,8 @@ route.delete(
   '/bulk',
   requireAuth('admin'),
   validateReq(BulkDeleteTvShowZodSchema),
-  bulkDeleteTvShow
+  bulkDeleteTvShow,
+  recordHistory('Tv Show', true)
 );
 
 /**
@@ -566,7 +585,12 @@ route.delete(
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/:id', requireAuth('admin'), deleteTvShowById);
+route.delete(
+  '/:id',
+  requireAuth('admin'),
+  deleteTvShowById,
+  recordHistory('Tv Show')
+);
 
 //export all the routes
 export default route;

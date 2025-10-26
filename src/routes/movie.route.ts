@@ -24,6 +24,7 @@ import { ValidateJsonFile } from '../common/middleware/handle-json-file-validati
 import { BulkAddMovieZodSchema } from '../common/validation-schema/movie/bulk-add';
 import { handleUpload } from '../common/middleware/handle-upload';
 import { MovieFiltersZodSchema } from '../common/validation-schema/movie/movie-filters';
+import { recordHistory } from '../common/middleware/record-history';
 
 // initialize router
 const route = Router();
@@ -159,7 +160,13 @@ route.get('/:id', getMovieById);
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.post('/', requireAuth('admin'), validateReq(AddMovieZodSchema), addMovie);
+route.post(
+  '/',
+  requireAuth('admin'),
+  validateReq(AddMovieZodSchema),
+  addMovie,
+  recordHistory('Movie')
+);
 
 /**
  * @swagger
@@ -205,7 +212,8 @@ route.post(
   requireAuth('admin'),
   handleUpload(jsonUpload, 'movieDataFile'),
   ValidateJsonFile(BulkAddMovieZodSchema),
-  addBulkMovies
+  addBulkMovies,
+  recordHistory('Movie', true)
 );
 
 /**
@@ -234,7 +242,8 @@ route.delete(
   '/bulk',
   requireAuth('admin'),
   validateReq(BulkDeleteMovieZodSchema),
-  bulkDeleteMovies
+  bulkDeleteMovies,
+  recordHistory('Movie', true)
 );
 
 /**
@@ -264,7 +273,12 @@ route.delete(
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-route.delete('/:id', requireAuth('admin'), deleteMovieById);
+route.delete(
+  '/:id',
+  requireAuth('admin'),
+  deleteMovieById,
+  recordHistory('Movie')
+);
 
 /**
  * @swagger
@@ -299,7 +313,8 @@ route.patch(
   '/:id',
   requireAuth('admin'),
   validateReq(updateMoveZodSchema),
-  updateMovieById
+  updateMovieById,
+  recordHistory('Movie')
 );
 
 // export all the routes
