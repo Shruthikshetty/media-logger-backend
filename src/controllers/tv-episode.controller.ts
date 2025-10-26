@@ -6,6 +6,11 @@ import { ApiError } from '../common/utils/api-error';
 import { getEpisodeDetailsById } from '../common/utils/get-episode';
 import { handleError } from '../common/utils/handle-error';
 import {
+  appendNewDoc,
+  appendOldAndNewDoc,
+  appendOldDoc,
+} from '../common/utils/history-utils';
+import {
   isDuplicateKeyError,
   isMongoIdValid,
 } from '../common/utils/mongo-errors';
@@ -14,12 +19,13 @@ import { UpdateEpisodeZodType } from '../common/validation-schema/tv-show/update
 import Episode from '../models/tv-episode';
 import Season from '../models/tv-season';
 import { ValidatedRequest } from '../types/custom-types';
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 
 //controller to add a episode to a season
 export const addEpisode = async (
   req: ValidatedRequest<AddEpisodeZodType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // check if the season exists
@@ -42,6 +48,10 @@ export const addEpisode = async (
       data: savedEpisode,
       message: 'Episode created successfully',
     });
+    // record the saved episode in history
+    appendNewDoc(res, savedEpisode);
+    // call next middleware
+    next();
   } catch (err: any) {
     //handle unexpected error
     handleError(res, {
@@ -95,7 +105,8 @@ export const getEpisodeById = async (
 //controller to delete a episode by id
 export const deleteEpisodeById = async (
   req: ValidatedRequest<{}>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // get id from params
@@ -122,6 +133,10 @@ export const deleteEpisodeById = async (
       data: deletedEpisode,
       message: 'Episode deleted successfully',
     });
+    //record the deleted episode in history
+    appendOldDoc(res, deletedEpisode);
+    // call next middleware
+    next();
   } catch (err: any) {
     //handle unexpected error
     handleError(res, {
@@ -133,7 +148,8 @@ export const deleteEpisodeById = async (
 //controller to update a episode by id
 export const updateEpisodeById = async (
   req: ValidatedRequest<UpdateEpisodeZodType>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     // get id from params
@@ -142,6 +158,13 @@ export const updateEpisodeById = async (
     // check if id is a valid mongo id
     if (!isMongoIdValid(id)) {
       handleError(res, { message: 'Invalid episode id', statusCode: 400 });
+      return;
+    }
+
+    //check if the episode exists
+    const episode = await Episode.findById(id).lean().exec();
+    if (!episode) {
+      handleError(res, { message: 'Episode does not exist', statusCode: 404 });
       return;
     }
 
@@ -160,7 +183,10 @@ export const updateEpisodeById = async (
 
     // in case episode is not updated
     if (!updatedEpisode) {
-      handleError(res, { message: 'Episode does not exist', statusCode: 404 });
+      handleError(res, {
+        message: 'Episode does not exist / failed to update',
+        statusCode: 500,
+      });
       return;
     }
 
@@ -170,6 +196,9 @@ export const updateEpisodeById = async (
       data: updatedEpisode,
       message: 'Episode updated successfully',
     });
+    //store the updated episode in history
+    appendOldAndNewDoc({ res, oldValue: episode, newValue: updatedEpisode });
+    next();
   } catch (err: any) {
     //handle unexpected error
     handleError(res, {
