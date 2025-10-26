@@ -223,7 +223,7 @@ export const updateMovieById = async (
 
     // in case movie is not updated
     if (!updatedMovie) {
-      handleError(res, { message: 'failed to update movie', statusCode: 500 });
+      handleError(res, { message: 'Failed to update movie', statusCode: 500 });
       return;
     }
 
