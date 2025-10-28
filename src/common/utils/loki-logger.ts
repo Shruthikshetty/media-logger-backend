@@ -47,6 +47,6 @@ export async function lokiLog(
       }
     );
   } catch (error) {
-    logger.error('Error sending log to Loki: %s', error);
+    logger.error('Error sending log to Loki', error);
   }
 }
