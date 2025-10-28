@@ -43,6 +43,7 @@ export async function lokiLog(
       {
         headers: { 'Content-Type': 'application/json' },
         auth: { username: lokiUser, password: lokiPassword },
+        timeout: 5000,
       }
     );
   } catch (error) {

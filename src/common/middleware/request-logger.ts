@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { logger } from '../utils/logger';
 import { Request, NextFunction, Response } from 'express';
 import { lokiLog } from '../utils/loki-logger';
+import { randomUUID } from 'node:crypto';
 
 /**
  * Express middleware to log all incoming HTTP requests.
@@ -22,7 +23,7 @@ export const requestLogger = (
     // attach a unique id to the request
     const request = req as Request & { id: string };
     // generate a unique request id
-    const requestId = crypto.randomUUID();
+    const requestId = randomUUID();
     request.id = requestId;
     res.setHeader('X-Request-Id', requestId);
 
@@ -46,25 +47,25 @@ export const requestLogger = (
       const level = res.statusCode >= 500 ? 'error' : 'info';
       let parsedBody;
       let modifiedBody = body;
-      // Safely attempt to parse JSON only if it's a non-empty string that looks like an object or array
-      if (
-        typeof body === 'string' &&
-        body.length > 0 &&
-        (body.trim().startsWith('{') || body.trim().startsWith('['))
-      ) {
-        parsedBody = JSON.parse(body);
-        // If the parsed body is an object, add the requestId
-        // as per the apps standard response its always expected to be a object
-        if (typeof parsedBody === 'object') {
-          parsedBody.requestId = requestId;
-          modifiedBody = JSON.stringify(parsedBody); // Re-stringify the modified object
-        }
-      } else {
-        // If not JSON, use the body as-is (if string) or a placeholder
-        parsedBody =
-          typeof body === 'string' ? body : '[Non-string or empty body]';
-      }
       try {
+        // Safely attempt to parse JSON only if it's a non-empty string that looks like an object or array
+        if (
+          typeof body === 'string' &&
+          body.length > 0 &&
+          (body.trim().startsWith('{') || body.trim().startsWith('['))
+        ) {
+          parsedBody = JSON.parse(body);
+          // If the parsed body is an object, add the requestId
+          // as per the apps standard response its always expected to be a object
+          if (typeof parsedBody === 'object') {
+            parsedBody.requestId = requestId;
+            modifiedBody = JSON.stringify(parsedBody); // Re-stringify the modified object
+          }
+        } else {
+          // If not JSON, use the body as-is (if string) or a placeholder
+          parsedBody =
+            typeof body === 'string' ? body : '[Non-string or empty body]';
+        }
         // Log the response
         lokiLog(
           level,
