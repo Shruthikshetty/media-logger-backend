@@ -23,6 +23,8 @@ exports.app = app;
 app.use(express_1.default.json());
 //cors policy middleware
 app.use((0, cors_1.default)(cors_config_1.corsOptions));
+// to capture ip address
+app.set('trust proxy', true);
 // Middleware to log all requests
 app.use(request_logger_1.requestLogger);
 // Middleware for serving Swagger UI

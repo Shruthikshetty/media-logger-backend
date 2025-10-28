@@ -16,7 +16,7 @@ const options = {
         openapi: '3.0.0',
         info: {
             title: 'Media Logger API',
-            version: '1.0.0',
+            version: '1.2.0',
             description: 'API documentation for Movie logger application',
             contact: {
                 name: 'Shruthik shetty',

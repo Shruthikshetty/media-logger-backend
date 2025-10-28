@@ -3,7 +3,7 @@
  * this @file contains all the configuration constants
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HISTORY_RETENTION_DAYS = exports.GET_ALL_HISTORY_LIMITS = exports.GET_ALL_TV_SHOW_LIMITS = exports.GET_ALL_GAMES_LIMITS = exports.GET_ALL_MOVIES_LIMITS = exports.GET_ALL_USER_LIMITS = exports.CLOUDINARY_FOLDER = exports.ALLOWED_IMAGE_FORMATS = exports.IMAGE_FILE_SIZE = exports.TV_SHOW_SEARCH_INDEX = exports.GAME_SEARCH_INDEX = exports.MOVIE_SEARCH_INDEX = exports.JSON_FILE_SIZE = exports.ADMIN = exports.JWT_EXPIRES_IN = exports.JWT_SECRET_DEFAULT = exports.SALT_ROUNDS = void 0;
+exports.CUSTOM_SANITIZATION_RULES = exports.HISTORY_RETENTION_DAYS = exports.GET_ALL_HISTORY_LIMITS = exports.GET_ALL_TV_SHOW_LIMITS = exports.GET_ALL_GAMES_LIMITS = exports.GET_ALL_MOVIES_LIMITS = exports.GET_ALL_USER_LIMITS = exports.CLOUDINARY_FOLDER = exports.ALLOWED_IMAGE_FORMATS = exports.IMAGE_FILE_SIZE = exports.TV_SHOW_SEARCH_INDEX = exports.GAME_SEARCH_INDEX = exports.MOVIE_SEARCH_INDEX = exports.JSON_FILE_SIZE = exports.ADMIN = exports.JWT_EXPIRES_IN = exports.JWT_SECRET_DEFAULT = exports.SALT_ROUNDS = void 0;
 exports.SALT_ROUNDS = 10;
 exports.JWT_SECRET_DEFAULT = 'super-secret';
 exports.JWT_EXPIRES_IN = '1d';
@@ -76,3 +76,5 @@ exports.GET_ALL_HISTORY_LIMITS = {
     },
 };
 exports.HISTORY_RETENTION_DAYS = 180;
+//sanitization custom rules
+exports.CUSTOM_SANITIZATION_RULES = ['password', 'token'];
