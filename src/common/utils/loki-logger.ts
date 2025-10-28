@@ -3,6 +3,7 @@
  */
 import axios from 'axios';
 import dotenv from 'dotenv';
+import { logger } from './logger';
 
 // define types
 type LogLevel = 'info' | 'warn' | 'error' | 'debug';
@@ -22,6 +23,11 @@ export async function lokiLog(
   msg: LogMessage,
   labels: LogLabels = {}
 ) {
+  if (!lokiUrl || !lokiUser || !lokiPassword) {
+    logger.error('LOKI_HOST, LOKI_USERNAME, LOKI_API_KEY not set');
+    return;
+  }
+
   const ns = BigInt(Date.now()) * BigInt(1000000); // high-precision timestamp in nanoseconds
   const stream = {
     stream: { app: 'media-logger-backend', level, ...labels },
@@ -30,12 +36,16 @@ export async function lokiLog(
     ],
   };
 
-  await axios.post(
-    `${lokiUrl}/loki/api/v1/push`,
-    { streams: [stream] },
-    {
-      headers: { 'Content-Type': 'application/json' },
-      auth: { username: lokiUser, password: lokiPassword },
-    }
-  );
+  try {
+    await axios.post(
+      `${lokiUrl}/loki/api/v1/push`,
+      { streams: [stream] },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        auth: { username: lokiUser, password: lokiPassword },
+      }
+    );
+  } catch (error) {
+    logger.error('Error sending log to Loki: %s', error);
+  }
 }

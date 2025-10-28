@@ -75,7 +75,6 @@ To run this project, you will need to add the following environment variables to
 - `LOKI_USERNAME`: Your Loki username.
 - `LOKI_API_KEY`: Your Loki API key.
 
-
 ## Testing
 
 To run the tests, use the following command:
