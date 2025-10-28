@@ -55,11 +55,15 @@ export const requestLogger = (
       // We only modify the response if it's an object.
       if (
         typeof bodyToSendToClient === 'object' &&
-        bodyToSendToClient !== null
+        bodyToSendToClient !== null &&
+        !Array.isArray(bodyToSendToClient) &&
+        !Buffer.isBuffer(bodyToSendToClient as any)
       ) {
         // Add the requestId to the object that will be sent to the client.
-        bodyToSendToClient.requestId = requestId;
-
+        bodyToSendToClient = {
+          ...(bodyToSendToClient as Record<string, unknown>),
+          requestId,
+        };
         // stringify the body
         bodyToSendToClient = JSON.stringify(bodyToSendToClient);
       }
