@@ -59,6 +59,9 @@ export const requestLogger = (
       ) {
         // Add the requestId to the object that will be sent to the client.
         bodyToSendToClient.requestId = requestId;
+
+        // stringify the body
+        bodyToSendToClient = JSON.stringify(bodyToSendToClient);
       }
       try {
         // Log the response
@@ -68,7 +71,7 @@ export const requestLogger = (
             message: `Sending response for: ${req.method} ${req.originalUrl}`,
             requestId: request?.id,
             statusCode: res.statusCode,
-            body: sanitizeForLog(bodyToSendToClient), // sanitize the body
+            body: sanitizeForLog(parseSafely(bodyToSendToClient)), // sanitize the body
           },
           { direction: 'response' }
         );
@@ -86,7 +89,7 @@ export const requestLogger = (
         );
       }
       // Call the original res.send to actually send the response to the client
-      return originalSend.call(res, body);
+      return originalSend.call(res, bodyToSendToClient);
     };
   } catch (error) {
     // Top-level catch block

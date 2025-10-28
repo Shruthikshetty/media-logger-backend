@@ -4,7 +4,7 @@
  * @returns A parsed object, the original input if not JSON, or a placeholder string.
  */
 export function parseSafely(body: unknown): any {
-  if (!body) {
+  if (body === null || body === undefined) {
     return '[Empty Body]';
   }
 
