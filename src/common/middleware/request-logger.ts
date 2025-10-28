@@ -45,6 +45,7 @@ export const requestLogger = (
     res.send = function (body) {
       const level = res.statusCode >= 500 ? 'error' : 'info';
       let parsedBody;
+      let modifiedBody = body;
       // Safely attempt to parse JSON only if it's a non-empty string that looks like an object or array
       if (
         typeof body === 'string' &&
@@ -52,6 +53,12 @@ export const requestLogger = (
         (body.trim().startsWith('{') || body.trim().startsWith('['))
       ) {
         parsedBody = JSON.parse(body);
+        // If the parsed body is an object, add the requestId
+        // as per the apps standard response its always expected to be a object
+        if (typeof parsedBody === 'object') {
+          parsedBody.requestId = requestId;
+          modifiedBody = JSON.stringify(parsedBody); // Re-stringify the modified object
+        }
       } else {
         // If not JSON, use the body as-is (if string) or a placeholder
         parsedBody =
@@ -85,7 +92,7 @@ export const requestLogger = (
         );
       }
       // Call the original res.send to actually send the response to the client
-      return originalSend.call(res, body);
+      return originalSend.call(res, modifiedBody);
     };
   } catch (error) {
     // Top-level catch block
