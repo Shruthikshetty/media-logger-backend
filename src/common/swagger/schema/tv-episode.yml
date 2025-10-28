@@ -137,6 +137,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 $ref: '#/components/schemas/EpisodeResponseFlat'
               message:
@@ -153,6 +156,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 oneOf:
                   - $ref: '#/components/schemas/EpisodeResponseFlat'
@@ -168,6 +174,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 $ref: '#/components/schemas/EpisodeResponseFlat'
               message:
@@ -184,6 +193,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 $ref: '#/components/schemas/EpisodeUpdate'
               message:

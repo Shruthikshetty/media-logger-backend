@@ -34,6 +34,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 type: object
                 properties:
@@ -55,6 +58,9 @@ components:
               success:
                 type: boolean
                 example: false
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
                 example: 'Invalid password'
@@ -68,6 +74,9 @@ components:
               success:
                 type: boolean
                 example: false
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
                 example: 'User not found verify email'
@@ -84,3 +93,6 @@ components:
               message:
                 type: string
                 example: 'Token is valid'
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
