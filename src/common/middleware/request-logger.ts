@@ -3,6 +3,7 @@ import { logger } from '../utils/logger';
 import { Request, NextFunction, Response } from 'express';
 import { lokiLog } from '../utils/loki-logger';
 import { randomUUID } from 'node:crypto';
+import { sanitizeForLog } from '../utils/sanitize';
 
 /**
  * Express middleware to log all incoming HTTP requests.
@@ -73,7 +74,7 @@ export const requestLogger = (
             message: `Sending response for: ${req.method} ${req.originalUrl}`,
             requestId: request?.id,
             statusCode: res.statusCode,
-            body: parsedBody, // send the parsed body
+            body: sanitizeForLog(parsedBody), // sanitize the body
           },
           { direction: 'response' }
         );

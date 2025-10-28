@@ -1,26 +1,22 @@
-import { redact } from '@visulima/redact';
-
-// Define any custom rules or use the extensive defaults.
-// The library automatically redacts common sensitive keys.
-const customRules = ['myCustomSecretField'];
-
+import { redactor } from './redactor';
+import { cloneDeep } from 'lodash';
 /**
- * Sanitizes an object for logging using @visulima/redact.
- * It redacts sensitive keys and truncates the output if it's too long.
+ * Sanitizes an object for logging using fast-redact.
+ * It redacts sensitive keys
  * @param data The input object or value to sanitize.
- * @param maxLogLength The maximum length for the stringified output.
- * @returns A sanitized version of the data.
+ * @returns A sanitized version of the data object or value if it is not an object.
  */
-export function sanitizeForLog(data: unknown, maxLogLength = 10000): unknown {
-  // Redact the data using the library
-  const redactedData = redact(data, customRules);
-
-  // Stringify and truncate if necessary
-  const logString = JSON.stringify(redactedData);
-  if (logString.length > maxLogLength) {
-    return logString.substring(0, maxLogLength) + '...[truncated]';
+export function sanitizeForLog(data: unknown): unknown {
+  // fast-redact only works on objects.
+  if (typeof data !== 'object' || data === null) {
+    return data;
   }
 
-  // Return the redacted object itself, not the string
-  return redactedData;
+  // Clone the object to avoid mutating the original
+  const dataToRedact = cloneDeep(data);
+
+  // The redactor function mutates the object, so we pass a clone to be safe.
+  const sanitizedOutput = redactor(dataToRedact);
+
+  return sanitizedOutput;
 }
