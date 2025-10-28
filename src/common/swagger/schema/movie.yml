@@ -326,6 +326,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 type: object
                 properties:
@@ -345,6 +348,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 type: object
                 properties:
@@ -371,6 +377,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 $ref: '#/components/schemas/Movie'
     AddMovieSuccessResponse:
@@ -383,6 +392,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 $ref: '#/components/schemas/Movie'
               message:
@@ -398,6 +410,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
                 example: 'Movies added successfully'
@@ -428,6 +443,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 $ref: '#/components/schemas/Movie'
               message:
@@ -447,6 +465,9 @@ components:
               message:
                 type: string
                 example: 'Movies deleted successfully'
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 type: object
                 properties:
@@ -464,6 +485,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 $ref: '#/components/schemas/Movie'
               message:
