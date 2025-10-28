@@ -185,6 +185,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 $ref: '#/components/schemas/User'
     GetAllUsersSuccessResponse:
@@ -197,6 +200,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 type: object
                 properties:
@@ -216,6 +222,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 $ref: '#/components/schemas/User'
     DeleteUserSuccessResponse:
@@ -232,6 +241,9 @@ components:
                 example: true
               data:
                 $ref: '#/components/schemas/User'
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
                 example: 'User deleted successfully'
@@ -252,3 +264,6 @@ components:
               message:
                 type: string
                 example: 'User updated successfully'
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
