@@ -47,7 +47,7 @@ function lokiLog(level_1, msg_1) {
             });
         }
         catch (error) {
-            logger_1.logger.error('Error sending log to Loki: %s', error);
+            logger_1.logger.error('Error sending log to Loki', error);
         }
     });
 }

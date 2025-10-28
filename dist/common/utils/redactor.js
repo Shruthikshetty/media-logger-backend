@@ -11,7 +11,12 @@ const config_constants_1 = require("../constants/config.constants");
  * This is synchronous
  */
 const redactor = (0, fast_redact_1.default)({
-    paths: config_constants_1.CUSTOM_SANITIZATION_RULES.map((rule) => `*.${rule}`), // Use wildcards to redact nested keys
+    paths: [
+        ...config_constants_1.CUSTOM_SANITIZATION_RULES, // For top-level keys: ['password', 'token']
+        ...config_constants_1.CUSTOM_SANITIZATION_RULES.map((rule) => `*.${rule}`), // For keys one level deep: ['*.password', '*.token']
+        ...config_constants_1.CUSTOM_SANITIZATION_RULES.map((rule) => `*.*.${rule}`), // For keys two levels deep: ['*.*.password', '*.*.token']
+        ...config_constants_1.CUSTOM_SANITIZATION_RULES.map((rule) => `*[*].${rule}`), // For keys inside an array of objects
+    ],
     censor: '***Hidden***',
     serialize: false,
 });
