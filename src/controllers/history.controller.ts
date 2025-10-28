@@ -9,8 +9,8 @@ import {
 } from '../common/utils/pagination';
 import { ValidatedRequest } from '../types/custom-types';
 import { Response } from 'express';
-import History from '../models/history.model';
 import { handleError } from '../common/utils/handle-error';
+import { getHistoryWithTotal } from '../common/utils/get-history';
 
 // controller to get all the history
 export const getAllHistory = async (
@@ -18,6 +18,8 @@ export const getAllHistory = async (
   res: Response
 ) => {
   try {
+    const { fullDetails } = req.query;
+
     // get pagination params
     const { limit, start } = getPaginationParams(
       req.query,
@@ -25,15 +27,12 @@ export const getAllHistory = async (
     );
 
     // find all history
-    const [history, total] = await Promise.all([
-      History.find()
-        .skip(start)
-        .limit(limit)
-        .sort({ createdAt: -1 })
-        .lean()
-        .exec(),
-      History.countDocuments(),
-    ]);
+    const [history, total] = await getHistoryWithTotal({
+      fullDetails: (fullDetails as string) ?? 'false',
+      start,
+      limit,
+    });
+
     // get pagination details
     const pagination = getPaginationResponse(total, limit, start);
 

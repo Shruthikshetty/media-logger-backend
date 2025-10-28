@@ -2,6 +2,14 @@
 @authToken = Bearer <token>
 
 #------------------------------------------------ History ---------------------------------------------------
-### get all transaction 
+### get all transaction  (default pagination is applied)
 GET {{baseUrl}}/api/history
+Authorization: {{authToken}}
+
+### get transactions with pagination
+GET {{baseUrl}}/api/history?start=0&limit=5
+Authorization: {{authToken}}
+
+### get transitions with user details 
+GET {{baseUrl}}/api/history?fullDetails=true
 Authorization: {{authToken}}
