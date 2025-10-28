@@ -279,6 +279,9 @@ components:
             properties:
               success:
                 type: boolean
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
               data:
@@ -296,6 +299,9 @@ components:
             properties:
               success:
                 type: boolean
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
               data:
@@ -319,6 +325,9 @@ components:
             properties:
               success:
                 type: boolean
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
               data:
@@ -340,6 +349,9 @@ components:
             properties:
               success:
                 type: boolean
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 $ref: '#/components/schemas/TvShowResponseFull'
 
@@ -353,6 +365,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 type: object
                 properties:
@@ -372,6 +387,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
                 example: 'Tv shows deleted successfully'
@@ -391,6 +409,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
                 example: 'Tv shows added successfully'

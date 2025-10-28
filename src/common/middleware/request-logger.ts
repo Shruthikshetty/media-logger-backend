@@ -4,6 +4,7 @@ import { Request, NextFunction, Response } from 'express';
 import { lokiLog } from '../utils/loki-logger';
 import { randomUUID } from 'node:crypto';
 import { sanitizeForLog } from '../utils/sanitize';
+import { parseSafely } from '../utils/parser';
 
 /**
  * Express middleware to log all incoming HTTP requests.
@@ -37,6 +38,7 @@ export const requestLogger = (
         method: req.method,
         url: req.originalUrl,
         ip: req.ip,
+        body: sanitizeForLog(req.body),
       },
       { direction: 'request' }
     );
@@ -45,28 +47,27 @@ export const requestLogger = (
     const originalSend = res.send;
     // Redefine res.send
     res.send = function (body) {
+      // define the level of the log
       const level = res.statusCode >= 500 ? 'error' : 'info';
-      let parsedBody;
-      let modifiedBody = body;
+      // safely parse the body
+      let bodyToSendToClient = parseSafely(body);
+
+      // We only modify the response if it's an object.
+      if (
+        typeof bodyToSendToClient === 'object' &&
+        bodyToSendToClient !== null &&
+        !Array.isArray(bodyToSendToClient) &&
+        !Buffer.isBuffer(bodyToSendToClient as any)
+      ) {
+        // Add the requestId to the object that will be sent to the client.
+        bodyToSendToClient = {
+          ...(bodyToSendToClient as Record<string, unknown>),
+          requestId,
+        };
+        // stringify the body
+        bodyToSendToClient = JSON.stringify(bodyToSendToClient);
+      }
       try {
-        // Safely attempt to parse JSON only if it's a non-empty string that looks like an object or array
-        if (
-          typeof body === 'string' &&
-          body.length > 0 &&
-          (body.trim().startsWith('{') || body.trim().startsWith('['))
-        ) {
-          parsedBody = JSON.parse(body);
-          // If the parsed body is an object, add the requestId
-          // as per the apps standard response its always expected to be a object
-          if (typeof parsedBody === 'object') {
-            parsedBody.requestId = requestId;
-            modifiedBody = JSON.stringify(parsedBody); // Re-stringify the modified object
-          }
-        } else {
-          // If not JSON, use the body as-is (if string) or a placeholder
-          parsedBody =
-            typeof body === 'string' ? body : '[Non-string or empty body]';
-        }
         // Log the response
         lokiLog(
           level,
@@ -74,7 +75,7 @@ export const requestLogger = (
             message: `Sending response for: ${req.method} ${req.originalUrl}`,
             requestId: request?.id,
             statusCode: res.statusCode,
-            body: sanitizeForLog(parsedBody), // sanitize the body
+            body: sanitizeForLog(parseSafely(bodyToSendToClient)), // sanitize the body
           },
           { direction: 'response' }
         );
@@ -83,18 +84,16 @@ export const requestLogger = (
         lokiLog(
           'warn',
           {
-            message:
-              'Failed to parse or log response body. Logging raw content.',
+            message: 'Failed to parse or log response body.',
             requestId: request.id,
             statusCode: res.statusCode,
             error: error instanceof Error ? error.message : String(error),
-            rawBody: body, // Include the raw body for debugging purposes
           },
           { direction: 'response' }
         );
       }
       // Call the original res.send to actually send the response to the client
-      return originalSend.call(res, modifiedBody);
+      return originalSend.call(res, bodyToSendToClient);
     };
   } catch (error) {
     // Top-level catch block

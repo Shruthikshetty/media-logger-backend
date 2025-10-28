@@ -160,6 +160,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 oneOf:
                   - $ref: '#/components/schemas/SeasonResponseFlat'
@@ -186,6 +189,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 allOf:
                   - $ref: '#/components/schemas/Season'
@@ -208,23 +214,26 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
-              allOf:
-                - $ref: '#/components/schemas/Season'
-                - type: object
-                  required: [tvShow, episodes]
-                  properties:
-                    tvShow:
-                      type: string
-                      description: MongoDB ObjectId string reference to the TV show.
-                      example: '60e9ef67af7b8a0015e3b4bc'
-                    episodes:
-                      type: object
-                      description: Result of deleting all episodes in the season.
-                      properties:
-                        deletedCount:
-                          type: integer
-                          example: 10
+                allOf:
+                  - $ref: '#/components/schemas/Season'
+                  - type: object
+                    required: [tvShow, episodes]
+                    properties:
+                      tvShow:
+                        type: string
+                        description: MongoDB ObjectId string reference to the TV show.
+                        example: '60e9ef67af7b8a0015e3b4bc'
+                      episodes:
+                        type: object
+                        description: Result of deleting all episodes in the season.
+                        properties:
+                          deletedCount:
+                            type: integer
+                            example: 10
               message:
                 type: string
                 example: 'Season and associated episodes deleted successfully'
@@ -239,6 +248,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 $ref: '#/components/schemas/SeasonResponseFlat'
               message:

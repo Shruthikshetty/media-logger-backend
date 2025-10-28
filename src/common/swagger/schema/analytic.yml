@@ -82,6 +82,9 @@ components:
               success:
                 type: boolean
                 example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               data:
                 type: object
                 properties:

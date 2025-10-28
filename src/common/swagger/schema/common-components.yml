@@ -124,6 +124,9 @@ components:
               success:
                 type: boolean
                 example: false
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
                 example: 'Server down please try after some time'
@@ -150,6 +153,9 @@ components:
               success:
                 type: boolean
                 example: false
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
                 example: 'Unauthorized access. Missing or invalid token.(Note :- description will we change according to access required)'
@@ -163,6 +169,9 @@ components:
               success:
                 type: boolean
                 example: false
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
                 example: 'A Record with same details exists.(Note :- description will we change according to endpoint)'
@@ -176,6 +185,9 @@ components:
               success:
                 type: boolean
                 example: false
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
               message:
                 type: string
                 example: 'Validation errors.(Note :- description will we change according to endpoint)'
