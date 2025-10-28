@@ -20,6 +20,9 @@ app.use(express.json());
 //cors policy middleware
 app.use(cors(corsOptions));
 
+// to capture ip address
+app.set('trust proxy', true);
+
 // Middleware to log all requests
 app.use(requestLogger);
 

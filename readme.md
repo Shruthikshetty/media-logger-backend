@@ -68,6 +68,12 @@ To run this project, you will need to add the following environment variables to
 - `JWT_SECRET`: A secret key for signing JSON Web Tokens.
 - `NODE_ENV`: The application environment (`development` or `production`)
 - `PROD_URL`: Live server url
+- `CLOUD_NAME`: Your Cloudinary cloud name.
+- `CLOUDINARY_API_KEY`: Your Cloudinary API key.
+- `CLOUDINARY_SECRET`: Your Cloudinary API secret.
+- `LOKI_HOST`: Your Loki host.
+- `LOKI_USERNAME`: Your Loki username.
+- `LOKI_API_KEY`: Your Loki API key.
 
 ## Testing
 
