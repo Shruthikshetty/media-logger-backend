@@ -11,6 +11,7 @@ import tvShowRoutes from './tv-show.route';
 import analyticRoutes from './analytic.route';
 import uploadRoutes from './upload.route';
 import historyRoutes from './history.routes';
+import exportRoutes from './export.route';
 
 //initialize router
 const route = Router();
@@ -38,6 +39,9 @@ route.use('/upload', uploadRoutes);
 
 //history routes
 route.use('/history', historyRoutes);
+
+//export data routes
+route.use('/export', exportRoutes);
 
 // export all the routes
 export default route;
