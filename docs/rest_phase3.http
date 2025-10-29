@@ -1,15 +1,61 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer <token>
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzI4NzdjMDkwZGJjZTI5NGViY2Q2NSIsImlhdCI6MTc2MTc0NDg4MSwiZXhwIjoxNzYxODMxMjgxfQ.OUPBlWCQL1HS297qpG6E_3MaKYg1CEk4fFtTjpaekaQ
 
 #------------------------------------------------ History ---------------------------------------------------
-### get all transaction  (default pagination is applied)
+### get all history of media add , update and delete  , user update and delete   (default pagination is applied)
 GET {{baseUrl}}/api/history
 Authorization: {{authToken}}
 
-### get transactions with pagination
+### get transactions with history
 GET {{baseUrl}}/api/history?start=0&limit=5
 Authorization: {{authToken}}
 
-### get transactions with user details 
+### get transactions with user history 
 GET {{baseUrl}}/api/history?fullDetails=true
 Authorization: {{authToken}}
+
+### get all history by filters no body will give all default pagination applied
+POST  {{baseUrl}}/api/history/filter
+Authorization: {{authToken}}
+
+### get all history by filters 
+POST  {{baseUrl}}/api/history/filter
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+    "entityType": "Game",
+    "bulk": true,
+    "action": "Add" 
+}
+
+### example 2 with limit and page 
+POST  {{baseUrl}}/api/history/filter
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+    "entityType": "Game",
+    "limit": 5,
+    "page": 1
+}
+
+### example 3 with limit and start 
+POST  {{baseUrl}}/api/history/filter
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+    "entityType": "Game",
+    "start": 10
+}
+
+### filter history with user details 
+POST  {{baseUrl}}/api/history/filter
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+    "entityType": "Game",
+    "fullDetails": true
+}
