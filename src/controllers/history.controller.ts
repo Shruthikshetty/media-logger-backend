@@ -90,21 +90,29 @@ export const getHistoryByFilters = async (
 
     //in case we need full details
     if (fullDetails === true) {
-      pipeline.push({
-        $lookup: {
-          from: 'users',
-          localField: 'user',
-          foreignField: '_id',
-          as: 'userDetails',
+      pipeline.push(
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'userDetails',
+          },
         },
-      });
-      // unwind the user array to a single document(object)
-      pipeline.push({
-        $unwind: {
-          path: '$userDetails',
-          preserveNullAndEmptyArrays: true,
+        // unwind the user array to a single document(object)
+        {
+          $unwind: {
+            path: '$userDetails',
+            preserveNullAndEmptyArrays: true,
+          },
         },
-      });
+        // remove sensitive data
+        {
+          $project: {
+            'userDetails.password': 0,
+          },
+        }
+      );
     }
 
     // Use $facet to get both data and total count in one query
@@ -122,8 +130,9 @@ export const getHistoryByFilters = async (
     const results = await History.aggregate(pipeline).exec();
 
     // extract the history data and pagination details from result
-    const history = results[0].data;
-    const total = results[0].totalCount[0]?.total || 0;
+    const facet = results[0] ?? { data: [], totalCount: [] };
+    const history = Array.isArray(facet.data) ? facet.data : [];
+    const total = facet.totalCount?.[0]?.total ?? 0;
 
     //send response
     res.status(200).json({

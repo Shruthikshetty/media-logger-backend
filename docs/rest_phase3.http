@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzI4NzdjMDkwZGJjZTI5NGViY2Q2NSIsImlhdCI6MTc2MTc0NDg4MSwiZXhwIjoxNzYxODMxMjgxfQ.OUPBlWCQL1HS297qpG6E_3MaKYg1CEk4fFtTjpaekaQ
+@authToken = Bearer <token>
 
 #------------------------------------------------ History ---------------------------------------------------
 ### get all history of media add , update and delete  , user update and delete   (default pagination is applied)

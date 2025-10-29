@@ -28,7 +28,7 @@ export const HistoryFilterZodSchema = z
         message: 'Entity type must be string',
       })
       .refine((val) => HISTORY_ENTITY.includes(val), {
-        message: `Entity type must be one of the following: ${HISTORY_ENTITY.join()}`,
+        message: `Entity type must be one of the following: ${HISTORY_ENTITY.join(', ')}`,
       })
       .optional(),
 
