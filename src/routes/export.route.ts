@@ -1,3 +1,7 @@
+/**
+ * @file contains all the routes related to export
+ * this will export all the collection data
+ */
 import { Router } from "express";
 import Game from "../models/game.model";
 import { AsyncParser } from '@json2csv/node';
@@ -5,7 +9,7 @@ import { AsyncParser } from '@json2csv/node';
 // Initialize router
 const route = Router();
 
-route.get('/game', async (req, res) => {
+route.get('/game', async (_req, res) => {
   try {
     const fileName = `games-${Date.now()}.csv`;
 
@@ -58,7 +62,7 @@ route.get('/game', async (req, res) => {
   }
 });
 
-route.get('/movies', async (req, res) => {
+route.get('/movies', async (_req, res) => {
   try {
     const fileName = `movies-${Date.now()}.csv`;
 
@@ -110,7 +114,7 @@ route.get('/movies', async (req, res) => {
   }
 });
 
-route.get('/tv-show', async (req, res) => {
+route.get('/tv-show', async (_req, res) => {
   try {
     const fileName = `tv-show-${Date.now()}.csv`;
 
