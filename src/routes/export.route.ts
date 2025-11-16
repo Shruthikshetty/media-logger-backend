@@ -5,6 +5,7 @@
 import { Router } from 'express';
 import Game from '../models/game.model';
 import Movie from '../models/movie.model';
+import TVShow from '../models/tv-show.mode';
 
 // Initialize router
 const route = Router();
@@ -90,7 +91,7 @@ route.get('/tv-show', async (_req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
 
     // Get a readable stream from your Mongoose collection
-    const dataCursor = Game.find().lean().cursor();
+    const dataCursor = TVShow.find().lean().cursor();
 
     // Start JSON array
     res.write('[');
