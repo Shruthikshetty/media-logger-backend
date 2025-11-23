@@ -3,7 +3,7 @@
  */
 
 import { Router } from 'express';
-import { getHealth } from '../controllers/recommend.route';
+import { getHealth } from '../controllers/recommend.controller';
 
 // initialize router
 const route = Router();
