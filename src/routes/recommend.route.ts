@@ -3,13 +3,19 @@
  */
 
 import { Router } from 'express';
-import { getHealth } from '../controllers/recommend.controller';
+import {
+  getHealth,
+  getSimilarGames,
+} from '../controllers/recommend.controller';
 
 // initialize router
 const route = Router();
 
 //health check route
 route.get('/health', getHealth);
+
+//get similar games
+route.get('/similar-game/:id', getSimilarGames);
 
 //export all the routes
 export default route;

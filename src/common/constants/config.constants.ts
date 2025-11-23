@@ -94,4 +94,4 @@ export const HISTORY_RETENTION_DAYS = 180;
 //sanitization custom rules
 export const CUSTOM_SANITIZATION_RULES = ['password', 'token'];
 
-export const RECOMMENDER_MS_HEALTH_CHECK_TIMEOUT = 2000;
+export const RECOMMENDER_MS_HEALTH_CHECK_TIMEOUT = 2000; // ms (2s)
