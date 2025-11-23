@@ -14,6 +14,8 @@ export const getHealth = async (_req: Request, res: Response) => {
     //get the health from the recommendation ms
     const response = await axios.get(Endpoints.recommender.health, {
       timeout: RECOMMENDER_MS_HEALTH_CHECK_TIMEOUT,
+      // Let all HTTP statuses resolve so we can handle non‑200 explicitly
+      validateStatus: () => true,
     });
 
     // if we receive a 200 status code
@@ -31,6 +33,14 @@ export const getHealth = async (_req: Request, res: Response) => {
       message: 'recommender service is down',
     });
   } catch (err) {
+    // handle time out error
+    if (axios.isAxiosError(err) && err.code === 'ECONNABORTED') {
+      handleError(res, {
+        statusCode: 504,
+        message: 'recommender service is down',
+      });
+      return;
+    }
     // handle unexpected error
     handleError(res, {
       error: err,
