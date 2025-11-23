@@ -5,7 +5,10 @@
 import { Request, Response } from 'express';
 import { Endpoints } from '../common/constants/endpoints.constants';
 import axios from 'axios';
-import { RECOMMENDER_MS_HEALTH_CHECK_TIMEOUT } from '../common/constants/config.constants';
+import {
+  RECOMMENDER_MS_HEALTH_CHECK_TIMEOUT,
+  RECOMMENDER_MS_REQUEST_TIMEOUT,
+} from '../common/constants/config.constants';
 import { handleError } from '../common/utils/handle-error';
 import { isMongoIdValid } from '../common/utils/mongo-errors';
 import {
@@ -71,6 +74,7 @@ export const getSimilarGames = async (req: Request, res: Response) => {
     const response = await axios.get<GetSimilarGamesResponse>(
       `${Endpoints.recommender.games}/${id}`,
       {
+        timeout: RECOMMENDER_MS_REQUEST_TIMEOUT,
         // Let all HTTP statuses resolve so we can handle non‑200 explicitly
         validateStatus: () => true,
       }
@@ -119,6 +123,7 @@ export const getSimilarMovies = async (req: Request, res: Response) => {
     const response = await axios.get<GetSimilarMoviesResponse>(
       `${Endpoints.recommender.movies}/${id}`,
       {
+        timeout: RECOMMENDER_MS_REQUEST_TIMEOUT,
         validateStatus: () => true, // handle non-200 responses explicitly
       }
     );
@@ -166,6 +171,7 @@ export const getSimilarTvShow = async (req: Request, res: Response) => {
     const response = await axios.get<GetSimilarTvShowResponse>(
       `${Endpoints.recommender.shows}/${id}`,
       {
+        timeout: RECOMMENDER_MS_REQUEST_TIMEOUT,
         validateStatus: () => true, // handle non-200 responses explicitly
       }
     );
