@@ -11,9 +11,11 @@ import { isMongoIdValid } from '../common/utils/mongo-errors';
 import {
   GetSimilarGamesResponse,
   GetSimilarMoviesResponse,
+  GetSimilarTvShowResponse,
 } from '../types/recommendation-ms-types';
 import Game from '../models/game.model';
 import Movie from '../models/movie.model';
+import TVShow from '../models/tv-show.mode';
 
 //check the health of the recommendation ms
 export const getHealth = async (_req: Request, res: Response) => {
@@ -141,9 +143,57 @@ export const getSimilarMovies = async (req: Request, res: Response) => {
       success: true,
       data: movies,
     });
-    
   } catch (err) {
     // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//recommend similar tv show
+export const getSimilarTvShow = async (req: Request, res: Response) => {
+  try {
+    // get tv show id
+    const { id } = req.params;
+    // validated id
+    if (!id || !isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid tv show id', statusCode: 400 });
+      return;
+    }
+
+    // get the recommendation from the recommendation ms
+    const response = await axios.get<GetSimilarTvShowResponse>(
+      `${Endpoints.recommender.shows}/${id}`,
+      {
+        validateStatus: () => true, // handle non-200 responses explicitly
+      }
+    );
+    // extract the response from the recommendation ms
+    const { success, similar_tv_shows = [] } = response.data;
+
+    //in case we don't get a success response or no similar tv shows
+    if (!success || similar_tv_shows?.length < 1) {
+      handleError(res, {
+        message: 'No similar tv shows found try again later',
+      });
+      return;
+    }
+
+    // fetch the full data from tv shows db
+    const tvShows = await TVShow.find({
+      _id: { $in: similar_tv_shows },
+    })
+      .lean()
+      .exec();
+
+    // send the response
+    res.status(200).json({
+      success: true,
+      data: tvShows,
+    });
+  } catch (err) {
+    // handle any unexpected error
     handleError(res, {
       error: err,
     });

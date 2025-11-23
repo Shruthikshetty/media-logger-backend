@@ -9,3 +9,8 @@ export type GetSimilarMoviesResponse = {
   success: boolean;
   similar_movies: string[];
 };
+
+export type GetSimilarTvShowResponse = {
+  success: boolean;
+  similar_tv_shows: string[];
+};

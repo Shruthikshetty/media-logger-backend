@@ -23,9 +23,9 @@ Phase 4 focuses on integrating a separate recommender microservice to provide si
 | Feature/Area                     | Estimated Days | Notes                                                                                                                          |
 | :------------------------------- | :------------- | :----------------------------------------------------------------------------------------------------------------------------- |
 | Recommender service client setup | 1              | Create HTTP client/service layer to communicate with the recommender microservice. Handle base URL, timeouts, and retry logic. |
-| Similar games endpoint           | 0.5            | Implement **GET /api/recommend/similar-games/{id}**. Validate game ID, call recommender service, format response.               |
-| Similar movies endpoint          | 0.5            | Implement **GET /api/recommend/similar-movies/{id}**. Validate movie ID, call recommender service, format response.             |
-| Similar shows endpoint           | 0.5            | Implement **GET /api/recommend/similar-shows/{id}**. Validate show ID, call recommender service, format response.               |
+| Similar games endpoint           | 0.5            | Implement **GET /api/recommend/similar-games/{id}**. Validate game ID, call recommender service, format response.              |
+| Similar movies endpoint          | 0.5            | Implement **GET /api/recommend/similar-movies/{id}**. Validate movie ID, call recommender service, format response.            |
+| Similar shows endpoint           | 0.5            | Implement **GET /api/recommend/similar-shows/{id}**. Validate show ID, call recommender service, format response.              |
 | Error handling & fallbacks       | 0.5            | Handle recommender service downtime, timeouts, invalid IDs, and empty results gracefully.                                      |
 | Data enrichment                  | 1              | Fetch additional metadata from MongoDB for recommended items (titles, images, ratings) before returning to client.             |
 | Unit testing (recommendations)   | 1.5            | Jest tests for all three endpoints covering success cases, invalid IDs, service failures, and caching behavior.                |
