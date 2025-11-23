@@ -8,8 +8,12 @@ import axios from 'axios';
 import { RECOMMENDER_MS_HEALTH_CHECK_TIMEOUT } from '../common/constants/config.constants';
 import { handleError } from '../common/utils/handle-error';
 import { isMongoIdValid } from '../common/utils/mongo-errors';
-import { GetSimilarGamesResponse } from '../types/recommendation-ms-types';
+import {
+  GetSimilarGamesResponse,
+  GetSimilarMoviesResponse,
+} from '../types/recommendation-ms-types';
 import Game from '../models/game.model';
+import Movie from '../models/movie.model';
 
 //check the health of the recommendation ms
 export const getHealth = async (_req: Request, res: Response) => {
@@ -90,6 +94,54 @@ export const getSimilarGames = async (req: Request, res: Response) => {
       success: true,
       data: games,
     });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//recommend similar movies
+export const getSimilarMovies = async (req: Request, res: Response) => {
+  try {
+    // get the movie id
+    const { id } = req.params;
+    // validate id
+    if (!id || !isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid movie id', statusCode: 400 });
+      return;
+    }
+
+    // get the recommendation from the recommendation ms
+    const response = await axios.get<GetSimilarMoviesResponse>(
+      `${Endpoints.recommender.movies}/${id}`,
+      {
+        validateStatus: () => true, // handle non-200 responses explicitly
+      }
+    );
+    // extract the response from the recommendation ms
+    const { success, similar_movies = [] } = response.data;
+
+    //in case we don't get a success response or no similar movies
+    if (!success || similar_movies?.length < 1) {
+      handleError(res, { message: 'No similar movies found try again later' });
+      return;
+    }
+
+    // fetch the full data from movies db
+    const movies = await Movie.find({
+      _id: { $in: similar_movies },
+    })
+      .lean()
+      .exec();
+
+    // send the response
+    res.status(200).json({
+      success: true,
+      data: movies,
+    });
+    
   } catch (err) {
     // handle unexpected error
     handleError(res, {
