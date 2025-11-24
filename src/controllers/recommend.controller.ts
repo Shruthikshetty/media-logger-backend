@@ -18,7 +18,7 @@ import {
 } from '../types/recommendation-ms-types';
 import Game from '../models/game.model';
 import Movie from '../models/movie.model';
-import TVShow from '../models/tv-show.mode';
+import TVShow from '../models/tv-show.model';
 
 //check the health of the recommendation ms
 export const getHealth = async (_req: Request, res: Response) => {
