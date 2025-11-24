@@ -80,7 +80,7 @@ export const getSimilarMovies = async (req: Request, res: Response) => {
 //recommend similar tv show
 export const getSimilarTvShow = async (req: Request, res: Response) => {
   getSimilarMedia<GetSimilarTvShowResponse>(req, res, {
-    endpoint: Endpoints.recommender.movies,
+    endpoint: Endpoints.recommender.shows,
     mediaType: 'tv show',
     model: TVShow,
     responseField: 'similar_tv_shows',

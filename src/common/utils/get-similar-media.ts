@@ -37,7 +37,7 @@ export async function getSimilarMedia<T>(
     const data = response.data as any;
     const similarIds = data[config.responseField] || [];
 
-    if (!data?.success || similarIds < 1) {
+    if (!data?.success || !Array.isArray(similarIds) || similarIds.length < 1) {
       // send the response
       handleError(res, {
         message: `No similar ${config.mediaType}s found try again later`,
