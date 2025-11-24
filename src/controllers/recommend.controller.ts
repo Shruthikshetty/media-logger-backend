@@ -1,5 +1,5 @@
 /**
- * @file contains all the controllers related to recommendation service
+ * @file contains all the controllers related to recommendation routes
  */
 
 import { Request, Response } from 'express';
@@ -7,6 +7,15 @@ import { Endpoints } from '../common/constants/endpoints.constants';
 import axios from 'axios';
 import { RECOMMENDER_MS_HEALTH_CHECK_TIMEOUT } from '../common/constants/config.constants';
 import { handleError } from '../common/utils/handle-error';
+import {
+  GetSimilarGamesResponse,
+  GetSimilarMoviesResponse,
+  GetSimilarTvShowResponse,
+} from '../types/recommendation-ms-types';
+import Game from '../models/game.model';
+import Movie from '../models/movie.model';
+import TVShow from '../models/tv-show.model';
+import { getSimilarMedia } from '../common/utils/get-similar-media';
 
 //check the health of the recommendation ms
 export const getHealth = async (_req: Request, res: Response) => {
@@ -46,4 +55,34 @@ export const getHealth = async (_req: Request, res: Response) => {
       error: err,
     });
   }
+};
+
+//recommend similar games
+export const getSimilarGames = async (req: Request, res: Response) => {
+  await getSimilarMedia<GetSimilarGamesResponse>(req, res, {
+    endpoint: Endpoints.recommender.games,
+    mediaType: 'game',
+    model: Game,
+    responseField: 'similar_games',
+  });
+};
+
+//recommend similar movies
+export const getSimilarMovies = async (req: Request, res: Response) => {
+  await getSimilarMedia<GetSimilarMoviesResponse>(req, res, {
+    endpoint: Endpoints.recommender.movies,
+    mediaType: 'movie',
+    model: Movie,
+    responseField: 'similar_movies',
+  });
+};
+
+//recommend similar tv show
+export const getSimilarTvShow = async (req: Request, res: Response) => {
+  await getSimilarMedia<GetSimilarTvShowResponse>(req, res, {
+    endpoint: Endpoints.recommender.shows,
+    mediaType: 'tv show',
+    model: TVShow,
+    responseField: 'similar_tv_shows',
+  });
 };

@@ -10,7 +10,7 @@ import { AddSeasonZodType } from '../common/validation-schema/tv-show/add-season
 import { startSession } from 'mongoose';
 import Season from '../models/tv-season';
 import Episode, { IEpisode } from '../models/tv-episode';
-import TVShow from '../models/tv-show.mode';
+import TVShow from '../models/tv-show.model';
 import { getSeasonDetailsById } from '../common/utils/get-season';
 import { ApiError } from '../common/utils/api-error';
 import {

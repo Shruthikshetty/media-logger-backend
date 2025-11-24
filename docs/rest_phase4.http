@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:3001
+@authToken = Bearer <token>
+
+#-------------------------------------------Recommend------------------------------
+
+### Check status of recommendation service
+GET {{baseUrl}}/api/recommend/health

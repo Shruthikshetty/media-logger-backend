@@ -6,7 +6,7 @@ import { getDaysAgo } from '../common/utils/date';
 import { handleError } from '../common/utils/handle-error';
 import Game from '../models/game.model';
 import Movie from '../models/movie.model';
-import TVShow from '../models/tv-show.mode';
+import TVShow from '../models/tv-show.model';
 import User from '../models/user.model';
 import { ValidatedRequest } from '../types/custom-types';
 import { Response } from 'express';
