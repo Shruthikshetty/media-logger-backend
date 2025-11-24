@@ -59,7 +59,7 @@ export const getHealth = async (_req: Request, res: Response) => {
 
 //recommend similar games
 export const getSimilarGames = async (req: Request, res: Response) => {
-  getSimilarMedia<GetSimilarGamesResponse>(req, res, {
+  await getSimilarMedia<GetSimilarGamesResponse>(req, res, {
     endpoint: Endpoints.recommender.games,
     mediaType: 'game',
     model: Game,
@@ -69,7 +69,7 @@ export const getSimilarGames = async (req: Request, res: Response) => {
 
 //recommend similar movies
 export const getSimilarMovies = async (req: Request, res: Response) => {
-  getSimilarMedia<GetSimilarMoviesResponse>(req, res, {
+  await getSimilarMedia<GetSimilarMoviesResponse>(req, res, {
     endpoint: Endpoints.recommender.movies,
     mediaType: 'movie',
     model: Movie,
@@ -79,7 +79,7 @@ export const getSimilarMovies = async (req: Request, res: Response) => {
 
 //recommend similar tv show
 export const getSimilarTvShow = async (req: Request, res: Response) => {
-  getSimilarMedia<GetSimilarTvShowResponse>(req, res, {
+  await getSimilarMedia<GetSimilarTvShowResponse>(req, res, {
     endpoint: Endpoints.recommender.shows,
     mediaType: 'tv show',
     model: TVShow,
