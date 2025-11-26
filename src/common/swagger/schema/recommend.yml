@@ -20,3 +20,57 @@ components:
               requestId:
                 type: string
                 example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+    
+    GetSimilarGamesSuccessResponse:
+      description: Success response for get similar games
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+  
+    GetSimilarMoviesSuccessResponse:
+      description: Success response for get similar movies
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+    
+    GetSimilarTvShowSuccessResponse:
+      description: Success response for get similar tv show
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/TvShow'
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
