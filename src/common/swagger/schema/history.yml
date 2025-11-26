@@ -1,0 +1,146 @@
+components:
+  schemas:
+    HistoryEntityType:
+      type: string
+      enum:
+        - Game
+        - Movie
+        - Episode
+        - Season
+        - User
+        - Tv Show
+      example: Game
+
+    HistoryActions:
+      type: string
+      enum:
+        - Update
+        - Add
+        - Delete
+      example: Update
+
+    HistoryBase:
+      type: object
+      properties:
+        _id:
+          type: string
+          readOnly: true
+        entityId:
+          type: string
+          example: 630f06f6f80f0c456d5d3e11
+        entityType:
+          $ref: '#/components/schemas/HistoryEntityType'
+        action:
+          $ref: '#/components/schemas/HistoryActions'
+        oldValue:
+          type: object
+        newValue:
+          type: object
+        title:
+          type: string
+        bulk:
+          type: boolean
+          default: false
+          example: true
+      required:
+        - entityType
+        - action
+        - bulk
+
+    History:
+      allOf:
+        - $ref: '#/components/schemas/HistoryBase'
+        - type: object
+          properties:
+            user:
+              type: string
+              example: 630f06f6f80f0c456d5d3e11
+
+    HistoryFull:
+      allOf:
+        - $ref: '#/components/schemas/HistoryBase'
+        - type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+
+  responses:
+    GetAllHistorySuccessResponse:
+      description: Get all history success response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  history:
+                    type: array
+                    items:
+                      oneOf:
+                       - $ref: '#/components/schemas/History'
+                       - $ref: '#/components/schemas/HistoryFull'
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+          example:
+            success: true
+            data:
+              history:
+                - _id: "6922a92da40df344e9daf0df"
+                  user: "6872877c090dbce294ebcd65"
+                  entityType: "Game"
+                  entityId: "6922a8fba40df344e9daf0d6"
+                  action: "Update"
+                  oldValue:
+                    _id: "6922a8fba40df344e9daf0d6"
+                    title: "Fallen Seeds"
+                    description: "Fallen Seeds is a science fiction visual novel..."
+                    averageRating: 0
+                    genre:
+                      - "Adventure"
+                      - "Indie"
+                    releaseDate: "2024-05-08T00:00:00.000Z"
+                    posterUrl: "https://images.igdb.com/igdb/image/upload/t_cover_big/co76lh.jpg"
+                    backdropUrl: "https://media.rawg.io/media/screenshots/9b7/9b7cfb71b6813565b23b06048d56f6a9.jpg"
+                    isActive: true
+                    status: "released"
+                    platforms:
+                      - "PC"
+                    developer: "KPD"
+                    youtubeVideoId: ""
+                    __v: 0
+                    createdAt: "2025-11-23T06:26:03.977Z"
+                    updatedAt: "2025-11-23T06:26:03.977Z"
+                  newValue:
+                    _id: "6922a8fba40df344e9daf0d6"
+                    title: "Fallen Seeds"
+                    description: "Fallen Seeds is a science fiction visual novel..."
+                    averageRating: 0
+                    genre:
+                      - "Adventure"
+                      - "Indie"
+                      - "Visual Novel"
+                    releaseDate: "2024-05-08T00:00:00.000Z"
+                    posterUrl: "https://images.igdb.com/igdb/image/upload/t_cover_big/co76lh.jpg"
+                    backdropUrl: "https://media.rawg.io/media/screenshots/9b7/9b7cfb71b6813565b23b06048d56f6a9.jpg"
+                    isActive: true
+                    status: "released"
+                    platforms:
+                      - "PC"
+                    developer: "KPD"
+                    youtubeVideoId: ""
+                    __v: 0
+                    createdAt: "2025-11-23T06:26:03.977Z"
+                    updatedAt: "2025-11-23T06:26:53.659Z"
+                  title: "Updated the Game"
+                  bulk: false
+                  createdAt: "2025-11-23T06:26:53.898Z"
+                  updatedAt: "2025-11-23T06:26:53.898Z"
+                  __v: 0
+              requestId: "aa636e0e-13e8-472c-874c-3aac8ae00000"
+              
