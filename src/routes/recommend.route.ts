@@ -13,7 +13,20 @@ import {
 // initialize router
 const route = Router();
 
-//health check route
+/**
+ * @swagger
+ * /api/recommend/health:
+ *   get:
+ *     tags: [Recommendation]
+ *     summary: Check the health of the recommendation service
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetHealthSuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ *       '504':
+ *         $ref: '#/components/responses/TimeOut'
+ */
 route.get('/health', getHealth);
 
 //get similar games (10 is predefined currently)

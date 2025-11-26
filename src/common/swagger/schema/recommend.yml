@@ -1,0 +1,22 @@
+#
+# This file contains the swagger schema and req and response bodies for recommend route
+#
+
+components:
+  responses:
+    GetHealthSuccessResponse:
+      description: Success response for health check
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: 'recommender service is running'
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
