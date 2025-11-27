@@ -71,6 +71,32 @@ components:
           properties:
             user:
               $ref: '#/components/schemas/User'
+  requestBodies:
+    FilterHistoryRequest:
+      description: get history by filters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              action:
+                $ref: '#/components/schemas/HistoryActions'
+              bulk:
+                type: boolean
+                example: false
+              entityType:
+                $ref: '#/components/schemas/HistoryEntityType'
+              fullDetails:
+                type: boolean
+                example: true
+              limit:
+                type: number
+                example: 10
+              page:
+                type: number
+                example: 1
+              start:
+                type: number
 
   responses:
     GetAllHistorySuccessResponse:
@@ -92,6 +118,8 @@ components:
                       oneOf:
                         - $ref: '#/components/schemas/History'
                         - $ref: '#/components/schemas/HistoryFull'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
               requestId:
                 type: string
                 example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
@@ -150,4 +178,14 @@ components:
                   createdAt: '2025-11-23T06:26:53.898Z'
                   updatedAt: '2025-11-23T06:26:53.898Z'
                   __v: 0
+              pagination:
+                total: 13
+                start: 0
+                limit: 20
+                currentPage: 1
+                totalPages: 1
+                hasMore: false
+                hasPrevious: false
+                nextPage: null
+                previousPage: null
               requestId: 'aa636e0e-13e8-472c-874c-3aac8ae00000'

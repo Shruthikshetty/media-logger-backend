@@ -58,7 +58,24 @@ const route = Router();
  */
 route.get('/', requireAuth('admin'), getAllHistory);
 
-//route to get history by filters
+/**
+ * @swagger
+ * /api/history/filter:
+ *   post:
+ *     summary: Get history by filters
+ *     tags: [History]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/FilterHistoryRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllHistorySuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post(
   '/filter',
   requireAuth('admin'),
