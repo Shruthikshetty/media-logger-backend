@@ -119,7 +119,7 @@ components:
                         - $ref: '#/components/schemas/History'
                         - $ref: '#/components/schemas/HistoryFull'
                   pagination:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: '#/components/schemas/pagination'
               requestId:
                 type: string
                 example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
