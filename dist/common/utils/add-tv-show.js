@@ -24,7 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addSingleTvShow = void 0;
-const tv_show_mode_1 = __importDefault(require("../../models/tv-show.mode"));
+const tv_show_model_1 = __importDefault(require("../../models/tv-show.model"));
 const api_error_1 = require("./api-error");
 const tv_episode_1 = __importDefault(require("../../models/tv-episode"));
 const tv_season_1 = __importDefault(require("../../models/tv-season"));
@@ -41,7 +41,7 @@ const addSingleTvShow = (tvShowData, session) => __awaiter(void 0, void 0, void 
     //destructure the season and rest of the tv show details
     const { seasons } = tvShowData, restTvDetails = __rest(tvShowData, ["seasons"]);
     // create a new tv show
-    const newTvShow = new tv_show_mode_1.default(restTvDetails);
+    const newTvShow = new tv_show_model_1.default(restTvDetails);
     // save the tv show
     const saveTvShow = yield newTvShow.save({ session });
     // in case tv show is not saved

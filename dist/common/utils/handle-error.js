@@ -15,6 +15,7 @@ const statusMessages = {
     500: 'Server down please try after some time',
     502: 'Bad Gateway',
     503: 'Service Unavailable',
+    504: 'Gateway Timeout: Upstream service did not respond in time',
     // and additional status to be added
 };
 /**

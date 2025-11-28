@@ -32,7 +32,7 @@ const handle_error_1 = require("../common/utils/handle-error");
 const mongoose_1 = require("mongoose");
 const tv_season_1 = __importDefault(require("../models/tv-season"));
 const tv_episode_1 = __importDefault(require("../models/tv-episode"));
-const tv_show_mode_1 = __importDefault(require("../models/tv-show.mode"));
+const tv_show_model_1 = __importDefault(require("../models/tv-show.model"));
 const get_season_1 = require("../common/utils/get-season");
 const api_error_1 = require("../common/utils/api-error");
 const mongo_errors_1 = require("../common/utils/mongo-errors");
@@ -47,7 +47,7 @@ const addSeason = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         // get the validated data from request
         const _a = req.validatedData, { episodes } = _a, seasonData = __rest(_a, ["episodes"]);
         // check if the tv show exists
-        const tvShow = yield tv_show_mode_1.default.findOne({ _id: seasonData.tvShow })
+        const tvShow = yield tv_show_model_1.default.findOne({ _id: seasonData.tvShow })
             .lean()
             .exec();
         // in case tv show is not found

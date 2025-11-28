@@ -17,7 +17,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bulkAddTvShow = exports.filterTvShow = exports.searchTvShow = exports.bulkDeleteTvShow = exports.deleteTvShowById = exports.updateTvShowById = exports.getTvShowById = exports.getAllTvShows = exports.addTvShow = void 0;
 const handle_error_1 = require("../common/utils/handle-error");
-const tv_show_mode_1 = __importDefault(require("../models/tv-show.mode"));
+const tv_show_model_1 = __importDefault(require("../models/tv-show.model"));
 const mongoose_1 = require("mongoose");
 const mongo_errors_1 = require("../common/utils/mongo-errors");
 const pagination_1 = require("../common/utils/pagination");
@@ -98,7 +98,7 @@ const getTvShowById = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             return;
         }
         // get the tv show details
-        const tvShow = yield tv_show_mode_1.default.findById(id).lean().exec();
+        const tvShow = yield tv_show_model_1.default.findById(id).lean().exec();
         // in case tv show is not found
         if (!tvShow) {
             (0, handle_error_1.handleError)(res, { message: 'Tv show not found', statusCode: 404 });
@@ -129,13 +129,13 @@ const updateTvShowById = (req, res, next) => __awaiter(void 0, void 0, void 0, f
             return;
         }
         //get the old tv show record
-        const oldTvShow = yield tv_show_mode_1.default.findById(id).lean().exec();
+        const oldTvShow = yield tv_show_model_1.default.findById(id).lean().exec();
         if (!oldTvShow) {
             (0, handle_error_1.handleError)(res, { message: 'Tv show not found', statusCode: 404 });
             return;
         }
         //update the tv show by id
-        const updatedTvShow = yield tv_show_mode_1.default.findByIdAndUpdate(id, req.validatedData, { new: true })
+        const updatedTvShow = yield tv_show_model_1.default.findByIdAndUpdate(id, req.validatedData, { new: true })
             .lean()
             .exec();
         // return the updated tv show
@@ -171,7 +171,7 @@ const deleteTvShowById = (req, res, next) => __awaiter(void 0, void 0, void 0, f
             return;
         }
         // find the tv show by id
-        const tvShow = yield tv_show_mode_1.default.findById(id).lean().exec();
+        const tvShow = yield tv_show_model_1.default.findById(id).lean().exec();
         //in case tv show is not found
         if (!tvShow) {
             (0, handle_error_1.handleError)(res, {
@@ -220,7 +220,7 @@ const bulkDeleteTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         // get the ids from validated data
         const { tvShowIds } = req.validatedData;
         //get all the tv shows
-        const tvShows = yield tv_show_mode_1.default.find({ _id: { $in: tvShowIds } })
+        const tvShows = yield tv_show_model_1.default.find({ _id: { $in: tvShowIds } })
             .lean()
             .exec();
         //in case no tv shows are found
@@ -302,7 +302,7 @@ const searchTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             },
         ];
         //get the tv shows
-        const results = yield tv_show_mode_1.default.aggregate(pipeline);
+        const results = yield tv_show_model_1.default.aggregate(pipeline);
         //get the tv shows
         const resultDoc = results[0];
         const tvShows = resultDoc.paginatedResults;
@@ -439,7 +439,7 @@ const filterTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             },
         });
         // get the data from db
-        const result = yield tv_show_mode_1.default.aggregate(pipeline);
+        const result = yield tv_show_model_1.default.aggregate(pipeline);
         // extract the data , pagination and total count from the result
         const data = (_a = result[0]) === null || _a === void 0 ? void 0 : _a.data;
         const totalCount = ((_c = (_b = result[0]) === null || _b === void 0 ? void 0 : _b.totalCount[0]) === null || _c === void 0 ? void 0 : _c.total) || 0;

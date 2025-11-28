@@ -20,7 +20,7 @@ const date_1 = require("../common/utils/date");
 const handle_error_1 = require("../common/utils/handle-error");
 const game_model_1 = __importDefault(require("../models/game.model"));
 const movie_model_1 = __importDefault(require("../models/movie.model"));
-const tv_show_mode_1 = __importDefault(require("../models/tv-show.mode"));
+const tv_show_model_1 = __importDefault(require("../models/tv-show.model"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const analytics_1 = require("../common/utils/analytics");
 //admin dashboard analytics data
@@ -30,7 +30,7 @@ const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, 
         const [totalUsers, totalMovies, totalTvShows, totalGames] = yield Promise.all([
             user_model_1.default.countDocuments(),
             movie_model_1.default.countDocuments(),
-            tv_show_mode_1.default.countDocuments(),
+            tv_show_model_1.default.countDocuments(),
             game_model_1.default.countDocuments(),
         ]);
         //get total count of users in current month
@@ -51,7 +51,7 @@ const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, 
                     $lte: (0, date_1.getDaysAgo)(30).toDate(),
                 },
             }),
-            tv_show_mode_1.default.countDocuments({
+            tv_show_model_1.default.countDocuments({
                 createdAt: {
                     $gte: (0, date_1.getDaysAgo)(60).toDate(),
                     $lte: (0, date_1.getDaysAgo)(30).toDate(),
@@ -89,7 +89,7 @@ const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, 
                 },
             ]),
             //aggregate tv-shows
-            tv_show_mode_1.default.aggregate([
+            tv_show_model_1.default.aggregate([
                 {
                     $match: {
                         createdAt: {

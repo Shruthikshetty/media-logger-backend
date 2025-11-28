@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTvShowDetails = exports.getSeasonsWithEpisodes = void 0;
 const tv_episode_1 = __importDefault(require("../../models/tv-episode"));
 const tv_season_1 = __importDefault(require("../../models/tv-season"));
-const tv_show_mode_1 = __importDefault(require("../../models/tv-show.mode"));
+const tv_show_model_1 = __importDefault(require("../../models/tv-show.model"));
 /**
  * @description Get seasons with their episodes for a given TV show
  * @param {ObjectId} tvShowId - The ID of the TV show
@@ -45,8 +45,8 @@ const getTvShowDetails = (fullDetails, start, limit) => __awaiter(void 0, void 0
     if (fullDetails === 'true') {
         // Get all the TV shows with additional details of seasons and episodes
         const [tvShows, total] = yield Promise.all([
-            tv_show_mode_1.default.find().skip(start).limit(limit).lean().exec(),
-            tv_show_mode_1.default.countDocuments(),
+            tv_show_model_1.default.find().skip(start).limit(limit).lean().exec(),
+            tv_show_model_1.default.countDocuments(),
         ]);
         // Process each TV show to add nested seasons and episodes
         const tvShowsWithDetails = yield Promise.all(tvShows.map((tvShow) => __awaiter(void 0, void 0, void 0, function* () {
@@ -58,8 +58,8 @@ const getTvShowDetails = (fullDetails, start, limit) => __awaiter(void 0, void 0
     else {
         // get all the tv shows without additional details
         const [tvShows, total] = yield Promise.all([
-            tv_show_mode_1.default.find().skip(start).limit(limit).lean().exec(),
-            tv_show_mode_1.default.countDocuments(),
+            tv_show_model_1.default.find().skip(start).limit(limit).lean().exec(),
+            tv_show_model_1.default.countDocuments(),
         ]);
         return [tvShows, total];
     }

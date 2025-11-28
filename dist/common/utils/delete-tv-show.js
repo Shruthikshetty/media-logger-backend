@@ -16,7 +16,7 @@ exports.deleteTvShow = void 0;
 const tv_season_1 = __importDefault(require("../../models/tv-season"));
 const api_error_1 = require("./api-error");
 const tv_episode_1 = __importDefault(require("../../models/tv-episode"));
-const tv_show_mode_1 = __importDefault(require("../../models/tv-show.mode"));
+const tv_show_model_1 = __importDefault(require("../../models/tv-show.model"));
 /**
  * Deletes a tv show by id along with all its associated seasons and episodes.
  *
@@ -43,7 +43,7 @@ const deleteTvShow = (tvShowId, session) => __awaiter(void 0, void 0, void 0, fu
         seasonDeleteCount = deletedSeason.deletedCount;
     }
     //delete the tv show by id
-    const deletedTvShow = yield tv_show_mode_1.default.findByIdAndDelete(tvShowId, { session })
+    const deletedTvShow = yield tv_show_model_1.default.findByIdAndDelete(tvShowId, { session })
         .lean()
         .exec();
     // in case tv show is not deleted
