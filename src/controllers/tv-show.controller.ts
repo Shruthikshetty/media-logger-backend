@@ -6,7 +6,7 @@ import { handleError } from '../common/utils/handle-error';
 import { NextFunction, Response } from 'express';
 import { ValidatedRequest } from '../types/custom-types';
 import { AddTvShowZodType } from '../common/validation-schema/tv-show/add-tv-show';
-import TVShow, { ITVShow } from '../models/tv-show.mode';
+import TVShow, { ITVShow } from '../models/tv-show.model';
 import { startSession } from 'mongoose';
 import {
   isDuplicateKeyError,

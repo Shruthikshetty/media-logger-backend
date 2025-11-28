@@ -2,7 +2,7 @@ import { ClientSession } from 'mongoose';
 import Season from '../../models/tv-season';
 import { ApiError } from './api-error';
 import Episode from '../../models/tv-episode';
-import TVShow from '../../models/tv-show.mode';
+import TVShow from '../../models/tv-show.model';
 
 /**
  * Deletes a tv show by id along with all its associated seasons and episodes.
