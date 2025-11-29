@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { handleError } from './handle-error';
 import { isMongoIdValid } from './mongo-errors';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { RECOMMENDER_MS_REQUEST_TIMEOUT } from '../constants/config.constants';
 import { Model } from 'mongoose';
+import { ValidatedRequest } from '../../types/custom-types';
 
 // common utility to fetch and send similar media from recommender based on the config passed
 export async function getSimilarMedia<T>(
-  req: Request,
+  req: ValidatedRequest<{}>,
   res: Response,
   config: {
     endpoint: string;
@@ -26,9 +27,16 @@ export async function getSimilarMedia<T>(
       });
       return;
     }
+
     // get the recommendation from the recommendation ms
+    const headers: Record<string, string> = {};
+    if (req.id) {
+      headers['X-Request-Id'] = req.id;
+    }
+
     const response = await axios.get<T>(`${config.endpoint}/${id}`, {
       timeout: RECOMMENDER_MS_REQUEST_TIMEOUT,
+      headers,
       // Let all HTTP statuses resolve so we can handle non‑200 explicitly
       validateStatus: () => true,
     });
