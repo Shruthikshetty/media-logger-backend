@@ -31,8 +31,13 @@ function getSimilarMedia(req, res, config) {
                 return;
             }
             // get the recommendation from the recommendation ms
+            const headers = {};
+            if (req.id) {
+                headers['X-Request-Id'] = req.id;
+            }
             const response = yield axios_1.default.get(`${config.endpoint}/${id}`, {
                 timeout: config_constants_1.RECOMMENDER_MS_REQUEST_TIMEOUT,
+                headers,
                 // Let all HTTP statuses resolve so we can handle non‑200 explicitly
                 validateStatus: () => true,
             });
