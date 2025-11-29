@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { handleError } from './handle-error';
 import { isMongoIdValid } from './mongo-errors';
-import {  Response } from 'express';
+import { Response } from 'express';
 import { RECOMMENDER_MS_REQUEST_TIMEOUT } from '../constants/config.constants';
 import { Model } from 'mongoose';
 import { ValidatedRequest } from '../../types/custom-types';
@@ -27,13 +27,16 @@ export async function getSimilarMedia<T>(
       });
       return;
     }
-    console.log(req?.headers)
+
     // get the recommendation from the recommendation ms
+    const headers: Record<string, string> = {};
+    if (req.id) {
+      headers['X-Request-Id'] = req.id;
+    }
+
     const response = await axios.get<T>(`${config.endpoint}/${id}`, {
       timeout: RECOMMENDER_MS_REQUEST_TIMEOUT,
-      headers: {
-        'X-Request-Id': req?.id ?? "",
-      },
+      headers,
       // Let all HTTP statuses resolve so we can handle non‑200 explicitly
       validateStatus: () => true,
     });
