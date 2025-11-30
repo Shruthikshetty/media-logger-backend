@@ -10,7 +10,7 @@ import { IUser } from '../models/user.model';
 export interface ValidatedRequest<T> extends Request {
   validatedData?: T;
   userData?: IUser;
-  requestId?: string;
+  id?: string;
 }
 
 /**

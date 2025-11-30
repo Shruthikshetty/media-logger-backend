@@ -1,4 +1,4 @@
-import TVShow from '../../models/tv-show.mode';
+import TVShow from '../../models/tv-show.model';
 import { AddTvShowZodType } from '../validation-schema/tv-show/add-tv-show';
 import { ClientSession } from 'mongoose';
 import { ApiError } from './api-error';

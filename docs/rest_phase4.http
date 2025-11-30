@@ -1,0 +1,16 @@
+@baseUrl = http://localhost:3001
+@authToken = Bearer <token>
+
+#-------------------------------------------Recommend------------------------------
+
+### Check status of recommendation service
+GET {{baseUrl}}/api/recommend/health
+
+### get similar games 
+GET {{baseUrl}}/api/recommend/similar-games/68de83a8063c7dbcff07c108
+
+### get similar movies
+GET {{baseUrl}}/api/recommend/similar-movies/68de8d7a063c7dbcff07c1c4
+
+### get similar tv shows
+GET {{baseUrl}}/api/recommend/similar-shows/68e2760f50d507e43af606db
