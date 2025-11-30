@@ -27,7 +27,7 @@ A backend for comprehensive media logging application that allows users to log a
 Before you begin, ensure you have the following installed:
 
 - Node.js (v18 or higher)
-- npm
+- npm / bun
 - MongoDB
 - Git
 
@@ -43,7 +43,7 @@ Before you begin, ensure you have the following installed:
 2.  **Install dependencies:**
 
     ```sh
-    npm install
+    bun install
     ```
 
 3.  **Set up environment variables:**
@@ -56,7 +56,7 @@ Before you begin, ensure you have the following installed:
 4.  **Start the development server:**
     - The server will run with hot-reloading at the port specified in your `.env` file.
     ```sh
-    npm run dev
+    bun run dev
     ```
 
 ## Environment Variables
@@ -80,7 +80,7 @@ To run this project, you will need to add the following environment variables to
 To run the tests, use the following command:
 
 ```
-npm run test
+bun run test
 ```
 
 ## Configuration
