@@ -89,6 +89,14 @@ export const GET_ALL_HISTORY_LIMITS = {
   },
 };
 
+export const GET_ALL_MEDIA_COMMENTS_LIMITS = {
+  limit: {
+    min: 1,
+    max: 200,
+    default: 20,
+  }
+};
+
 export const HISTORY_RETENTION_DAYS = 180;
 
 //sanitization custom rules
