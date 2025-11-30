@@ -5,7 +5,7 @@
 import { Router } from 'express';
 import Game from '../models/game.model';
 import Movie from '../models/movie.model';
-import TVShow from '../models/tv-show.mode';
+import TVShow from '../models/tv-show.model';
 
 // Initialize router
 const route = Router();
