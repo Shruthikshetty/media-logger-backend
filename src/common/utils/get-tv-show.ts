@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Episode from '../../models/tv-episode';
 import Season from '../../models/tv-season';
-import TVShow, { ITVShow } from '../../models/tv-show.mode';
+import TVShow, { ITVShow } from '../../models/tv-show.model';
 
 /**
  * @description Get seasons with their episodes for a given TV show
