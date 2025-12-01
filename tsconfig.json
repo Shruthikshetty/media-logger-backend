@@ -13,9 +13,5 @@
     "noImplicitAny": false
   },
   "include": ["src/**/*"],
-  "exclude": [
-    "node_modules",
-    "src/convex/_generated/**/*",
-    "dist"
-  ]
+  "exclude": ["node_modules", "src/convex/_generated/**/*", "dist"]
 }

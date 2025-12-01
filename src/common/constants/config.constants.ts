@@ -94,7 +94,7 @@ export const GET_ALL_MEDIA_COMMENTS_LIMITS = {
     min: 1,
     max: 200,
     default: 20,
-  }
+  },
 };
 
 export const HISTORY_RETENTION_DAYS = 180;

@@ -25,7 +25,7 @@ export const AddMediaCommentSchema = z.object({
     .refine((val) => HISTORY_ENTITY.includes(val), {
       message: `Entity type must be one of the following: ${HISTORY_ENTITY.join(', ')}`,
     }),
-    
+
   comment: z.string({
     required_error: 'Comment is required',
     invalid_type_error: 'Comment must be string',
