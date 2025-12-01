@@ -5,24 +5,26 @@
 import { handleError } from '../common/utils/handle-error';
 import { ValidatedRequest } from '../types/custom-types';
 import { Response } from 'express';
-import { ConvexHttpClient } from "convex/browser";
+import { ConvexHttpClient } from 'convex/browser';
 import { api } from '../convex/_generated/api';
+import { AddMediaCommentSchemaType } from '../common/validation-schema/media-comment/add-comment';
 
-const convex  = new ConvexHttpClient(process.env.CONVEX_URL!);
+const convex = new ConvexHttpClient(process.env.CONVEX_URL!);
 
 //controller to add a new comment
 export const addMediaComment = async (
-  req: ValidatedRequest<{}>,
+  req: ValidatedRequest<AddMediaCommentSchemaType>,
   res: Response
 ) => {
   try {
-    //let just mock add for testing @TODO
+    const validatedData = req.validatedData!;
+    //let's create a new comment
     const mockComment = {
-      entityId: '69216c9826548e7ab0b684d4',
-      entityType: 'Game',
-      user: req.userData?.id ?? 'Anonymous',
-      comment: 'Test comment ',
-      username: req.userData?.name ?? 'Anonymous',
+      entityId: validatedData.entityId,
+      entityType: validatedData.entityType,
+      user: req.userData?.id ?? '',
+      comment: validatedData.comment,
+      username: req.userData?.name ?? '',
       profileImg: req.userData?.profileImg ?? '',
     };
 
