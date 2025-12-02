@@ -2,15 +2,6 @@
 /**
  * This file contains the controller related to game
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -23,12 +14,12 @@ const pagination_1 = require("../common/utils/pagination");
 const config_constants_1 = require("../common/constants/config.constants");
 const history_utils_1 = require("../common/utils/history-utils");
 //controller to get all the games
-const getAllGames = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllGames = async (req, res) => {
     // get pagination params
     const { limit, start } = (0, pagination_1.getPaginationParams)(req.query, config_constants_1.GET_ALL_GAMES_LIMITS);
     try {
         //find all the games
-        const [games, total] = yield Promise.all([
+        const [games, total] = await Promise.all([
             game_model_1.default.find()
                 .skip(start)
                 .limit(limit)
@@ -54,10 +45,10 @@ const getAllGames = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             error: err,
         });
     }
-});
+};
 exports.getAllGames = getAllGames;
 //controller to get a game by id
-const getGameById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getGameById = async (req, res) => {
     try {
         // get id from params
         const { id } = req.params;
@@ -67,7 +58,7 @@ const getGameById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             return;
         }
         //find the game by id
-        const game = yield game_model_1.default.findById(id).lean().exec();
+        const game = await game_model_1.default.findById(id).lean().exec();
         // in case game is not found
         if (!game) {
             (0, handle_error_1.handleError)(res, { message: 'Game not found', statusCode: 404 });
@@ -85,15 +76,15 @@ const getGameById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             error: err,
         });
     }
-});
+};
 exports.getGameById = getGameById;
 // controller to add a game
-const addGame = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const addGame = async (req, res, next) => {
     try {
         // create a new game
         const newGame = new game_model_1.default(req.validatedData);
         // save the game
-        const savedGame = yield newGame.save();
+        const savedGame = await newGame.save();
         // in case game is not saved
         if (!savedGame) {
             (0, handle_error_1.handleError)(res, { message: 'Game creation failed' });
@@ -119,19 +110,18 @@ const addGame = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
             statusCode: isDuplicate ? 409 : 500,
         });
     }
-});
+};
 exports.addGame = addGame;
 //controller to delete a game by id
-const deleteGameById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+const deleteGameById = async (req, res, next) => {
     try {
         // check if id is a valid mongo id
-        if (!(0, mongo_errors_1.isMongoIdValid)((_a = req.params) === null || _a === void 0 ? void 0 : _a.id)) {
+        if (!(0, mongo_errors_1.isMongoIdValid)(req.params?.id)) {
             (0, handle_error_1.handleError)(res, { message: 'Invalid game id', statusCode: 400 });
             return;
         }
         // delete the game
-        const deletedGame = yield game_model_1.default.findByIdAndDelete((_b = req.params) === null || _b === void 0 ? void 0 : _b.id)
+        const deletedGame = await game_model_1.default.findByIdAndDelete(req.params?.id)
             .lean()
             .exec();
         // in case game is not deleted
@@ -156,26 +146,25 @@ const deleteGameById = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             error: err,
         });
     }
-});
+};
 exports.deleteGameById = deleteGameById;
 //controller to update a game
-const updateGameById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+const updateGameById = async (req, res, next) => {
     try {
         // check if id is a valid mongo id
-        if (!(0, mongo_errors_1.isMongoIdValid)((_a = req.params) === null || _a === void 0 ? void 0 : _a.id)) {
+        if (!(0, mongo_errors_1.isMongoIdValid)(req.params?.id)) {
             (0, handle_error_1.handleError)(res, { message: 'Invalid game id', statusCode: 400 });
             return;
         }
         // check if the game exists
-        const oldGame = yield game_model_1.default.findById(req.params.id).lean().exec();
+        const oldGame = await game_model_1.default.findById(req.params.id).lean().exec();
         //If the document doesn't exist, handle the error
         if (!oldGame) {
             (0, handle_error_1.handleError)(res, { message: 'Game not found', statusCode: 404 });
             return;
         }
         //update the game by id
-        const updatedGame = yield game_model_1.default.findByIdAndUpdate((_b = req.params) === null || _b === void 0 ? void 0 : _b.id, req.validatedData, {
+        const updatedGame = await game_model_1.default.findByIdAndUpdate(req.params?.id, req.validatedData, {
             new: true,
             runValidators: true,
             context: 'query',
@@ -211,13 +200,13 @@ const updateGameById = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
                 : 'Server down please try again later',
         });
     }
-});
+};
 exports.updateGameById = updateGameById;
 //controller to bulk add games by taking json
-const bulkAddGames = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkAddGames = async (req, res, next) => {
     try {
         // add all games
-        const games = yield game_model_1.default.insertMany(req.validatedData, {
+        const games = await game_model_1.default.insertMany(req.validatedData, {
             ordered: false, // continuous insertion in case of error
             throwOnValidationError: true,
         });
@@ -236,11 +225,11 @@ const bulkAddGames = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
     catch (err) {
         // Extract failed (duplicate) docs from error object
-        const notAdded = (err === null || err === void 0 ? void 0 : err.writeErrors)
-            ? err.writeErrors.map((e) => { var _a, _b, _c, _d; return (_d = (_b = (_a = e.err) === null || _a === void 0 ? void 0 : _a.op) !== null && _b !== void 0 ? _b : (_c = e.err) === null || _c === void 0 ? void 0 : _c.doc) !== null && _d !== void 0 ? _d : {}; })
+        const notAdded = err?.writeErrors
+            ? err.writeErrors.map((e) => e.err?.op ?? e.err?.doc ?? {})
             : [];
         //err.insertedDocs gives successfully inserted docs
-        const added = (err === null || err === void 0 ? void 0 : err.insertedDocs) || [];
+        const added = err?.insertedDocs || [];
         // in case games are added partially
         if (added.length > 0) {
             // return the added games
@@ -266,14 +255,14 @@ const bulkAddGames = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
             statusCode: (0, mongo_errors_1.isDuplicateKeyError)(err) ? 409 : 500,
         });
     }
-});
+};
 exports.bulkAddGames = bulkAddGames;
 //controller to bulk delete games by taking ids
-const bulkDeleteGames = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkDeleteGames = async (req, res, next) => {
     try {
         const gameIds = req.validatedData.gameIds;
         //get all existing game  by ids
-        const gamesToDelete = yield game_model_1.default.find({
+        const gamesToDelete = await game_model_1.default.find({
             _id: { $in: gameIds },
         })
             .lean()
@@ -287,7 +276,7 @@ const bulkDeleteGames = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
             return;
         }
         // delete all games
-        const deleteResult = yield game_model_1.default.deleteMany({
+        const deleteResult = await game_model_1.default.deleteMany({
             _id: { $in: gameIds },
         });
         // return the deleted games
@@ -308,10 +297,10 @@ const bulkDeleteGames = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
             error: err,
         });
     }
-});
+};
 exports.bulkDeleteGames = bulkDeleteGames;
 //controller for search title
-const searchGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const searchGame = async (req, res) => {
     try {
         // get query from params
         const { text } = req.query;
@@ -330,7 +319,7 @@ const searchGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             },
         ];
         // get the games
-        const games = yield game_model_1.default.aggregate(pipeline)
+        const games = await game_model_1.default.aggregate(pipeline)
             .skip(start)
             .limit(limit)
             .exec();
@@ -352,11 +341,10 @@ const searchGame = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             error: err,
         });
     }
-});
+};
 exports.searchGame = searchGame;
 //controller for games filter
-const filterGames = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+const filterGames = async (req, res) => {
     try {
         //destructure the filters from validated data
         const { genre, platforms, status, avgPlaytime, releaseDate, averageRating, page, ageRating, limit, searchText, } = req.validatedData;
@@ -406,19 +394,28 @@ const filterGames = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         //if avgPlaytime is defined
         if (avgPlaytime) {
             searchClauses.filter.push({
-                range: Object.assign({ path: 'avgPlaytime' }, avgPlaytime),
+                range: {
+                    path: 'avgPlaytime',
+                    ...avgPlaytime,
+                },
             });
         }
         //if releaseDate is defined
         if (releaseDate) {
             searchClauses.filter.push({
-                range: Object.assign({ path: 'releaseDate' }, releaseDate),
+                range: {
+                    path: 'releaseDate',
+                    ...releaseDate,
+                },
             });
         }
         //if ageRating is defined
         if (ageRating) {
             searchClauses.filter.push({
-                range: Object.assign({ path: 'ageRating' }, ageRating),
+                range: {
+                    path: 'ageRating',
+                    ...ageRating,
+                },
             });
         }
         //if averageRating is defined
@@ -453,10 +450,10 @@ const filterGames = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             },
         });
         // get the data from the db
-        const result = yield game_model_1.default.aggregate(pipeline);
+        const result = await game_model_1.default.aggregate(pipeline);
         // extract the data , pagination and total count from the result
-        const data = (_a = result[0]) === null || _a === void 0 ? void 0 : _a.data;
-        const totalCount = ((_c = (_b = result[0]) === null || _b === void 0 ? void 0 : _b.totalCount[0]) === null || _c === void 0 ? void 0 : _c.total) || 0;
+        const data = result[0]?.data;
+        const totalCount = result[0]?.totalCount[0]?.total || 0;
         const pagination = (0, pagination_1.getPaginationResponse)(totalCount, limit, skip);
         //send response
         res.status(200).json({
@@ -473,5 +470,5 @@ const filterGames = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             error: err,
         });
     }
-});
+};
 exports.filterGames = filterGames;

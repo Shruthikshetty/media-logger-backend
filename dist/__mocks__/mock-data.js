@@ -113,5 +113,16 @@ exports.mockTestSeason = {
     createdAt: new Date(),
     updatedAt: new Date(),
 };
-const createMockEpisode = (overrides = {}) => (Object.assign({ _id: new mongoose_1.Types.ObjectId(), season: new mongoose_1.Types.ObjectId(), title: 'Episode 1: A New Beginning', description: 'The story begins as new characters are introduced.', episodeNumber: 1, releaseDate: new Date('2025-01-15').toISOString(), runTime: 45, createdAt: new Date(), updatedAt: new Date() }, overrides));
+const createMockEpisode = (overrides = {}) => ({
+    _id: new mongoose_1.Types.ObjectId(),
+    season: new mongoose_1.Types.ObjectId(),
+    title: 'Episode 1: A New Beginning',
+    description: 'The story begins as new characters are introduced.',
+    episodeNumber: 1,
+    releaseDate: new Date('2025-01-15').toISOString(),
+    runTime: 45,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides, // Override defaults as needed
+});
 exports.createMockEpisode = createMockEpisode;

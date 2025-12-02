@@ -2,15 +2,6 @@
 /**
  * this contains all user related controllers
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -27,12 +18,12 @@ const hashing_1 = require("../common/utils/hashing");
 const mongoose_1 = __importDefault(require("mongoose"));
 const history_utils_1 = require("../common/utils/history-utils");
 // controller to add a new user
-const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const addUser = async (req, res) => {
     try {
         // create a new user
         const newUser = new user_model_1.default(req.validatedData);
         // save the user
-        const saveUser = yield newUser.save();
+        const saveUser = await newUser.save();
         // in case user is not saved
         if (!saveUser) {
             (0, handle_error_1.handleError)(res, { message: 'User creation failed' });
@@ -55,15 +46,15 @@ const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             statusCode: (0, mongo_errors_1.isDuplicateKeyError)(err) ? 409 : 500,
         });
     }
-});
+};
 exports.addUser = addUser;
 //controller to get all users
-const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllUsers = async (req, res) => {
     // get pagination params
     const { limit, start } = (0, pagination_1.getPaginationParams)(req.query, config_constants_1.GET_ALL_USER_LIMITS);
     try {
         // get all users from database with total count
-        const [users, total] = yield Promise.all([
+        const [users, total] = await Promise.all([
             user_model_1.default.find()
                 .sort({ createdAt: -1 }) // recent first
                 .limit(limit)
@@ -90,10 +81,10 @@ const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             error: err,
         });
     }
-});
+};
 exports.getAllUsers = getAllUsers;
 //controller to get the logged in user details
-const getUserDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserDetail = async (req, res) => {
     try {
         // filter the data
         const userDetails = (0, lodash_1.omit)(req.userData, ['password', '__v']);
@@ -109,10 +100,10 @@ const getUserDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             error: err,
         });
     }
-});
+};
 exports.getUserDetail = getUserDetail;
 //controller to get user by id
-const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserById = async (req, res) => {
     try {
         //get id from params
         const { id } = req.params;
@@ -122,7 +113,7 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             return;
         }
         // get the user
-        const user = yield user_model_1.default.findById(id).lean().exec();
+        const user = await user_model_1.default.findById(id).lean().exec();
         // in case user is not found
         if (!user) {
             (0, handle_error_1.handleError)(res, { message: 'User not found', statusCode: 404 });
@@ -144,13 +135,13 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             error: err,
         });
     }
-});
+};
 exports.getUserById = getUserById;
 //controller to delete the logged in user
-const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteUser = async (req, res, next) => {
     try {
         //delete the user
-        const deletedUser = yield user_model_1.default.findByIdAndDelete(req.userData._id)
+        const deletedUser = await user_model_1.default.findByIdAndDelete(req.userData._id)
             .select('-password')
             .lean()
             .exec();
@@ -175,10 +166,10 @@ const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             error: err,
         });
     }
-});
+};
 exports.deleteUser = deleteUser;
 //controller to delete user by id
-const deleteUserById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteUserById = async (req, res, next) => {
     try {
         //get id from params
         const { id } = req.params;
@@ -189,7 +180,7 @@ const deleteUserById = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             return;
         }
         //delete the user
-        const deletedUser = yield user_model_1.default.findByIdAndDelete(id)
+        const deletedUser = await user_model_1.default.findByIdAndDelete(id)
             .select('-password')
             .lean()
             .exec();
@@ -214,19 +205,18 @@ const deleteUserById = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             error: err,
         });
     }
-});
+};
 exports.deleteUserById = deleteUserById;
 //controller to update the logged in user
-const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+const updateUser = async (req, res) => {
     try {
         let password;
         // hash password if present
-        if ((_a = req.validatedData) === null || _a === void 0 ? void 0 : _a.password) {
-            password = yield (0, hashing_1.encrypt)(req.validatedData.password);
+        if (req.validatedData?.password) {
+            password = await (0, hashing_1.encrypt)(req.validatedData.password);
         }
         // handle unexpected error
-        const updatedUser = yield user_model_1.default.findByIdAndUpdate(req.userData._id, Object.assign(Object.assign({}, req.validatedData), (password && { password })), {
+        const updatedUser = await user_model_1.default.findByIdAndUpdate(req.userData._id, { ...req.validatedData, ...(password && { password }) }, {
             new: true,
         })
             .select('-password -__v')
@@ -249,10 +239,10 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             error: err,
         });
     }
-});
+};
 exports.updateUser = updateUser;
 //controller to update role by id
-const updateRoleById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const updateRoleById = async (req, res, next) => {
     try {
         //get id from params
         const { id } = req.params;
@@ -264,14 +254,14 @@ const updateRoleById = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         // get new role from validated data
         const { role } = req.validatedData;
         //get the user
-        const user = yield user_model_1.default.findById(id).select('-password').lean().exec();
+        const user = await user_model_1.default.findById(id).select('-password').lean().exec();
         // in case user is not found
         if (!user) {
             (0, handle_error_1.handleError)(res, { message: 'User not found', statusCode: 404 });
             return;
         }
         // update the role
-        const updatedUser = yield user_model_1.default.findByIdAndUpdate(id, { role }, {
+        const updatedUser = await user_model_1.default.findByIdAndUpdate(id, { role }, {
             new: true,
         })
             .select('-password -__v')
@@ -293,10 +283,9 @@ const updateRoleById = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             error: err,
         });
     }
-});
+};
 exports.updateRoleById = updateRoleById;
-const filterUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+const filterUsers = async (req, res) => {
     try {
         //destructure validated data
         const { role, searchText, limit, page } = req.validatedData;
@@ -347,10 +336,10 @@ const filterUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             },
         });
         //execute the aggregation pipeline
-        const results = yield user_model_1.default.aggregate(pipeline);
+        const results = await user_model_1.default.aggregate(pipeline);
         // extract the users and pagination details from result
         const users = results[0].data;
-        const total = ((_a = results[0].totalCount[0]) === null || _a === void 0 ? void 0 : _a.total) || 0;
+        const total = results[0].totalCount[0]?.total || 0;
         //send response
         res.status(200).json({
             success: true,
@@ -366,5 +355,5 @@ const filterUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             error: err,
         });
     }
-});
+};
 exports.filterUsers = filterUsers;

@@ -2,15 +2,6 @@
 /**
  * This @file contains the controller related to tv-show
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -27,15 +18,15 @@ const delete_tv_show_1 = require("../common/utils/delete-tv-show");
 const add_tv_show_1 = require("../common/utils/add-tv-show");
 const history_utils_1 = require("../common/utils/history-utils");
 // controller to add a new tv show
-const addTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const addTvShow = async (req, res, next) => {
     // Start a Mongoose session for the transaction
-    const session = yield (0, mongoose_1.startSession)();
+    const session = await (0, mongoose_1.startSession)();
     session.startTransaction();
     try {
         // save the tv show
-        const savedTvShow = yield (0, add_tv_show_1.addSingleTvShow)(req.validatedData, session);
+        const savedTvShow = await (0, add_tv_show_1.addSingleTvShow)(req.validatedData, session);
         // If all operations were successful, commit the transaction
-        yield session.commitTransaction();
+        await session.commitTransaction();
         // return the saved tv show
         res.status(200).json({
             success: true,
@@ -48,11 +39,11 @@ const addTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
     catch (error) {
         // If any error occurred, abort the entire transaction
-        yield session.abortTransaction();
+        await session.abortTransaction();
         //handle unexpected errors
         (0, handle_error_1.handleError)(res, {
             error: error,
-            message: (error === null || error === void 0 ? void 0 : error.message) || (0, mongo_errors_1.isDuplicateKeyError)(error)
+            message: error?.message || (0, mongo_errors_1.isDuplicateKeyError)(error)
                 ? 'Tv show already exists'
                 : 'Server down please try again later',
         });
@@ -61,15 +52,15 @@ const addTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         // Finally, end the session
         session.endSession();
     }
-});
+};
 exports.addTvShow = addTvShow;
 // get all the tv show
-const getAllTvShows = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllTvShows = async (req, res) => {
     // get pagination params
     const { limit, start } = (0, pagination_1.getPaginationParams)(req.query, config_constants_1.GET_ALL_TV_SHOW_LIMITS);
     try {
         //get all the tv shows
-        const [tvShows, total] = yield (0, get_tv_show_1.getTvShowDetails)(req.query.fullDetails, start, limit);
+        const [tvShows, total] = await (0, get_tv_show_1.getTvShowDetails)(req.query.fullDetails, start, limit);
         // get pagination details
         const pagination = (0, pagination_1.getPaginationResponse)(total, limit, start);
         // return the tv shows
@@ -85,10 +76,10 @@ const getAllTvShows = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         // handle unexpected error
         (0, handle_error_1.handleError)(res, { error: error });
     }
-});
+};
 exports.getAllTvShows = getAllTvShows;
 //get tv show by id
-const getTvShowById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getTvShowById = async (req, res) => {
     try {
         // get id from params
         const { id } = req.params;
@@ -98,28 +89,31 @@ const getTvShowById = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             return;
         }
         // get the tv show details
-        const tvShow = yield tv_show_model_1.default.findById(id).lean().exec();
+        const tvShow = await tv_show_model_1.default.findById(id).lean().exec();
         // in case tv show is not found
         if (!tvShow) {
             (0, handle_error_1.handleError)(res, { message: 'Tv show not found', statusCode: 404 });
             return;
         }
         // add episodes to each season
-        const seasonsWithEpisodes = yield (0, get_tv_show_1.getSeasonsWithEpisodes)(tvShow._id);
+        const seasonsWithEpisodes = await (0, get_tv_show_1.getSeasonsWithEpisodes)(tvShow._id);
         // return the tv show with seasons and episodes
         res.status(200).json({
             success: true,
-            data: Object.assign(Object.assign({}, tvShow), { seasons: seasonsWithEpisodes }),
+            data: {
+                ...tvShow,
+                seasons: seasonsWithEpisodes,
+            },
         });
     }
     catch (error) {
         // handle unexpected error
         (0, handle_error_1.handleError)(res, { error: error });
     }
-});
+};
 exports.getTvShowById = getTvShowById;
 // controller to update tv show by id
-const updateTvShowById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const updateTvShowById = async (req, res, next) => {
     try {
         //extract id from params
         const { id } = req.params;
@@ -129,13 +123,13 @@ const updateTvShowById = (req, res, next) => __awaiter(void 0, void 0, void 0, f
             return;
         }
         //get the old tv show record
-        const oldTvShow = yield tv_show_model_1.default.findById(id).lean().exec();
+        const oldTvShow = await tv_show_model_1.default.findById(id).lean().exec();
         if (!oldTvShow) {
             (0, handle_error_1.handleError)(res, { message: 'Tv show not found', statusCode: 404 });
             return;
         }
         //update the tv show by id
-        const updatedTvShow = yield tv_show_model_1.default.findByIdAndUpdate(id, req.validatedData, { new: true })
+        const updatedTvShow = await tv_show_model_1.default.findByIdAndUpdate(id, req.validatedData, { new: true })
             .lean()
             .exec();
         // return the updated tv show
@@ -154,12 +148,12 @@ const updateTvShowById = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         // handle unexpected error
         (0, handle_error_1.handleError)(res, { error: error });
     }
-});
+};
 exports.updateTvShowById = updateTvShowById;
 // controller to delete tv show by id
-const deleteTvShowById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteTvShowById = async (req, res, next) => {
     //initialize transaction session
-    const session = yield (0, mongoose_1.startSession)();
+    const session = await (0, mongoose_1.startSession)();
     //start transaction
     session.startTransaction();
     try {
@@ -171,7 +165,7 @@ const deleteTvShowById = (req, res, next) => __awaiter(void 0, void 0, void 0, f
             return;
         }
         // find the tv show by id
-        const tvShow = yield tv_show_model_1.default.findById(id).lean().exec();
+        const tvShow = await tv_show_model_1.default.findById(id).lean().exec();
         //in case tv show is not found
         if (!tvShow) {
             (0, handle_error_1.handleError)(res, {
@@ -181,9 +175,9 @@ const deleteTvShowById = (req, res, next) => __awaiter(void 0, void 0, void 0, f
             return;
         }
         // delete tv show
-        const { deletedCount } = yield (0, delete_tv_show_1.deleteTvShow)(id, session);
+        const { deletedCount } = await (0, delete_tv_show_1.deleteTvShow)(id, session);
         //commit the transaction
-        yield session.commitTransaction();
+        await session.commitTransaction();
         // return the deleted tv show count
         res.status(200).json({
             success: true,
@@ -201,26 +195,26 @@ const deleteTvShowById = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         //handle unexpected error
         (0, handle_error_1.handleError)(res, {
             error: err,
-            statusCode: err === null || err === void 0 ? void 0 : err.statusCode,
-            message: err === null || err === void 0 ? void 0 : err.message,
+            statusCode: err?.statusCode,
+            message: err?.message,
         });
     }
     finally {
         session.endSession();
     }
-});
+};
 exports.deleteTvShowById = deleteTvShowById;
 //controller to bulk delete tv show
-const bulkDeleteTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkDeleteTvShow = async (req, res, next) => {
     // create a mongo transaction session
-    const session = yield (0, mongoose_1.startSession)();
+    const session = await (0, mongoose_1.startSession)();
     //start transaction
     session.startTransaction();
     try {
         // get the ids from validated data
         const { tvShowIds } = req.validatedData;
         //get all the tv shows
-        const tvShows = yield tv_show_model_1.default.find({ _id: { $in: tvShowIds } })
+        const tvShows = await tv_show_model_1.default.find({ _id: { $in: tvShowIds } })
             .lean()
             .exec();
         //in case no tv shows are found
@@ -235,14 +229,14 @@ const bulkDeleteTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         };
         for (const id of tvShowIds) {
             // delete tv show
-            const { deletedCount: receivedDeletedCount } = yield (0, delete_tv_show_1.deleteTvShow)(id, session);
+            const { deletedCount: receivedDeletedCount } = await (0, delete_tv_show_1.deleteTvShow)(id, session);
             //update count
             deleteCount.tvShow += receivedDeletedCount.tvShow;
             deleteCount.seasons += receivedDeletedCount.seasons;
             deleteCount.episodes += receivedDeletedCount.episodes;
         }
         //commit the transaction
-        yield session.commitTransaction();
+        await session.commitTransaction();
         // return the deleted tv show count
         res.status(200).json({
             success: true,
@@ -260,18 +254,18 @@ const bulkDeleteTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         //handle unexpected error
         (0, handle_error_1.handleError)(res, {
             error: err,
-            statusCode: err === null || err === void 0 ? void 0 : err.statusCode,
-            message: err === null || err === void 0 ? void 0 : err.message,
+            statusCode: err?.statusCode,
+            message: err?.message,
         });
     }
     finally {
         //end session
-        yield session.endSession();
+        await session.endSession();
     }
-});
+};
 exports.bulkDeleteTvShow = bulkDeleteTvShow;
 //controller for search tv show
-const searchTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const searchTvShow = async (req, res) => {
     try {
         //get the search text from query params
         const { text } = req.query;
@@ -302,7 +296,7 @@ const searchTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             },
         ];
         //get the tv shows
-        const results = yield tv_show_model_1.default.aggregate(pipeline);
+        const results = await tv_show_model_1.default.aggregate(pipeline);
         //get the tv shows
         const resultDoc = results[0];
         const tvShows = resultDoc.paginatedResults;
@@ -322,11 +316,10 @@ const searchTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // handle unexpected error
         (0, handle_error_1.handleError)(res, { error: error });
     }
-});
+};
 exports.searchTvShow = searchTvShow;
 //controller for filter tv show
-const filterTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+const filterTvShow = async (req, res) => {
     try {
         //destructure validated data
         const { genre, limit, page, languages, status, averageRating, releaseDate, avgRunTime, tags, totalEpisodes, totalSeasons, searchText, } = req.validatedData;
@@ -385,25 +378,37 @@ const filterTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         //check if releaseDate is defined
         if (releaseDate) {
             searchClauses.filter.push({
-                range: Object.assign({ path: 'releaseDate' }, releaseDate),
+                range: {
+                    path: 'releaseDate',
+                    ...releaseDate,
+                },
             });
         }
         //check if runTime is defined
         if (avgRunTime) {
             searchClauses.filter.push({
-                range: Object.assign({ path: 'avgRunTime' }, avgRunTime),
+                range: {
+                    path: 'avgRunTime',
+                    ...avgRunTime,
+                },
             });
         }
         //check if totalEpisodes is defined
         if (totalEpisodes) {
             searchClauses.filter.push({
-                range: Object.assign({ path: 'totalEpisodes' }, totalEpisodes),
+                range: {
+                    path: 'totalEpisodes',
+                    ...totalEpisodes,
+                },
             });
         }
         //check if totalSeasons is defined
         if (totalSeasons) {
             searchClauses.filter.push({
-                range: Object.assign({ path: 'totalSeasons' }, totalSeasons),
+                range: {
+                    path: 'totalSeasons',
+                    ...totalSeasons,
+                },
             });
         }
         //check if languages is defined
@@ -439,10 +444,10 @@ const filterTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             },
         });
         // get the data from db
-        const result = yield tv_show_model_1.default.aggregate(pipeline);
+        const result = await tv_show_model_1.default.aggregate(pipeline);
         // extract the data , pagination and total count from the result
-        const data = (_a = result[0]) === null || _a === void 0 ? void 0 : _a.data;
-        const totalCount = ((_c = (_b = result[0]) === null || _b === void 0 ? void 0 : _b.totalCount[0]) === null || _c === void 0 ? void 0 : _c.total) || 0;
+        const data = result[0]?.data;
+        const totalCount = result[0]?.totalCount[0]?.total || 0;
         const pagination = (0, pagination_1.getPaginationResponse)(totalCount, limit, skip);
         //send response
         res.status(200).json({
@@ -457,12 +462,12 @@ const filterTvShow = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // handle unexpected error
         (0, handle_error_1.handleError)(res, { error: error });
     }
-});
+};
 exports.filterTvShow = filterTvShow;
 //controller to bulk add tv show
-const bulkAddTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkAddTvShow = async (req, res, next) => {
     //start a mongoose transaction session
-    const session = yield (0, mongoose_1.startSession)();
+    const session = await (0, mongoose_1.startSession)();
     //start transaction
     session.startTransaction();
     try {
@@ -472,11 +477,11 @@ const bulkAddTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         //add all the tv shows to the db
         for (const tvShow of tvShows) {
             //save the tv show
-            const savedTvShow = yield (0, add_tv_show_1.addSingleTvShow)(tvShow, session);
+            const savedTvShow = await (0, add_tv_show_1.addSingleTvShow)(tvShow, session);
             savedTvShows.push(savedTvShow);
         }
         //commit the transaction if all the tv shows are saved
-        yield session.commitTransaction();
+        await session.commitTransaction();
         //send response
         res.status(200).json({
             success: true,
@@ -491,7 +496,7 @@ const bulkAddTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         // handle unexpected error
         (0, handle_error_1.handleError)(res, {
             error: error,
-            message: (error === null || error === void 0 ? void 0 : error.message) || (0, mongo_errors_1.isDuplicateKeyError)(error)
+            message: error?.message || (0, mongo_errors_1.isDuplicateKeyError)(error)
                 ? 'One of the tv show already exists'
                 : 'Server down please try again later',
         });
@@ -500,5 +505,5 @@ const bulkAddTvShow = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         //end the session
         session.endSession();
     }
-});
+};
 exports.bulkAddTvShow = bulkAddTvShow;

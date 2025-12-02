@@ -7,6 +7,8 @@ exports.ApiError = void 0;
  * the response.
  */
 class ApiError extends Error {
+    statusCode;
+    stack;
     constructor(statusCode = 500, message) {
         super(message);
         this.statusCode = statusCode;

@@ -22,7 +22,7 @@ function parseSafely(body) {
                 return JSON.parse(body);
             }
         }
-        catch (_a) {
+        catch {
             // If parsing fails, it's just a plain string.
             return body;
         }

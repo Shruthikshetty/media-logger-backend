@@ -3,7 +3,7 @@
  * this @file contains all the configuration constants
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RECOMMENDER_MS_REQUEST_TIMEOUT = exports.RECOMMENDER_MS_HEALTH_CHECK_TIMEOUT = exports.CUSTOM_SANITIZATION_RULES = exports.HISTORY_RETENTION_DAYS = exports.GET_ALL_HISTORY_LIMITS = exports.GET_ALL_TV_SHOW_LIMITS = exports.GET_ALL_GAMES_LIMITS = exports.GET_ALL_MOVIES_LIMITS = exports.GET_ALL_USER_LIMITS = exports.CLOUDINARY_FOLDER = exports.ALLOWED_IMAGE_FORMATS = exports.IMAGE_FILE_SIZE = exports.TV_SHOW_SEARCH_INDEX = exports.GAME_SEARCH_INDEX = exports.MOVIE_SEARCH_INDEX = exports.JSON_FILE_SIZE = exports.ADMIN = exports.JWT_EXPIRES_IN = exports.JWT_SECRET_DEFAULT = exports.SALT_ROUNDS = void 0;
+exports.RECOMMENDER_MS_REQUEST_TIMEOUT = exports.RECOMMENDER_MS_HEALTH_CHECK_TIMEOUT = exports.CUSTOM_SANITIZATION_RULES = exports.HISTORY_RETENTION_DAYS = exports.GET_ALL_MEDIA_COMMENTS_LIMITS = exports.GET_ALL_HISTORY_LIMITS = exports.GET_ALL_TV_SHOW_LIMITS = exports.GET_ALL_GAMES_LIMITS = exports.GET_ALL_MOVIES_LIMITS = exports.GET_ALL_USER_LIMITS = exports.CLOUDINARY_FOLDER = exports.ALLOWED_IMAGE_FORMATS = exports.IMAGE_FILE_SIZE = exports.TV_SHOW_SEARCH_INDEX = exports.GAME_SEARCH_INDEX = exports.MOVIE_SEARCH_INDEX = exports.JSON_FILE_SIZE = exports.ADMIN = exports.JWT_EXPIRES_IN = exports.JWT_SECRET_DEFAULT = exports.SALT_ROUNDS = void 0;
 exports.SALT_ROUNDS = 10;
 exports.JWT_SECRET_DEFAULT = 'super-secret';
 exports.JWT_EXPIRES_IN = '1d';
@@ -73,6 +73,13 @@ exports.GET_ALL_HISTORY_LIMITS = {
     start: {
         min: 0,
         default: 0,
+    },
+};
+exports.GET_ALL_MEDIA_COMMENTS_LIMITS = {
+    limit: {
+        min: 1,
+        max: 200,
+        default: 20,
     },
 };
 exports.HISTORY_RETENTION_DAYS = 180;

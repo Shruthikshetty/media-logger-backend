@@ -51,7 +51,10 @@ const requestLogger = (req, res, next) => {
                 !Array.isArray(bodyToSendToClient) &&
                 !Buffer.isBuffer(bodyToSendToClient)) {
                 // Add the requestId to the object that will be sent to the client.
-                bodyToSendToClient = Object.assign(Object.assign({}, bodyToSendToClient), { requestId });
+                bodyToSendToClient = {
+                    ...bodyToSendToClient,
+                    requestId,
+                };
                 // stringify the body
                 bodyToSendToClient = JSON.stringify(bodyToSendToClient);
             }
@@ -59,7 +62,7 @@ const requestLogger = (req, res, next) => {
                 // Log the response
                 (0, loki_logger_1.lokiLog)(level, {
                     message: `Sending response for: ${req.method} ${req.originalUrl}`,
-                    requestId: request === null || request === void 0 ? void 0 : request.id,
+                    requestId: request?.id,
                     statusCode: res.statusCode,
                     body: (0, sanitize_1.sanitizeForLog)((0, parser_1.parseSafely)(bodyToSendToClient)), // sanitize the body
                 }, { direction: 'response' });

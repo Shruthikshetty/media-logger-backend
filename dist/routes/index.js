@@ -16,6 +16,7 @@ const analytic_route_1 = __importDefault(require("./analytic.route"));
 const upload_route_1 = __importDefault(require("./upload.route"));
 const history_routes_1 = __importDefault(require("./history.routes"));
 const recommend_route_1 = __importDefault(require("./recommend.route"));
+const media_comments_route_1 = __importDefault(require("./media-comments.route"));
 //initialize router
 const route = (0, express_1.Router)();
 //User routes
@@ -36,5 +37,7 @@ route.use('/upload', upload_route_1.default);
 route.use('/history', history_routes_1.default);
 //recommend routes
 route.use('/recommend', recommend_route_1.default);
+//media comment route
+route.use('/media-comment', media_comments_route_1.default);
 // export all the routes
 exports.default = route;

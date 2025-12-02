@@ -2,15 +2,6 @@
 /**
  * @file contains all the controllers related to authentication
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -25,13 +16,12 @@ const passport_1 = __importDefault(require("../common/passport"));
 const lodash_1 = require("lodash");
 const update_user_last_login_1 = require("../common/utils/update-user-last-login");
 // controller to login
-const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+const login = async (req, res) => {
     // destructure request body
     const { email, password } = req.validatedData;
     try {
         //find the user by the email
-        const user = yield user_model_1.default.findOne({ email });
+        const user = await user_model_1.default.findOne({ email });
         //in case user is not found
         if (!user) {
             (0, handle_error_1.handleError)(res, {
@@ -41,7 +31,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         // validate password
-        const isValidPassword = yield (0, hashing_1.decrypt)(password, user.password);
+        const isValidPassword = await (0, hashing_1.decrypt)(password, user.password);
         if (!isValidPassword) {
             (0, handle_error_1.handleError)(res, { message: 'Invalid password', statusCode: 401 });
             return;
@@ -49,7 +39,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // generate jwt token
         const token = jsonwebtoken_1.default.sign({
             id: user._id,
-        }, (_a = process.env.JWT_SECRET) !== null && _a !== void 0 ? _a : config_constants_1.JWT_SECRET_DEFAULT, {
+        }, process.env.JWT_SECRET ?? config_constants_1.JWT_SECRET_DEFAULT, {
             expiresIn: config_constants_1.JWT_EXPIRES_IN,
         });
         //update user login time
@@ -65,10 +55,10 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // handle unexpected  error
         (0, handle_error_1.handleError)(res, { error: err });
     }
-});
+};
 exports.login = login;
 //verify if the token is valid
-const verifyToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const verifyToken = async (req, res) => {
     try {
         // verify token
         passport_1.default.authenticate('jwt', { session: false }, (err, user) => {
@@ -99,5 +89,5 @@ const verifyToken = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         // handle unexpected  error
         (0, handle_error_1.handleError)(res, { error: err });
     }
-});
+};
 exports.verifyToken = verifyToken;

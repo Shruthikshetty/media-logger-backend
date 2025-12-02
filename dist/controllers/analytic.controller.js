@@ -2,15 +2,6 @@
 /**
  * @file contains all the controller related to analytics
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -24,21 +15,21 @@ const tv_show_model_1 = __importDefault(require("../models/tv-show.model"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const analytics_1 = require("../common/utils/analytics");
 //admin dashboard analytics data
-const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const dashboardAdminAnalytics = async (req, res) => {
     try {
         //get total counts of movies , users , tv-show , games
-        const [totalUsers, totalMovies, totalTvShows, totalGames] = yield Promise.all([
+        const [totalUsers, totalMovies, totalTvShows, totalGames] = await Promise.all([
             user_model_1.default.countDocuments(),
             movie_model_1.default.countDocuments(),
             tv_show_model_1.default.countDocuments(),
             game_model_1.default.countDocuments(),
         ]);
         //get total count of users in current month
-        const totalUsersInMonth = yield user_model_1.default.countDocuments({
+        const totalUsersInMonth = await user_model_1.default.countDocuments({
             createdAt: { $gte: (0, date_1.getDaysAgo)(30).toDate() },
         });
         //get total count of movies , users , tv-show , games added in last month
-        const [totalUsersInLastMonth, totalMoviesInLastMonth, totalTvShowsInLastMonth, totalGamesInLastMonth,] = yield Promise.all([
+        const [totalUsersInLastMonth, totalMoviesInLastMonth, totalTvShowsInLastMonth, totalGamesInLastMonth,] = await Promise.all([
             user_model_1.default.countDocuments({
                 createdAt: {
                     $gte: (0, date_1.getDaysAgo)(60).toDate(),
@@ -65,7 +56,7 @@ const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, 
             }),
         ]);
         //get total count of movies , users , tv-show , games added in last 30 days
-        const [moviesCountLast30Days, tvShowsCountLast30Days, gamesCountLast30Days,] = yield Promise.all([
+        const [moviesCountLast30Days, tvShowsCountLast30Days, gamesCountLast30Days,] = await Promise.all([
             //aggregate movies
             movie_model_1.default.aggregate([
                 {
@@ -188,5 +179,5 @@ const dashboardAdminAnalytics = (req, res) => __awaiter(void 0, void 0, void 0, 
             error: err,
         });
     }
-});
+};
 exports.dashboardAdminAnalytics = dashboardAdminAnalytics;

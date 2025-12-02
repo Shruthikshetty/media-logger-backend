@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -19,17 +10,17 @@ const config_constants_1 = require("../constants/config.constants");
  * Hashes a plain text string (usually a password)
  * @param plainText The string to hash
  */
-const encrypt = (plainText) => __awaiter(void 0, void 0, void 0, function* () {
-    const salt = yield bcrypt_1.default.genSalt(config_constants_1.SALT_ROUNDS);
-    return yield bcrypt_1.default.hash(plainText, salt);
-});
+const encrypt = async (plainText) => {
+    const salt = await bcrypt_1.default.genSalt(config_constants_1.SALT_ROUNDS);
+    return await bcrypt_1.default.hash(plainText, salt);
+};
 exports.encrypt = encrypt;
 /**
  * Compares a plain text string with a hashed string
  * @param plainText The original plain string
  * @param hashedText The previously hashed string
  */
-const decrypt = (plainText, hashedText) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield bcrypt_1.default.compare(plainText, hashedText);
-});
+const decrypt = async (plainText, hashedText) => {
+    return await bcrypt_1.default.compare(plainText, hashedText);
+};
 exports.decrypt = decrypt;

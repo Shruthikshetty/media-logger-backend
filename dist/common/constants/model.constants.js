@@ -196,6 +196,7 @@ exports.GAME_PLATFORMS = [
     'VR',
 ];
 exports.HISTORY_ACTION = ['Update', 'Add', 'Delete'];
+//This is nothing but media entity @todo rename if possible
 exports.HISTORY_ENTITY = [
     'Game',
     'Movie',

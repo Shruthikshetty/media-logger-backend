@@ -14,8 +14,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
  * @returns {boolean} True if the error is a duplicate key error.
  */
 function isDuplicateKeyError(error) {
-    var _a;
-    return ((_a = error === null || error === void 0 ? void 0 : error.errorResponse) === null || _a === void 0 ? void 0 : _a.code) === 11000;
+    return error?.errorResponse?.code === 11000;
 }
 /**
  * Checks if a given string is a valid MongoDB ObjectId.

@@ -24,14 +24,13 @@ const statusMessages = {
  * @param options - Error response options
  */
 const handleError = (res, options) => {
-    var _a, _b;
     // by default status code will be 500
-    const statusCode = (_a = options === null || options === void 0 ? void 0 : options.statusCode) !== null && _a !== void 0 ? _a : 500;
+    const statusCode = options?.statusCode ?? 500;
     // set default message configured above
-    const message = (_b = options === null || options === void 0 ? void 0 : options.message) !== null && _b !== void 0 ? _b : statusMessages[statusCode];
+    const message = options?.message ?? statusMessages[statusCode];
     //logger for dev mode
-    if (process.env.NODE_ENV === 'development' && (options === null || options === void 0 ? void 0 : options.error)) {
-        logger_1.logger.error(JSON.stringify(options === null || options === void 0 ? void 0 : options.error, null, 2));
+    if (process.env.NODE_ENV === 'development' && options?.error) {
+        logger_1.logger.error(JSON.stringify(options?.error, null, 2));
     }
     // handle error response
     res.status(statusCode).json({

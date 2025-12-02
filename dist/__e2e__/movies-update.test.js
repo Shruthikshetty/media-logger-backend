@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -26,33 +17,33 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
     let movieId1;
     let movieId2;
     // Create in memory mongo instance
-    beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-        mongoServer = yield mongodb_memory_server_1.MongoMemoryServer.create();
-        yield mongoose_1.default.connect(mongoServer.getUri());
+    beforeAll(async () => {
+        mongoServer = await mongodb_memory_server_1.MongoMemoryServer.create();
+        await mongoose_1.default.connect(mongoServer.getUri());
         // Create users
-        yield user_model_1.default.create(mock_data_1.mockTestUsers);
+        await user_model_1.default.create(mock_data_1.mockTestUsers);
         // Create movies
-        const movies = yield movie_model_1.default.insertMany(mock_data_1.mockTestMovies);
+        const movies = await movie_model_1.default.insertMany(mock_data_1.mockTestMovies);
         movieId1 = movies[0]._id.toString();
         movieId2 = movies[1]._id.toString();
-    }));
+    });
     // Clean up mongo
-    afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
-        yield mongoose_1.default.disconnect();
-        yield mongoServer.stop();
-    }));
-    const loginUser = () => __awaiter(void 0, void 0, void 0, function* () {
+    afterAll(async () => {
+        await mongoose_1.default.disconnect();
+        await mongoServer.stop();
+    });
+    const loginUser = async () => {
         // Log in as admin
-        const loginRes = yield (0, supertest_1.default)(__1.app)
+        const loginRes = await (0, supertest_1.default)(__1.app)
             .post('/api/auth/login')
             .send({ email: 'Admin@example.com', password: 'password123' });
         // Get token
         token = loginRes.body.data.token;
-    });
+    };
     describe('Successful movie updates', () => {
-        it('should update a movie with all valid fields', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('should update a movie with all valid fields', async () => {
             // Log in as admin
-            yield loginUser();
+            await loginUser();
             const updateData = {
                 title: 'Updated Movie Title',
                 description: 'Updated comprehensive description for the movie',
@@ -70,7 +61,7 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
                 trailerYoutubeUrl: 'https://youtube.com/watch?v=updated-trailer',
                 releaseDate: new Date('2023-07-21').toISOString(),
             };
-            const res = yield (0, supertest_1.default)(__1.app)
+            const res = await (0, supertest_1.default)(__1.app)
                 .patch(`/api/movie/${movieId1}`)
                 .set('Authorization', `Bearer ${token}`)
                 .send(updateData);
@@ -88,11 +79,11 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
             expect(res.body.data.ageRating).toBe(updateData.ageRating);
             expect(res.body.data.isActive).toBe(updateData.isActive);
             expect(res.body.data.status).toBe(updateData.status);
-        }));
-        it('should update movie with partial data (only title)', () => __awaiter(void 0, void 0, void 0, function* () {
+        });
+        it('should update movie with partial data (only title)', async () => {
             // Log in as admin
-            yield loginUser();
-            const res = yield (0, supertest_1.default)(__1.app)
+            await loginUser();
+            const res = await (0, supertest_1.default)(__1.app)
                 .patch(`/api/movie/${movieId2}`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -102,13 +93,13 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
             expect(res.status).toBe(200);
             expect(res.body.success).toBe(true);
             expect(res.body.data.title).toBe('Partially Updated Title');
-        }));
+        });
     });
     describe('Validation error tests', () => {
-        it('should return 400 when no fields are provided for update', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('should return 400 when no fields are provided for update', async () => {
             // Log in as admin
-            yield loginUser();
-            const res = yield (0, supertest_1.default)(__1.app)
+            await loginUser();
+            const res = await (0, supertest_1.default)(__1.app)
                 .patch(`/api/movie/${movieId1}`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({});
@@ -116,11 +107,11 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
             expect(res.status).toBe(400);
             expect(res.body.success).toBe(false);
             expect(res.body.message).toMatch(/At least one field must be updated/);
-        }));
-        it('should return 400 for invalid average rating (above 10)', () => __awaiter(void 0, void 0, void 0, function* () {
+        });
+        it('should return 400 for invalid average rating (above 10)', async () => {
             // Log in as admin
-            yield loginUser();
-            const res = yield (0, supertest_1.default)(__1.app)
+            await loginUser();
+            const res = await (0, supertest_1.default)(__1.app)
                 .patch(`/api/movie/${movieId1}`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -130,11 +121,11 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
             expect(res.status).toBe(400);
             expect(res.body.success).toBe(false);
             expect(res.body.message).toMatch(/Average rating can be at most 10/);
-        }));
-        it('should return 400 for invalid status value', () => __awaiter(void 0, void 0, void 0, function* () {
+        });
+        it('should return 400 for invalid status value', async () => {
             // Log in as admin
-            yield loginUser();
-            const res = yield (0, supertest_1.default)(__1.app)
+            await loginUser();
+            const res = await (0, supertest_1.default)(__1.app)
                 .patch(`/api/movie/${movieId1}`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -144,11 +135,11 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
             expect(res.status).toBe(400);
             expect(res.body.success).toBe(false);
             expect(res.body.message).toMatch(/Status must be one of the following/);
-        }));
-        it('should return 400 for invalid tags', () => __awaiter(void 0, void 0, void 0, function* () {
+        });
+        it('should return 400 for invalid tags', async () => {
             // Log in as admin
-            yield loginUser();
-            const res = yield (0, supertest_1.default)(__1.app)
+            await loginUser();
+            const res = await (0, supertest_1.default)(__1.app)
                 .patch(`/api/movie/${movieId1}`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -158,11 +149,11 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
             expect(res.status).toBe(400);
             expect(res.body.success).toBe(false);
             expect(res.body.message).toMatch(/Tags must be one of the following/);
-        }));
-        it('should return 400 for invalid release date format', () => __awaiter(void 0, void 0, void 0, function* () {
+        });
+        it('should return 400 for invalid release date format', async () => {
             // Log in as admin
-            yield loginUser();
-            const res = yield (0, supertest_1.default)(__1.app)
+            await loginUser();
+            const res = await (0, supertest_1.default)(__1.app)
                 .patch(`/api/movie/${movieId1}`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -172,20 +163,20 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
             expect(res.status).toBe(400);
             expect(res.body.success).toBe(false);
             expect(res.body.message).toMatch(/Release date must be a valid ISO 8601 string/);
-        }));
+        });
     });
     describe('Authentication and authorization tests', () => {
-        it('should return 401 for unauthenticated user', () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, supertest_1.default)(__1.app).patch(`/api/movie/${movieId1}`).send({
+        it('should return 401 for unauthenticated user', async () => {
+            const res = await (0, supertest_1.default)(__1.app).patch(`/api/movie/${movieId1}`).send({
                 title: 'Updated title without auth',
             });
             // Assertions
             expect(res.status).toBe(401);
             expect(res.body.success).toBe(false);
             expect(res.body.message).toMatch(/Unauthorized/);
-        }));
-        it('should return 401 for invalid token', () => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield (0, supertest_1.default)(__1.app)
+        });
+        it('should return 401 for invalid token', async () => {
+            const res = await (0, supertest_1.default)(__1.app)
                 .patch(`/api/movie/${movieId1}`)
                 .set('Authorization', 'Bearer invalid-token')
                 .send({
@@ -195,13 +186,13 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
             expect(res.status).toBe(401);
             expect(res.body.success).toBe(false);
             expect(res.body.message).toMatch(/Unauthorized/);
-        }));
+        });
     });
     describe('Resource not found tests', () => {
-        it('should return 404 for non-existent movie ID', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('should return 404 for non-existent movie ID', async () => {
             // Log in as admin
-            yield loginUser();
-            const res = yield (0, supertest_1.default)(__1.app)
+            await loginUser();
+            const res = await (0, supertest_1.default)(__1.app)
                 .patch(`/api/movie/${new mongoose_1.default.Types.ObjectId()}`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -211,11 +202,11 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
             expect(res.status).toBe(404);
             expect(res.body.success).toBe(false);
             expect(res.body.message).toMatch(/Movie does not exist/);
-        }));
-        it('should return 400 for invalid movie ID format', () => __awaiter(void 0, void 0, void 0, function* () {
+        });
+        it('should return 400 for invalid movie ID format', async () => {
             // Log in as admin
-            yield loginUser();
-            const res = yield (0, supertest_1.default)(__1.app)
+            await loginUser();
+            const res = await (0, supertest_1.default)(__1.app)
                 .patch(`/api/movie/invalid-id`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -225,13 +216,13 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
             expect(res.status).toBe(400);
             expect(res.body.success).toBe(false);
             expect(res.body.message).toMatch(/Invalid movie id/);
-        }));
+        });
     });
     describe('Edge cases and data transformation', () => {
-        it('should transform languages to lowercase', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('should transform languages to lowercase', async () => {
             // Log in as admin
-            yield loginUser();
-            const res = yield (0, supertest_1.default)(__1.app)
+            await loginUser();
+            const res = await (0, supertest_1.default)(__1.app)
                 .patch(`/api/movie/${movieId1}`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -241,6 +232,6 @@ describe('Movie update endpoints PATCH /api/movie/:id', () => {
             expect(res.status).toBe(200);
             expect(res.body.success).toBe(true);
             expect(res.body.data.languages).toEqual(['english', 'hindi', 'spanish']);
-        }));
+        });
     });
 });

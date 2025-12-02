@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_controller_1 = require("../user.controller");
 const mockResponse = {
@@ -24,7 +15,10 @@ const mockUserData = {
     xp: 0,
 };
 // mock save
-const mockSave = jest.fn().mockResolvedValue(Object.assign(Object.assign({}, mockUserData), { toObject: jest.fn().mockReturnValue(mockUserData) }));
+const mockSave = jest.fn().mockResolvedValue({
+    ...mockUserData, // Spread the data
+    toObject: jest.fn().mockReturnValue(mockUserData), // Add the toObject method
+});
 //mock user model
 jest.mock('../../models/user.model', () => {
     return {
@@ -50,8 +44,8 @@ describe('Test suite for add user', () => {
             xp: 0,
         },
     };
-    it('should return 201 when user is added', () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, user_controller_1.addUser)(mockRequest, mockResponse);
+    it('should return 201 when user is added', async () => {
+        await (0, user_controller_1.addUser)(mockRequest, mockResponse);
         expect(mockResponse.status).toHaveBeenCalledWith(201);
         expect(mockResponse.json).toHaveBeenCalledWith({
             success: true,
@@ -64,12 +58,12 @@ describe('Test suite for add user', () => {
             },
             message: 'User created successfully',
         });
-    }));
-    it('should return 409 when user already exists', () => __awaiter(void 0, void 0, void 0, function* () {
+    });
+    it('should return 409 when user already exists', async () => {
         // set duplicate key error true
         mockSave.mockRejectedValueOnce({ code: 11000 });
         mockIsDuplicateKeyError = true;
-        yield (0, user_controller_1.addUser)(mockRequest, mockResponse);
+        await (0, user_controller_1.addUser)(mockRequest, mockResponse);
         expect(mockResponse.status).toHaveBeenCalledWith(409);
         expect(mockResponse.json).toHaveBeenCalledWith({
             success: false,
@@ -77,11 +71,11 @@ describe('Test suite for add user', () => {
         });
         // reset
         mockIsDuplicateKeyError = false;
-    }));
-    it('should return 500 when an unknown error occurs', () => __awaiter(void 0, void 0, void 0, function* () {
+    });
+    it('should return 500 when an unknown error occurs', async () => {
         // set save to throw error
         mockSave.mockRejectedValueOnce({});
-        yield (0, user_controller_1.addUser)(mockRequest, mockResponse);
+        await (0, user_controller_1.addUser)(mockRequest, mockResponse);
         expect(mockResponse.status).toHaveBeenCalledWith(500);
         expect(mockResponse.json).toHaveBeenCalledWith({
             success: false,
@@ -96,5 +90,5 @@ describe('Test suite for add user', () => {
             profileImg: 'https://example.com/avatar.jpg',
             xp: 0,
         });
-    }));
+    });
 });

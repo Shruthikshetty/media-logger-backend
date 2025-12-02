@@ -2,15 +2,6 @@
 /**
  * @file holds the controller related to tv-episode
  */
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -24,10 +15,10 @@ const mongo_errors_1 = require("../common/utils/mongo-errors");
 const tv_episode_1 = __importDefault(require("../models/tv-episode"));
 const tv_season_1 = __importDefault(require("../models/tv-season"));
 //controller to add a episode to a season
-const addEpisode = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const addEpisode = async (req, res, next) => {
     try {
         // check if the season exists
-        const season = yield tv_season_1.default.findById(req.validatedData.season)
+        const season = await tv_season_1.default.findById(req.validatedData.season)
             .lean()
             .exec();
         if (!season) {
@@ -36,7 +27,7 @@ const addEpisode = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         //create a new episode
         const newEpisode = new tv_episode_1.default(req.validatedData);
         //save the episode
-        const savedEpisode = yield newEpisode.save();
+        const savedEpisode = await newEpisode.save();
         //return the saved episode
         res.status(201).json({
             success: true,
@@ -52,14 +43,14 @@ const addEpisode = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         //handle unexpected error
         (0, handle_error_1.handleError)(res, {
             error: err,
-            statusCode: (err === null || err === void 0 ? void 0 : err.statusCode) || 500,
-            message: err === null || err === void 0 ? void 0 : err.message,
+            statusCode: err?.statusCode || 500,
+            message: err?.message,
         });
     }
-});
+};
 exports.addEpisode = addEpisode;
 //controller to get a episode by id
-const getEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getEpisodeById = async (req, res) => {
     try {
         // get id from params
         const { id } = req.params;
@@ -71,7 +62,7 @@ const getEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         //get query param fullDetails
         const { fullDetails } = req.query;
         //find the episode by id
-        const episode = yield (0, get_episode_1.getEpisodeDetailsById)(id, fullDetails);
+        const episode = await (0, get_episode_1.getEpisodeDetailsById)(id, fullDetails);
         //in case episode is not found
         if (!episode) {
             (0, handle_error_1.handleError)(res, { message: 'Episode not found', statusCode: 404 });
@@ -87,14 +78,14 @@ const getEpisodeById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         //handle unexpected error
         (0, handle_error_1.handleError)(res, {
             error: err,
-            message: err === null || err === void 0 ? void 0 : err.message,
-            statusCode: err === null || err === void 0 ? void 0 : err.statusCode,
+            message: err?.message,
+            statusCode: err?.statusCode,
         });
     }
-});
+};
 exports.getEpisodeById = getEpisodeById;
 //controller to delete a episode by id
-const deleteEpisodeById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteEpisodeById = async (req, res, next) => {
     try {
         // get id from params
         const { id } = req.params;
@@ -104,7 +95,7 @@ const deleteEpisodeById = (req, res, next) => __awaiter(void 0, void 0, void 0, 
             return;
         }
         //delete the episode
-        const deletedEpisode = yield tv_episode_1.default.findByIdAndDelete(id).lean().exec();
+        const deletedEpisode = await tv_episode_1.default.findByIdAndDelete(id).lean().exec();
         // in case episode is not deleted
         if (!deletedEpisode) {
             (0, handle_error_1.handleError)(res, { message: 'Episode does not exist', statusCode: 404 });
@@ -127,10 +118,10 @@ const deleteEpisodeById = (req, res, next) => __awaiter(void 0, void 0, void 0, 
             error: err,
         });
     }
-});
+};
 exports.deleteEpisodeById = deleteEpisodeById;
 //controller to update a episode by id
-const updateEpisodeById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const updateEpisodeById = async (req, res, next) => {
     try {
         // get id from params
         const { id } = req.params;
@@ -140,13 +131,13 @@ const updateEpisodeById = (req, res, next) => __awaiter(void 0, void 0, void 0, 
             return;
         }
         //check if the episode exists
-        const episode = yield tv_episode_1.default.findById(id).lean().exec();
+        const episode = await tv_episode_1.default.findById(id).lean().exec();
         if (!episode) {
             (0, handle_error_1.handleError)(res, { message: 'Episode does not exist', statusCode: 404 });
             return;
         }
         //find and update the episode by id
-        const updatedEpisode = yield tv_episode_1.default.findByIdAndUpdate(id, req.validatedData, {
+        const updatedEpisode = await tv_episode_1.default.findByIdAndUpdate(id, req.validatedData, {
             new: true,
             runValidators: true,
             context: 'query',
@@ -180,5 +171,5 @@ const updateEpisodeById = (req, res, next) => __awaiter(void 0, void 0, void 0, 
                 : 'Server down please try again later',
         });
     }
-});
+};
 exports.updateEpisodeById = updateEpisodeById;

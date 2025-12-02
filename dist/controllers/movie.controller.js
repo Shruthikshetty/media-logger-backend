@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -20,12 +11,12 @@ const pagination_1 = require("../common/utils/pagination");
 const config_constants_1 = require("../common/constants/config.constants");
 const history_utils_1 = require("../common/utils/history-utils");
 // controller to add a new movie
-const addMovie = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const addMovie = async (req, res, next) => {
     try {
         // create a new movie
         const newMovie = new movie_model_1.default(req.validatedData);
         // save the movie
-        const savedMovie = yield newMovie.save();
+        const savedMovie = await newMovie.save();
         if (!savedMovie) {
             (0, handle_error_1.handleError)(res, { message: 'Movie creation failed' });
             return;
@@ -48,10 +39,10 @@ const addMovie = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
                 : 'Server down please try again later',
         });
     }
-});
+};
 exports.addMovie = addMovie;
 //controller to get movie by id
-const getMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getMovieById = async (req, res) => {
     try {
         // get id from params
         const { id } = req.params;
@@ -61,7 +52,7 @@ const getMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             return;
         }
         // get the movie
-        const movie = yield movie_model_1.default.findById(id).lean().exec();
+        const movie = await movie_model_1.default.findById(id).lean().exec();
         // in case movie is not found
         if (!movie) {
             (0, handle_error_1.handleError)(res, { message: 'Movie not found', statusCode: 404 });
@@ -79,17 +70,17 @@ const getMovieById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             error: err,
         });
     }
-});
+};
 exports.getMovieById = getMovieById;
 /**
  * controller to fetch all the movies with pagination
  */
-const getAllMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllMovies = async (req, res) => {
     // get pagination params
     const { limit, start } = (0, pagination_1.getPaginationParams)(req.query, config_constants_1.GET_ALL_MOVIES_LIMITS);
     try {
         //try to fetch all movies
-        const [movies, total] = yield Promise.all([
+        const [movies, total] = await Promise.all([
             movie_model_1.default.find()
                 .sort({ createdAt: -1 })
                 .limit(limit)
@@ -115,12 +106,12 @@ const getAllMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             error: err,
         });
     }
-});
+};
 exports.getAllMovies = getAllMovies;
 /**
  * delete movie by id
  */
-const deleteMovieById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteMovieById = async (req, res, next) => {
     try {
         // get id from params
         const { id } = req.params;
@@ -130,7 +121,7 @@ const deleteMovieById = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
             return;
         }
         // delete the movie
-        const deletedMovie = yield movie_model_1.default.findByIdAndDelete(id).lean().exec();
+        const deletedMovie = await movie_model_1.default.findByIdAndDelete(id).lean().exec();
         // in case movie is not deleted
         if (!deletedMovie) {
             (0, handle_error_1.handleError)(res, { message: 'Movie does not exist', statusCode: 404 });
@@ -152,10 +143,10 @@ const deleteMovieById = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
             error: err,
         });
     }
-});
+};
 exports.deleteMovieById = deleteMovieById;
 //update  movie by id
-const updateMovieById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const updateMovieById = async (req, res, next) => {
     try {
         // get id from params
         const { id } = req.params;
@@ -165,14 +156,14 @@ const updateMovieById = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
             return;
         }
         // check if the movie exists
-        const oldMovie = yield movie_model_1.default.findById(id).lean().exec();
+        const oldMovie = await movie_model_1.default.findById(id).lean().exec();
         // in case movie is not found
         if (!oldMovie) {
             (0, handle_error_1.handleError)(res, { message: 'Movie does not exist', statusCode: 404 });
             return;
         }
         // update the movie
-        const updatedMovie = yield movie_model_1.default.findByIdAndUpdate(id, req.validatedData, {
+        const updatedMovie = await movie_model_1.default.findByIdAndUpdate(id, req.validatedData, {
             new: true,
             runValidators: true,
             context: 'query',
@@ -208,15 +199,15 @@ const updateMovieById = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
                 : 'Server down please try again later',
         });
     }
-});
+};
 exports.updateMovieById = updateMovieById;
 //controller to bulk delete movies by taking list of ids
-const bulkDeleteMovies = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const bulkDeleteMovies = async (req, res, next) => {
     try {
         // get movie ids
         const movieIds = req.validatedData.movieIds;
         //get all existing movie  by ids
-        const moviesToDelete = yield movie_model_1.default.find({
+        const moviesToDelete = await movie_model_1.default.find({
             _id: { $in: movieIds },
         })
             .lean()
@@ -230,7 +221,7 @@ const bulkDeleteMovies = (req, res, next) => __awaiter(void 0, void 0, void 0, f
             return;
         }
         //delete all the movies that are passed
-        const deletedResult = yield movie_model_1.default.deleteMany({
+        const deletedResult = await movie_model_1.default.deleteMany({
             _id: {
                 $in: movieIds,
             },
@@ -253,13 +244,13 @@ const bulkDeleteMovies = (req, res, next) => __awaiter(void 0, void 0, void 0, f
             error: err,
         });
     }
-});
+};
 exports.bulkDeleteMovies = bulkDeleteMovies;
 //controller to add bulk movies by json
-const addBulkMovies = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const addBulkMovies = async (req, res, next) => {
     try {
         // continue inserting even if there are errors
-        const savedMovies = yield movie_model_1.default.insertMany(req.validatedData, {
+        const savedMovies = await movie_model_1.default.insertMany(req.validatedData, {
             ordered: false,
             throwOnValidationError: true, // throw error if validation fails
         });
@@ -278,11 +269,11 @@ const addBulkMovies = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     }
     catch (err) {
         // failed (duplicate) docs
-        const notAdded = (err === null || err === void 0 ? void 0 : err.writeErrors)
-            ? err.writeErrors.map((e) => { var _a, _b, _c, _d; return (_d = (_b = (_a = e.err) === null || _a === void 0 ? void 0 : _a.op) !== null && _b !== void 0 ? _b : (_c = e.err) === null || _c === void 0 ? void 0 : _c.doc) !== null && _d !== void 0 ? _d : {}; })
+        const notAdded = err?.writeErrors
+            ? err.writeErrors.map((e) => e.err?.op ?? e.err?.doc ?? {})
             : [];
         // successfully inserted docs
-        const added = (err === null || err === void 0 ? void 0 : err.insertedDocs) || [];
+        const added = err?.insertedDocs || [];
         // in case movies are added partially
         if (added.length > 0) {
             res.status(207).json({
@@ -306,11 +297,11 @@ const addBulkMovies = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             statusCode: (0, mongo_errors_1.isDuplicateKeyError)(err) ? 409 : 500,
         });
     }
-});
+};
 exports.addBulkMovies = addBulkMovies;
 //@TODO try out cursor based search (in this case its fine since we are dealing with small amount can be used in filters)
 //search functionality
-const searchMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const searchMovies = async (req, res) => {
     try {
         // get query from params
         const { text } = req.query;
@@ -329,7 +320,7 @@ const searchMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             },
         ];
         // search for movies
-        const movies = yield movie_model_1.default.aggregate(pipeline).skip(start).limit(limit);
+        const movies = await movie_model_1.default.aggregate(pipeline).skip(start).limit(limit);
         // return the movies
         res.status(200).json({
             success: true,
@@ -348,11 +339,10 @@ const searchMovies = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             error: err,
         });
     }
-});
+};
 exports.searchMovies = searchMovies;
 //get movies with filters
-const getMoviesWithFilters = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+const getMoviesWithFilters = async (req, res) => {
     try {
         // destructure the filters from validated data
         const { languages, page, limit, status, genre, tags, averageRating, ageRating, runTime, releaseDate, searchText, } = req.validatedData;
@@ -415,7 +405,10 @@ const getMoviesWithFilters = (req, res) => __awaiter(void 0, void 0, void 0, fun
         if (runTime) {
             //push run time filter to filters
             searchClauses.filter.push({
-                range: Object.assign({ path: 'runTime' }, runTime),
+                range: {
+                    path: 'runTime',
+                    ...runTime,
+                },
             });
         }
         //if average rating is present
@@ -432,14 +425,20 @@ const getMoviesWithFilters = (req, res) => __awaiter(void 0, void 0, void 0, fun
         if (ageRating) {
             //push age rating filter to filters
             searchClauses.filter.push({
-                range: Object.assign({ path: 'ageRating' }, ageRating),
+                range: {
+                    path: 'ageRating',
+                    ...ageRating,
+                },
             });
         }
         //if releaseDate is present
         if (releaseDate) {
             //push release date filter to filters
             searchClauses.filter.push({
-                range: Object.assign({ path: 'releaseDate' }, releaseDate),
+                range: {
+                    path: 'releaseDate',
+                    ...releaseDate,
+                },
             });
         }
         // build pipeline if filters are defined
@@ -465,10 +464,10 @@ const getMoviesWithFilters = (req, res) => __awaiter(void 0, void 0, void 0, fun
             },
         });
         //get the data from db
-        const result = yield movie_model_1.default.aggregate(pipeline);
+        const result = await movie_model_1.default.aggregate(pipeline);
         // extract the data , total count and pagination details
-        const data = ((_a = result[0]) === null || _a === void 0 ? void 0 : _a.data) || [];
-        const totalCount = ((_c = (_b = result[0]) === null || _b === void 0 ? void 0 : _b.totalCount[0]) === null || _c === void 0 ? void 0 : _c.total) || 0;
+        const data = result[0]?.data || [];
+        const totalCount = result[0]?.totalCount[0]?.total || 0;
         const pagination = (0, pagination_1.getPaginationResponse)(totalCount, limit, skip);
         // return the data
         res.status(200).json({
@@ -485,5 +484,5 @@ const getMoviesWithFilters = (req, res) => __awaiter(void 0, void 0, void 0, fun
             error: err,
         });
     }
-});
+};
 exports.getMoviesWithFilters = getMoviesWithFilters;
