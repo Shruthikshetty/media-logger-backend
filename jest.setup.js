@@ -4,3 +4,4 @@ jest.mock('./src/common/utils/logger');
 jest.mock('./src/common/utils/loki-logger');
 // mock convex client
 jest.mock('./src/common/config/convex.config.ts');
+jest.mock('convex/browser');
