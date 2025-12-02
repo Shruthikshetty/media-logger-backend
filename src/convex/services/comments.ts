@@ -15,8 +15,8 @@ export const createMediaCommentMutation = mutation({
     entityType: v.string(),
     user: v.string(),
     comment: v.string(),
-    username: v.string(),
-    profileImg: v.string(),
+    username: v.optional(v.string()),
+    profileImg: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const now = new Date().toISOString();

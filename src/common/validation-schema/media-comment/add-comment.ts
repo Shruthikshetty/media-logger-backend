@@ -26,10 +26,14 @@ export const AddMediaCommentSchema = z.object({
       message: `Entity type must be one of the following: ${HISTORY_ENTITY.join(', ')}`,
     }),
 
-  comment: z.string({
-    required_error: 'Comment is required',
-    invalid_type_error: 'Comment must be string',
-  }),
+  comment: z
+    .string({
+      required_error: 'Comment is required',
+      invalid_type_error: 'Comment must be string',
+    })
+    .trim()
+    .min(1, { message: 'Comment cannot be empty' })
+    .max(5000, { message: 'Comment must be 5000 characters or less' }),
 });
 
 //export the type

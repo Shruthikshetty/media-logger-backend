@@ -12,10 +12,10 @@ export default defineSchema({
     entityType: v.string(),
     user: v.string(), // user id
     comment: v.string(),
-    username: v.string(),
+    username: v.optional(v.string()),
     createdAt: v.string(), //iso
     updatedAt: v.string(), //iso
-    profileImg: v.string(),
+    profileImg: v.optional(v.string()),
   }).index('by_entityType_and_entityId', [
     'entityType',
     'entityId',
