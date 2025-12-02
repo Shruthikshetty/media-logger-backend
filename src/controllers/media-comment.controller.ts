@@ -24,7 +24,7 @@ export const addMediaComment = async (
     const mockComment = {
       entityId: validatedData.entityId,
       entityType: validatedData.entityType,
-      user: (req.userData?._id as string),
+      user: req.userData?._id as string,
       comment: validatedData.comment,
       username: req.userData?.name,
       profileImg: req.userData?.profileImg,
