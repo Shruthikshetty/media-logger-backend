@@ -4,9 +4,9 @@ import tseslint from 'typescript-eslint';
 import { defineConfig } from 'eslint/config';
 
 export default defineConfig([
+  { ignores: ['./packages/**', './src/convex/_generated/**'] },
   {
     files: ['**/*.ts'],
-    exclude: ['./packages/**'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
