@@ -4,3 +4,6 @@ coverage
 passwords.txt
 logs
 .vscode
+dist
+.env.local
+src/convex/_generated/

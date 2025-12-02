@@ -1,0 +1,21 @@
+{
+  "name": "media-logger-convex-api-services",
+  "version": "0.0.1",
+  "description": "Shared Convex API for media-logger",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "bun run build"
+  },
+  "peerDependencies": {
+    "convex": "^1.16.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

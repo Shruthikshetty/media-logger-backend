@@ -1,7 +1,7 @@
 [![CI Checks for Pull Request on master](https://github.com/Shruthikshetty/media-logger-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/Shruthikshetty/media-logger-backend/actions/workflows/ci.yml)
 ![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Shruthikshetty/media-logger-backend?utm_source=oss&utm_medium=github&utm_campaign=Shruthikshetty%2Fmedia-logger-backend&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 ![Node.js >=22](https://img.shields.io/badge/node-%3E%3D22-brightgreen)
-![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-passing-green)
 
 # Media Logger App
 
