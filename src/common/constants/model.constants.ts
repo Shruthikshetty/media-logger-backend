@@ -202,6 +202,7 @@ export const GAME_PLATFORMS = [
 
 export const HISTORY_ACTION = ['Update', 'Add', 'Delete'];
 
+//This is nothing but media entity @todo rename if possible
 export const HISTORY_ENTITY = [
   'Game',
   'Movie',
