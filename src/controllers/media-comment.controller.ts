@@ -5,13 +5,11 @@
 import { handleError } from '../common/utils/handle-error';
 import { ValidatedRequest } from '../types/custom-types';
 import { Response } from 'express';
-import { ConvexHttpClient } from 'convex/browser';
-import { api } from '../convex/_generated/api';
+import convex from '../common/config/convex.config';
+import { api } from 'media-logger-convex-api-services';
 import { AddMediaCommentSchemaType } from '../common/validation-schema/media-comment/add-comment';
 import { isMongoIdValid } from '../common/utils/mongo-errors';
 import { HISTORY_ENTITY } from '../common/constants/model.constants';
-
-const convex = new ConvexHttpClient(process.env.CONVEX_URL!);
 
 //controller to add a new comment
 export const addMediaComment = async (
@@ -24,7 +22,7 @@ export const addMediaComment = async (
     const mockComment = {
       entityId: validatedData.entityId,
       entityType: validatedData.entityType,
-      user: req.userData?._id as string,
+      user: req.userData?._id.toString(),
       comment: validatedData.comment,
       username: req.userData?.name,
       profileImg: req.userData?.profileImg,
