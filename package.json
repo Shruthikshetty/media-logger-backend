@@ -15,7 +15,7 @@
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "lint": "eslint ./src",
-    "convex:publish:test": "cd packages/convex-api && npm version patch && npm publish"
+    "convex:publish": "cd packages/convex-api && npm version patch && npm publish"
   },
   "keywords": [],
   "author": "",
