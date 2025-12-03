@@ -1,91 +1,91 @@
-# This Folder contains all the convex related code .
+# Convex integration
 
-refer the below docs for better understanding of convex
+This folder contains all Convex-related code for the Media Logger project.
+
+For a deeper overview of how Convex functions (queries, mutations, actions, HTTP actions) work, see the official docs:  
 https://docs.convex.dev/functions
 
-A query function that takes two arguments looks like:
+## Layout
 
-```ts
-// convex/myFunctions.ts
-import { query } from './_generated/server';
-import { v } from 'convex/values';
+- `schema.ts`  
+  Contains all Convex database schemas (tables and fields).
+- `services/`  
+  Contains all Convex query and mutation functions used by the app.
 
-export const myQueryFunction = query({
-  // Validators for arguments.
-  args: {
-    first: v.number(),
-    second: v.string(),
-  },
+---
 
-  // Function implementation.
-  handler: async (ctx, args) => {
-    // Read the database as many times as you need here.
-    // See https://docs.convex.dev/database/reading-data.
-    const documents = await ctx.db.query('tablename').collect();
+## Running Convex locally
 
-    // Arguments passed from the client are properties of the args object.
-    console.log(args.first, args.second);
+1. Start the Convex dev server:
 
-    // Write arbitrary JavaScript here: filter, aggregate, build derived data,
-    // remove non-public properties, or create new objects.
-    return documents;
-  },
-});
+```bash
+bunx convex dev
 ```
 
-Using this query function in a React component looks like:
+This runs a local Convex deployment with hot reload.
 
-```ts
-const data = useQuery(api.myFunctions.myQueryFunction, {
-  first: 10,
-  second: 'hello',
-});
+2. Make changes:
+
+- Edit `schema.ts` for any schema/table changes.
+- Add or update query/mutation functions inside the `services` folder.
+
+## Generating & publishing the Convex API package
+
+When you change Convex schema or services, regenerate the typed API and publish the package.
+
+1. Generate Convex client code:
+
+```bash
+bunx convex codegen
 ```
 
-A mutation function looks like:
+2. Generate the TypeScript API spec:
 
-```ts
-// convex/myFunctions.ts
-import { mutation } from './_generated/server';
-import { v } from 'convex/values';
-
-export const myMutationFunction = mutation({
-  // Validators for arguments.
-  args: {
-    first: v.string(),
-    second: v.string(),
-  },
-
-  // Function implementation.
-  handler: async (ctx, args) => {
-    // Insert or modify documents in the database here.
-    // Mutations can also read from the database like queries.
-    // See https://docs.convex.dev/database/writing-data.
-    const message = { body: args.first, author: args.second };
-    const id = await ctx.db.insert('messages', message);
-
-    // Optionally, return a value from your mutation.
-    return await ctx.db.get(id);
-  },
-});
+```bash
+bunx convex-helpers ts-api-spec
 ```
 
-Using this mutation function in a React component looks like:
+This will create a file like:
 
-```ts
-const mutation = useMutation(api.myFunctions.myMutationFunction);
-function handleButtonPress() {
-  // fire and forget, the most common way to use mutations
-  mutation({ first: 'Hello!', second: 'me' });
-  // OR
-  // use the result once the mutation has completed
-  mutation({ first: 'Hello!', second: 'me' }).then((result) =>
-    console.log(result)
-  );
-}
+convexApiXXXX.ts
+
+3. Move and rename the generated file:
+
+- Rename to:
+
+  convexApi.ts
+
+- Move it to:
+
+  packages/convex-api/src/convexApi.ts
+
+4. Publish the package:
+
+From the repo root, run:
+
+```bash
+bun run convex:publish
 ```
 
-To run build the convex we need to run `bunx convex dev`
-Use the Convex CLI to push your functions to a deployment. See everything
-the Convex CLI can do by running `bunx convex -h` in your project root
-directory. To learn more, launch the docs with `bunx convex docs`.
+This bumps the version of `packages/convex-api` and publishes it to npm.
+
+> Make sure you are logged in to npm before publishing:
+
+```bash
+npm adduser
+```
+
+## Required environment variables
+
+For Convex integration to work:
+
+- `CONVEX_URL`
+  URL of the Convex deployment your frontend/backend connects to.
+
+- `CONVEX_DEPLOYMENT`
+  Deployment name/ID. Required when you are changing schemas or services in the `convex` folder (e.g. during `convex dev` or deploy operations).
+
+## Learn more
+
+- Convex functions (queries, mutations, actions, HTTP actions):
+  https://docs.convex.dev/functions
