@@ -59,3 +59,39 @@ export const getMediaCommentsQuery = query({
       });
   },
 });
+
+//query to get media comment by id
+export const getMediaCommentById = query({
+  args: {
+    id: v.id('mediaComments'),
+  },
+  handler: async (ctx, args) => {
+    const comment = await ctx.db.get(args.id);
+    return comment;
+  },
+});
+
+//mutation to delete media comment by id
+export const deleteMediaCommentById = mutation({
+  args: {
+    id: v.id('mediaComments'),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.delete(args.id);
+  },
+});
+
+//mutation to update a media comment by id
+export const updateMediaCommentById = mutation({
+  args: {
+    id: v.id('mediaComments'),
+    comment: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const now = new Date().toISOString();
+    return await ctx.db.patch(args.id, {
+      comment: args.comment,
+      updatedAt: now,
+    });
+  },
+});

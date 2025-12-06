@@ -15,7 +15,7 @@
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "lint": "eslint ./src",
-    "convex:publish": "cd packages/convex-api && npm version patch && npm publish"
+    "convex:publish": "cd packages/convex-api && npm version patch && npm publish --access public"
   },
   "keywords": [],
   "author": "",
@@ -63,7 +63,7 @@
     "fast-redact": "^3.5.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "media-logger-convex-api-services": "^0.0.1",
+    "media-logger-convex-api-services": "^0.0.3",
     "moment": "^2.30.1",
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.3",
