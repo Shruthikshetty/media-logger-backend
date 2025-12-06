@@ -61,12 +61,13 @@ export const getMediaCommentsQuery = query({
 });
 
 //query to get media comment by id
-export const getMediaById = query({
+export const getMediaCommentById = query({
   args: {
     id: v.id('mediaComments'),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.get(args.id);
+    const comment = await ctx.db.get(args.id);
+    return comment;
   },
 });
 

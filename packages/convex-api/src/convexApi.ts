@@ -26,7 +26,7 @@ export type PublicApiType = {
         { id: Id<"mediaComments"> },
         any
       >;
-      getMediaById: FunctionReference<
+      getMediaCommentById: FunctionReference<
         "query",
         "public",
         { id: Id<"mediaComments"> },
