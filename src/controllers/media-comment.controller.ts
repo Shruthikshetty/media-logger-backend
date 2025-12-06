@@ -211,9 +211,9 @@ export const updateMediaCommentById = async (
   res: Response
 ) => {
   try {
-    //get user id
+    // get user id
     const userId = req.userData?._id;
-    // get if from param
+    // get id from param
     const { id } = req.params;
     // get comment from validated data
     const { comment } = req.validatedData!;
@@ -230,16 +230,16 @@ export const updateMediaCommentById = async (
       }
     );
 
+    if (!oldComment) {
+      handleError(res, { message: 'Comment not found', statusCode: 404 });
+      return;
+    }
+
     if (String(oldComment?.user) != String(userId)) {
       handleError(res, {
         message: 'only comment owner can update',
         statusCode: 401,
       });
-      return;
-    }
-
-    if (!oldComment) {
-      handleError(res, { message: 'Comment not found', statusCode: 404 });
       return;
     }
 
