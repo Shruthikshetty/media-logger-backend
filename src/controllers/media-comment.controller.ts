@@ -114,6 +114,7 @@ export const getMediaCommentById = async (
 
     if (!id) {
       handleError(res, { message: 'Invalid comment id', statusCode: 400 });
+      return;
     }
 
     // call convex query
@@ -126,6 +127,7 @@ export const getMediaCommentById = async (
 
     if (!comment) {
       handleError(res, { message: 'Comment not found', statusCode: 404 });
+      return;
     }
 
     // send the response
@@ -161,6 +163,7 @@ export const deleteMediaCommentById = async (
 
     if (!id) {
       handleError(res, { message: 'Invalid comment id', statusCode: 400 });
+      return;
     }
 
     //check if comment exists or not
@@ -173,6 +176,7 @@ export const deleteMediaCommentById = async (
 
     if (!comment) {
       handleError(res, { message: 'Comment not found', statusCode: 404 });
+      return;
     }
 
     // call convex mutation
@@ -207,12 +211,15 @@ export const updateMediaCommentById = async (
   res: Response
 ) => {
   try {
+    //get user id
+    const userId = req.userData?._id;
     // get if from param
     const { id } = req.params;
     // get comment from validated data
     const { comment } = req.validatedData!;
     if (!id) {
       handleError(res, { message: 'Invalid comment id', statusCode: 400 });
+      return;
     }
 
     //check if comment exists or not
@@ -223,8 +230,17 @@ export const updateMediaCommentById = async (
       }
     );
 
+    if (String(oldComment?.user) != String(userId)) {
+      handleError(res, {
+        message: 'only comment owner can update',
+        statusCode: 401,
+      });
+      return;
+    }
+
     if (!oldComment) {
       handleError(res, { message: 'Comment not found', statusCode: 404 });
+      return;
     }
 
     // call convex mutation to update comment
