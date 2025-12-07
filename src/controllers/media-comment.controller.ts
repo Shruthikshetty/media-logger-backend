@@ -10,6 +10,7 @@ import { api } from 'media-logger-convex-api-services';
 import { AddMediaCommentSchemaType } from '../common/validation-schema/media-comment/add-comment';
 import { isMongoIdValid } from '../common/utils/mongo-errors';
 import { HISTORY_ENTITY } from '../common/constants/model.constants';
+import { UpdateMediaCommentSchemaType } from '../common/validation-schema/media-comment/update-comment';
 
 //controller to add a new comment
 export const addMediaComment = async (
@@ -95,6 +96,173 @@ export const getMediaComments = async (
       data: comments,
     });
   } catch (err) {
+    //catch any unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//get media comment by id
+export const getMediaCommentById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get if from param
+    const { id } = req.params;
+
+    if (!id) {
+      handleError(res, { message: 'Invalid comment id', statusCode: 400 });
+      return;
+    }
+
+    // call convex query
+    const comment = await convex.query(
+      api.services.comments.getMediaCommentById,
+      {
+        id: id as any,
+      }
+    );
+
+    if (!comment) {
+      handleError(res, { message: 'Comment not found', statusCode: 404 });
+      return;
+    }
+
+    // send the response
+    res.status(200).json({
+      success: true,
+      data: comment,
+    });
+  } catch (err) {
+    //check for any validation error
+    if (err?.toString()?.includes('ArgumentValidationError')) {
+      handleError(res, {
+        message: 'Invalid comment id',
+        statusCode: 400,
+      });
+      return;
+    }
+
+    //catch any unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//delete media comment by id
+export const deleteMediaCommentById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get if from param
+    const { id } = req.params;
+
+    if (!id) {
+      handleError(res, { message: 'Invalid comment id', statusCode: 400 });
+      return;
+    }
+
+    //check if comment exists or not
+    const comment = await convex.query(
+      api.services.comments.getMediaCommentById,
+      {
+        id: id as any,
+      }
+    );
+
+    if (!comment) {
+      handleError(res, { message: 'Comment not found', statusCode: 404 });
+      return;
+    }
+
+    // call convex mutation
+    await convex.mutation(api.services.comments.deleteMediaCommentById, {
+      id: id as any,
+    });
+
+    // send the response
+    res.status(200).json({
+      success: true,
+      message: 'Comment deleted successfully',
+    });
+  } catch (err) {
+    //check for any validation error
+    if (err?.toString()?.includes('ArgumentValidationError')) {
+      handleError(res, {
+        message: 'Invalid comment id',
+        statusCode: 400,
+      });
+      return;
+    }
+    //catch any unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+//update media comment by id
+export const updateMediaCommentById = async (
+  req: ValidatedRequest<UpdateMediaCommentSchemaType>,
+  res: Response
+) => {
+  try {
+    // get user id
+    const userId = req.userData?._id;
+    // get id from param
+    const { id } = req.params;
+    // get comment from validated data
+    const { comment } = req.validatedData!;
+    if (!id) {
+      handleError(res, { message: 'Invalid comment id', statusCode: 400 });
+      return;
+    }
+
+    //check if comment exists or not
+    const oldComment = await convex.query(
+      api.services.comments.getMediaCommentById,
+      {
+        id: id as any,
+      }
+    );
+
+    if (!oldComment) {
+      handleError(res, { message: 'Comment not found', statusCode: 404 });
+      return;
+    }
+
+    if (String(oldComment?.user) != String(userId)) {
+      handleError(res, {
+        message: 'only comment owner can update',
+        statusCode: 401,
+      });
+      return;
+    }
+
+    // call convex mutation to update comment
+    await convex.mutation(api.services.comments.updateMediaCommentById, {
+      id: id as any,
+      comment,
+    });
+
+    // send the response
+    res.status(200).json({
+      success: true,
+      message: 'Comment updated successfully',
+    });
+  } catch (err) {
+    //check for any validation error
+    if (err?.toString()?.includes('ArgumentValidationError')) {
+      handleError(res, {
+        message: 'Invalid comment id',
+        statusCode: 400,
+      });
+      return;
+    }
     //catch any unexpected error
     handleError(res, {
       error: err,

@@ -14,3 +14,40 @@ GET {{baseUrl}}/api/recommend/similar-movies/68de8d7a063c7dbcff07c1c4
 
 ### get similar tv shows
 GET {{baseUrl}}/api/recommend/similar-shows/68e2760f50d507e43af606db
+
+
+#--------------------------------------------Media comments --------------------------
+
+### Add a new comment 
+POST {{baseUrl}}/api/media-comment
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+    "entityId": "69216c9826548e7ab0b684d4",
+    "entityType": "Game",
+    "comment": "comment 5"
+}
+
+### Get all comments (pagination applied by default)
+GET {{baseUrl}}/api/media-comment?entityId=69216c9826548e7ab0b684d4&entityType=Game
+
+
+### GET a comment by id 
+GET {{baseUrl}}/api/media-comment/j575xd7vakh7khk8z0xb1v2nmn7wnanp
+
+
+### Update a comment by id 
+PUT {{baseUrl}}/api/media-comment/j575xd7vakh7khk8z0xb1v2nmn7wnanp
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+    "comment":"this is new comment 4"
+}
+
+### Delete comment by id
+DELETE  {{baseUrl}}/api/media-comment/j575xd7vakh7khk8z0xb1v2nmn7wnanp
+Authorization: {{authToken}}
+
+

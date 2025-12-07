@@ -20,6 +20,18 @@ export type PublicApiType = {
         },
         any
       >;
+      deleteMediaCommentById: FunctionReference<
+        'mutation',
+        'public',
+        { id: Id<'mediaComments'> },
+        any
+      >;
+      getMediaCommentById: FunctionReference<
+        'query',
+        'public',
+        { id: Id<'mediaComments'> },
+        any
+      >;
       getMediaCommentsQuery: FunctionReference<
         'query',
         'public',
@@ -29,6 +41,12 @@ export type PublicApiType = {
           entityType: string;
           limit?: number;
         },
+        any
+      >;
+      updateMediaCommentById: FunctionReference<
+        'mutation',
+        'public',
+        { comment: string; id: Id<'mediaComments'> },
         any
       >;
     };

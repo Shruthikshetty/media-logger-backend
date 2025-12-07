@@ -74,6 +74,9 @@ To run this project, you will need to add the following environment variables to
 - `LOKI_HOST`: Your Loki host.
 - `LOKI_USERNAME`: Your Loki username.
 - `LOKI_API_KEY`: Your Loki API key.
+- `RECOMMENDER_MS_URL`: Recommendation MS API URL.
+- `CONVEX_DEPLOYMENT`: The Convex deployment name .
+- `CONVEX_URL`: The URL of Convex deployment.
 
 ## Testing
 
