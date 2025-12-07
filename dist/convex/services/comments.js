@@ -3,7 +3,7 @@
  * @file contains all the convex queries and mutations for media comments
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMediaCommentsQuery = exports.createMediaCommentMutation = void 0;
+exports.updateMediaCommentById = exports.deleteMediaCommentById = exports.getMediaCommentById = exports.getMediaCommentsQuery = exports.createMediaCommentMutation = void 0;
 const server_1 = require("../_generated/server");
 const values_1 = require("convex/values");
 const config_constants_1 = require("../../common/constants/config.constants");
@@ -49,6 +49,39 @@ exports.getMediaCommentsQuery = (0, server_1.query)({
             .paginate({
             cursor: args?.cursor ?? null,
             numItems: limit,
+        });
+    },
+});
+//query to get media comment by id
+exports.getMediaCommentById = (0, server_1.query)({
+    args: {
+        id: values_1.v.id('mediaComments'),
+    },
+    handler: async (ctx, args) => {
+        const comment = await ctx.db.get(args.id);
+        return comment;
+    },
+});
+//mutation to delete media comment by id
+exports.deleteMediaCommentById = (0, server_1.mutation)({
+    args: {
+        id: values_1.v.id('mediaComments'),
+    },
+    handler: async (ctx, args) => {
+        return await ctx.db.delete(args.id);
+    },
+});
+//mutation to update a media comment by id
+exports.updateMediaCommentById = (0, server_1.mutation)({
+    args: {
+        id: values_1.v.id('mediaComments'),
+        comment: values_1.v.string(),
+    },
+    handler: async (ctx, args) => {
+        const now = new Date().toISOString();
+        return await ctx.db.patch(args.id, {
+            comment: args.comment,
+            updatedAt: now,
         });
     },
 });
