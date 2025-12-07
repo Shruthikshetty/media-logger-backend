@@ -1,0 +1,158 @@
+components:
+  schemas:
+    MediaComment:
+      type: object
+      properties:
+        _id:
+          type: string
+          readOnly: true
+        entityId:
+          type: string
+          example: 630f06f6f80f0c456d5d3e11
+        entityType:
+          $ref: '#/components/schemas/HistoryEntityType'
+        user:
+          type: string
+          example: 630f06f6f80f0c456d5d3e11
+        profileImg:
+          type: string
+          example: 'https://example.com/avatar.jpg'
+          readOnly: true
+        username:
+          type: string
+          example: 'John Doe'
+          readOnly: true
+        comment:
+          type: string
+          example: 'This is a comment'
+        createdAt:
+          type: string
+          readOnly: true
+          example: '2022-01-01T00:00:00.000Z'
+        updatedAt:
+          type: string
+          readOnly: true
+          example: '2022-01-01T00:00:00.000Z'
+
+  requestBodies:
+    AddMediaCommentRequest:
+      description: add media comment request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MediaComment'
+
+    UpdateMediaCommentRequest:
+      description: update media comment request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              comment:
+                type: string
+                example: 'This is a comment'
+
+  responses:
+    AddMediaCommentSuccessResponse:
+      description: add media comment success response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  commentId:
+                    type: string
+                    example: 630f06f6f80f0c456d5d3e11
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+
+    GetMediaCommentByIdSuccessResponse:
+      description: get media comment by id success response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                $ref: '#/components/schemas/MediaComment'
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+
+    GetMediaCommentsSuccessResponse:
+      description: get all media comments success response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                type: object
+                properties:
+                  continueCursor:
+                    type: string
+                    example: 073f03e9460e99f89f817e88408bc...
+                  isDone:
+                    type: boolean
+                    example: true
+                  page:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MediaComment'
+                  pageStatus:
+                    type: boolean
+                    nullable: true
+                  splitCursor:
+                    type: string
+                    nullable: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+
+    DeleteMediaCommentSuccessResponse:
+      description: delete media comment success response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+              message:
+                type: string
+                example: 'Comment deleted successfully'
+
+    UpdateMediaCommentSuccessResponse:
+      description: update media comment success response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+              message:
+                type: string
+                example: 'Comment updated successfully'
