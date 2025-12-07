@@ -50,7 +50,8 @@ components:
             type: object
             properties:
               comment:
-                $ref: '#/components/schemas/MediaComment.comment'
+                type: string
+                example: 'This is a comment'
 
   responses:
     AddMediaCommentSuccessResponse:
