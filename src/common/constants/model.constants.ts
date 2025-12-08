@@ -211,3 +211,13 @@ export const HISTORY_ENTITY = [
   'User',
   'Tv Show',
 ];
+
+export const MEDIA_ENTRY_MODELS = ['Game', 'Movie', 'TVShow'];
+
+export const MEDIA_ENTRY_STATUS = [
+  'Planing',
+  'Playing',
+  'Watching',
+  'Completed',
+  'Dropped',
+];
