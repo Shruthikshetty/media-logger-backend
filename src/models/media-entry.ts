@@ -55,5 +55,5 @@ const MediaEntrySchema = new Schema(
 );
 
 //create model
-const MediaEntry = model('MediaEntry', MediaEntrySchema);
+const MediaEntry = model<IMediaEntry>('MediaEntry', MediaEntrySchema);
 export default MediaEntry;
