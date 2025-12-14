@@ -18,6 +18,7 @@ export const AddMediaEntrySchema = z.object({
     .refine((val) => isMongoIdValid(val), {
       message: 'Invalid media item id',
     }),
+
   onModel: z
     .string({
       required_error: 'On model is required',
@@ -28,6 +29,7 @@ export const AddMediaEntrySchema = z.object({
         ', '
       )}`,
     }),
+
   status: z
     .string({
       required_error: 'Status is required',
@@ -40,8 +42,7 @@ export const AddMediaEntrySchema = z.object({
     }),
   rating: z
     .number({
-      required_error: 'Rating is required',
-      invalid_type_error: 'Rating must be number',
+      message: 'Rating must be number',
     })
     .min(0, 'Rating cannot be negative')
     .max(10, 'Rating cannot be greater than 10')
