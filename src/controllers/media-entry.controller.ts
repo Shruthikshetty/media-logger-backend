@@ -132,8 +132,8 @@ export const updateUserMediaEntry = async (
     }
 
     // update the media entry
-    const updatedMediaEntry = await MediaEntry.findByIdAndUpdate(
-      id,
+    const updatedMediaEntry = await MediaEntry.findOneAndUpdate(
+      { _id: id, user: req.userData?._id },
       req.validatedData!, // new data
       {
         new: true,
