@@ -7,6 +7,7 @@ import {
   addNewMediaEntry,
   getAllUserMediaEntries,
   updateUserMediaEntry,
+  deleteUserMediaEntry,
 } from '../controllers/media-entry.controller';
 import { requireAuth } from '../common/middleware/require-auth';
 import { validateReq } from '../common/middleware/handle-validation';
@@ -34,6 +35,9 @@ route.patch(
   validateReq(UpdateMediaEntrySchema),
   updateUserMediaEntry
 );
+
+//delete a user media entry
+route.delete('/:id', requireAuth(), deleteUserMediaEntry);
 
 //export all the routes
 export default route;

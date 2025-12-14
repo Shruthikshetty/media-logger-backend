@@ -154,3 +154,39 @@ export const updateUserMediaEntry = async (
     handleError(res, { error: err });
   }
 };
+
+//delete a user media entry
+export const deleteUserMediaEntry = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get media entry id
+    const { id } = req.params;
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid media entry id', statusCode: 400 });
+      return;
+    }
+
+    // delete the media entry
+    const deletedMediaEntry = await MediaEntry.findByIdAndDelete(id)
+      .lean()
+      .exec();
+
+    // in case media entry is not deleted
+    if (!deletedMediaEntry) {
+      handleError(res, { message: 'Media entry not found', statusCode: 404 });
+      return;
+    }
+
+    // return the deleted media entry
+    res.status(200).json({
+      success: true,
+      data: deletedMediaEntry,
+      message: 'Media entry deleted successfully',
+    });
+  } catch (err) {
+    //handle unexpected errors
+    handleError(res, { error: err });
+  }
+};
