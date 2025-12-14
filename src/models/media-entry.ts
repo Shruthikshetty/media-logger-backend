@@ -54,6 +54,9 @@ const MediaEntrySchema = new Schema(
   }
 );
 
+// create unique index for user, mediaItem, onModel
+MediaEntrySchema.index({ user: 1, mediaItem: 1, onModel: 1 }, { unique: true })
+
 //create model
 const MediaEntry = model<IMediaEntry>('MediaEntry', MediaEntrySchema);
 export default MediaEntry;

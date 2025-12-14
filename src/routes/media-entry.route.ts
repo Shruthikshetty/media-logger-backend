@@ -4,13 +4,21 @@
 
 import { Router } from 'express';
 import { addNewMediaEntry } from '../controllers/media-entry.controller';
+import { requireAuth } from '../common/middleware/require-auth';
+import { validateReq } from '../common/middleware/handle-validation';
+import { AddMediaEntrySchema } from '../common/validation-schema/media-entry/add-media-entry';
 
 //initialize router
 const route = Router();
 
 // add a new media entry
 
-route.post('/', addNewMediaEntry);
+route.post(
+  '/',
+  requireAuth(),
+  validateReq(AddMediaEntrySchema),
+  addNewMediaEntry
+);
 
 //export all the routes
 export default route;
