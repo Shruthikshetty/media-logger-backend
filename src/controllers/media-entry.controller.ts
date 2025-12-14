@@ -4,7 +4,10 @@
 
 import { GET_ALL_MEDIA_ENTRY_LIMITS } from '../common/constants/config.constants';
 import { handleError } from '../common/utils/handle-error';
-import { isDuplicateKeyError } from '../common/utils/mongo-errors';
+import {
+  isDuplicateKeyError,
+  isMongoIdValid,
+} from '../common/utils/mongo-errors';
 import {
   getPaginationParams,
   getPaginationResponse,
@@ -14,6 +17,7 @@ import {
   GetAllUserMediaEntrySchema,
   GetAllUserMediaEntrySchemaType,
 } from '../common/validation-schema/media-entry/get-media-entry';
+import { UpdateMediaEntrySchemaType } from '../common/validation-schema/media-entry/update-media-entry';
 import MediaEntry from '../models/media-entry';
 import { ValidatedRequest } from '../types/custom-types';
 import { Response } from 'express';
@@ -102,6 +106,48 @@ export const getAllUserMediaEntries = async (
         mediaEntries,
         pagination: pagination,
       },
+    });
+  } catch (err) {
+    //handle unexpected errors
+    handleError(res, { error: err });
+  }
+};
+
+//update a user media entry
+export const updateUserMediaEntry = async (
+  req: ValidatedRequest<UpdateMediaEntrySchemaType>,
+  res: Response
+) => {
+  try {
+    // get media entry id
+    const { id } = req.params;
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid media entry id', statusCode: 400 });
+      return;
+    }
+
+    // update the media entry
+    const updatedMediaEntry = await MediaEntry.findByIdAndUpdate(
+      id,
+      req.validatedData!, // new data
+      {
+        new: true,
+      }
+    )
+      .lean()
+      .exec();
+
+    // in case media entry is not updated
+    if (!updatedMediaEntry) {
+      handleError(res, { message: 'Media entry not found', statusCode: 404 });
+      return;
+    }
+
+    // return the updated media entry
+    res.status(200).json({
+      success: true,
+      data: updatedMediaEntry,
+      message: 'Media entry updated successfully',
     });
   } catch (err) {
     //handle unexpected errors

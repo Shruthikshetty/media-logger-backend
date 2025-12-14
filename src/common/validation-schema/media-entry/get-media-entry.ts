@@ -1,5 +1,5 @@
 /**
- * @file contains the validation schema for getting media entries related to user
+ * @file contains the validation schema used in getting user media entries
  */
 
 import { z } from 'zod';
