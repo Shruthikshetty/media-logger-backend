@@ -49,7 +49,7 @@ route.use('/recommend', recommendRoutes);
 route.use('/media-comment', mediaCommentRoutes);
 
 //user media entry route
-route.use('/media-entry', mediaEntryRoute); 
+route.use('/media-entry', mediaEntryRoute);
 
 // export all the routes
 export default route;

@@ -20,7 +20,6 @@ interface ISeasonEntry extends Document {
   }[];
 }
 
-
 //schema
 export const SeasonEntrySchema = new Schema(
   {

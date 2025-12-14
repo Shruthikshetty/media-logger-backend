@@ -34,7 +34,7 @@ export const AddMediaEntrySchema = z.object({
       invalid_type_error: 'Status must be string',
     })
     .refine((val) => MEDIA_ENTRY_STATUS.includes(val), {
-      message: `Status must be one of the following: ${MEDIA_ENTRY_MODELS.join(
+      message: `Status must be one of the following: ${MEDIA_ENTRY_STATUS.join(
         ', '
       )}`,
     }),

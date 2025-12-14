@@ -215,7 +215,7 @@ export const HISTORY_ENTITY = [
 export const MEDIA_ENTRY_MODELS = ['Game', 'Movie', 'TVShow'];
 
 export const MEDIA_ENTRY_STATUS = [
-  'Planing',
+  'Planning',
   'Playing',
   'Watching',
   'Completed',
