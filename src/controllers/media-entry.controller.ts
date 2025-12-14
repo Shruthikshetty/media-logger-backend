@@ -174,7 +174,10 @@ export const deleteUserMediaEntry = async (
     }
 
     // delete the media entry
-    const deletedMediaEntry = await MediaEntry.findByIdAndDelete(id)
+    const deletedMediaEntry = await MediaEntry.findOneAndDelete({
+      _id: id,
+      user: req.userData?._id,
+    })
       .lean()
       .exec();
 
