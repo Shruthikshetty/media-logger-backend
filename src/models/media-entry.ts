@@ -4,7 +4,7 @@
  * dynamically for all media types
  */
 
-import { model, Schema } from 'mongoose';
+import { model, Schema, Document } from 'mongoose';
 import {
   MEDIA_ENTRY_MODELS,
   MEDIA_ENTRY_STATUS,
