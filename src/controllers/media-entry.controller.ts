@@ -92,7 +92,12 @@ export const getAllUserMediaEntries = async (
 
     //get all the user media entries
     const [mediaEntries, total] = await Promise.all([
-      MediaEntry.find(query).limit(limit).skip(start).lean().exec(),
+      MediaEntry.find(query)
+        .limit(limit)
+        .skip(start)
+        .populate('mediaItem')
+        .lean()
+        .exec(),
       MediaEntry.countDocuments(query),
     ]);
 
