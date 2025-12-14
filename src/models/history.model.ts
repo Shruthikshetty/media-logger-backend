@@ -3,7 +3,7 @@
  * containing all the history of media addition , update and deletion
  */
 
-import { model, Schema } from 'mongoose';
+import { model, Schema, Document } from 'mongoose';
 import {
   HISTORY_ACTION,
   HISTORY_ENTITY,
@@ -11,7 +11,7 @@ import {
 import { HISTORY_RETENTION_DAYS } from '../common/constants/config.constants';
 
 //types
-export type IHistory = {
+export interface IHistory extends Document {
   user: string;
   entityType: string;
   entityId?: string;
@@ -20,7 +20,7 @@ export type IHistory = {
   newValue?: any;
   title: string;
   bulk: boolean;
-};
+}
 
 //schema
 const HistorySchema: Schema = new Schema(

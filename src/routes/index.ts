@@ -13,6 +13,7 @@ import uploadRoutes from './upload.route';
 import historyRoutes from './history.routes';
 import recommendRoutes from './recommend.route';
 import mediaCommentRoutes from './media-comments.route';
+import mediaEntryRoute from './media-entry.route';
 
 //initialize router
 const route = Router();
@@ -46,6 +47,9 @@ route.use('/recommend', recommendRoutes);
 
 //media comment route
 route.use('/media-comment', mediaCommentRoutes);
+
+//user media entry route
+route.use('/media-entry', mediaEntryRoute);
 
 // export all the routes
 export default route;
