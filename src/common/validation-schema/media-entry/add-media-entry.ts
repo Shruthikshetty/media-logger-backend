@@ -18,7 +18,7 @@ export const AddMediaEntrySchema = z.object({
     .refine((val) => isMongoIdValid(val), {
       message: 'Invalid media item id',
     }),
-    
+
   onModel: z
     .string({
       required_error: 'On model is required',
