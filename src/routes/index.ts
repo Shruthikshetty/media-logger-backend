@@ -14,6 +14,7 @@ import historyRoutes from './history.routes';
 import recommendRoutes from './recommend.route';
 import mediaCommentRoutes from './media-comments.route';
 import mediaEntryRoute from './media-entry.route';
+import discoverRoute from './discover.route';
 
 //initialize router
 const route = Router();
@@ -50,6 +51,9 @@ route.use('/media-comment', mediaCommentRoutes);
 
 //user media entry route
 route.use('/media-entry', mediaEntryRoute);
+
+//discover media route
+route.use('/discover', discoverRoute);
 
 // export all the routes
 export default route;

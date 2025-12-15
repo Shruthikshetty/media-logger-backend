@@ -33,3 +33,21 @@ export const requireAuth = (role: 'admin' | 'user' = 'user') => {
     )(req, res, next);
   };
 };
+
+/**Middleware to authenticate user if jwt token is present else silently return empty */
+export const optionalAuth = () => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    passport.authenticate(
+      'jwt',
+      { session: false },
+      (_err: any, user: IUser) => {
+        if (user) {
+          // Attach user to request
+          // @ts-ignore
+          req.userData = user;
+        }
+        next();
+      }
+    )(req, res, next);
+  };
+};
