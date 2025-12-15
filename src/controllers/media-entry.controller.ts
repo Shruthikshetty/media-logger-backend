@@ -12,10 +12,13 @@ import {
   getPaginationParams,
   getPaginationResponse,
 } from '../common/utils/pagination';
+import { validateDataUsingZod } from '../common/utils/validate-data';
 import { AddMediaEntryZodSchemaType } from '../common/validation-schema/media-entry/add-media-entry';
 import {
   GetAllUserMediaEntrySchema,
   GetAllUserMediaEntrySchemaType,
+  GetSingleMediaByIdSchema,
+  GetSingleMediaByIdSchemaType,
 } from '../common/validation-schema/media-entry/get-media-entry';
 import { UpdateMediaEntrySchemaType } from '../common/validation-schema/media-entry/update-media-entry';
 import MediaEntry from '../models/media-entry';
@@ -111,6 +114,88 @@ export const getAllUserMediaEntries = async (
         mediaEntries,
         pagination: pagination,
       },
+    });
+  } catch (err) {
+    //handle unexpected errors
+    handleError(res, { error: err });
+  }
+};
+
+//get media entry by id
+export const getMediaEntryById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get media entry id
+    const { id } = req.params;
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid media entry id', statusCode: 400 });
+      return;
+    }
+
+    // get the media entry
+    const mediaEntry = await MediaEntry.findOne({
+      _id: id,
+      user: req.userData?._id,
+    })
+      .populate('mediaItem')
+      .lean()
+      .exec();
+
+    // in case media entry is not found
+    if (!mediaEntry) {
+      handleError(res, { message: 'Media entry not found', statusCode: 404 });
+      return;
+    }
+
+    // return the media entry
+    res.status(200).json({
+      success: true,
+      data: mediaEntry,
+    });
+  } catch (err) {
+    //handle unexpected errors
+    handleError(res, { error: err });
+  }
+};
+
+//get by media id
+export const getMediaEntryByMedia = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // validate and get mediaItem , onModel from query params
+    const validatedQuery = validateDataUsingZod<GetSingleMediaByIdSchemaType>(
+      GetSingleMediaByIdSchema,
+      req.query,
+      res
+    );
+    //return if validation fails
+    if (!validatedQuery) return;
+
+    const { mediaItem, onModel } = validatedQuery;
+    // get the media entry
+    const mediaEntry = await MediaEntry.findOne({
+      user: req.userData?._id,
+      onModel,
+      mediaItem,
+    })
+      .populate('mediaItem')
+      .lean()
+      .exec();
+
+    // in case media entry is not found
+    if (!mediaEntry) {
+      handleError(res, { message: 'Media entry not found', statusCode: 404 });
+      return;
+    }
+
+    // return the media entry
+    res.status(200).json({
+      success: true,
+      data: mediaEntry,
     });
   } catch (err) {
     //handle unexpected errors

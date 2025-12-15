@@ -8,6 +8,8 @@ import {
   getAllUserMediaEntries,
   updateUserMediaEntry,
   deleteUserMediaEntry,
+  getMediaEntryById,
+  getMediaEntryByMedia,
 } from '../controllers/media-entry.controller';
 import { requireAuth } from '../common/middleware/require-auth';
 import { validateReq } from '../common/middleware/handle-validation';
@@ -27,6 +29,12 @@ route.post(
 
 //get all the user media entries
 route.get('/', requireAuth(), getAllUserMediaEntries);
+
+//get single media by media id
+route.get('/by-media', requireAuth(), getMediaEntryByMedia);
+
+//get single media entry by id
+route.get('/:id', requireAuth(), getMediaEntryById);
 
 //update a user media entry
 route.patch(
