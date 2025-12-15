@@ -38,4 +38,6 @@ export const GetSingleMediaByIdSchema = z.object({
 });
 
 //type
-export type GetSingleMediaByIdSchemaType = z.infer<typeof GetSingleMediaByIdSchema>;
+export type GetSingleMediaByIdSchemaType = z.infer<
+  typeof GetSingleMediaByIdSchema
+>;
