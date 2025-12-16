@@ -10,11 +10,13 @@ import {
   deleteUserMediaEntry,
   getMediaEntryById,
   getMediaEntryByMedia,
+  getUserMediaEntriesWithFilters,
 } from '../controllers/media-entry.controller';
 import { requireAuth } from '../common/middleware/require-auth';
 import { validateReq } from '../common/middleware/handle-validation';
 import { AddMediaEntrySchema } from '../common/validation-schema/media-entry/add-media-entry';
 import { UpdateMediaEntrySchema } from '../common/validation-schema/media-entry/update-media-entry';
+import { FilterMediaEntrySchema } from '../common/validation-schema/media-entry/filter-media-entry';
 
 //initialize router
 const route = Router();
@@ -25,6 +27,14 @@ route.post(
   requireAuth(),
   validateReq(AddMediaEntrySchema),
   addNewMediaEntry
+);
+
+//get user media entries by filter
+route.post(
+  '/filter',
+  requireAuth(),
+  validateReq(FilterMediaEntrySchema),
+  getUserMediaEntriesWithFilters
 );
 
 //get all the user media entries

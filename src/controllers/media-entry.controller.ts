@@ -14,6 +14,7 @@ import {
 } from '../common/utils/pagination';
 import { validateDataUsingZod } from '../common/utils/validate-data';
 import { AddMediaEntryZodSchemaType } from '../common/validation-schema/media-entry/add-media-entry';
+import { FilterMediaEntrySchemaType } from '../common/validation-schema/media-entry/filter-media-entry';
 import {
   GetAllUserMediaEntrySchema,
   GetAllUserMediaEntrySchemaType,
@@ -277,6 +278,63 @@ export const deleteUserMediaEntry = async (
       success: true,
       data: deletedMediaEntry,
       message: 'Media entry deleted successfully',
+    });
+  } catch (err) {
+    //handle unexpected errors
+    handleError(res, { error: err });
+  }
+};
+
+// get user entries will all filters
+export const getUserMediaEntriesWithFilters = async (
+  req: ValidatedRequest<FilterMediaEntrySchemaType>,
+  res: Response
+) => {
+  try {
+    // get the filter from validated req
+    const { limit, page, onModel, rating, sortBy, sortOrder, status } =
+      req.validatedData!;
+
+    // define a query
+    const query: any = { user: req.userData!._id };
+
+    //if onModel is present
+    if (onModel) query.onModel = onModel;
+    //if status is present
+    if (status) query.status = status;
+    //if rating is present
+    if (rating) query.rating = { $gte: rating };
+
+    // get the media entries
+    let mongooseQuery = MediaEntry.find(query).sort({
+      [sortBy]: sortOrder === 'asc' ? 1 : -1,
+    });
+
+    //if limit is present
+    if (limit) {
+      const skip = (page - 1) * limit;
+      mongooseQuery = mongooseQuery.limit(limit).skip(skip);
+    }
+
+    //get all the media entries
+    const [mediaEntries, total] = await Promise.all([
+      mongooseQuery.populate('mediaItem').lean().exec(),
+      MediaEntry.countDocuments(query),
+    ]);
+
+    let pagination = undefined;
+    if (limit) {
+      //get pagination details
+      pagination = getPaginationResponse(total, limit, page);
+    }
+
+    // return the media entries
+    res.status(200).json({
+      success: true,
+      data: {
+        mediaEntries,
+        pagination,
+      },
     });
   } catch (err) {
     //handle unexpected errors
