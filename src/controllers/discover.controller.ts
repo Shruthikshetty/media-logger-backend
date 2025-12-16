@@ -12,9 +12,11 @@ import {
 import {
   GET_ALL_GAMES_LIMITS,
   GET_ALL_MOVIES_LIMITS,
+  GET_ALL_TV_SHOW_LIMITS,
 } from '../common/constants/config.constants';
 import Game from '../models/game.model';
 import Movie from '../models/movie.model';
+import TVShow from '../models/tv-show.model';
 
 // controller to get discover games
 export const getDiscoverGames = async (
@@ -193,6 +195,100 @@ export const getDiscoverMovies = async (
       success: true,
       data: {
         movies,
+        pagination: getPaginationResponse(total, limit, start),
+      },
+    });
+  } catch (err) {
+    //handle unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+// controller to get discover tv series
+export const getDiscoverTVSeries = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    //get user id if exists
+    const userId = req?.userData?._id;
+    //generate pagination
+    const { limit, start } = getPaginationParams(
+      req.query,
+      GET_ALL_TV_SHOW_LIMITS
+    );
+
+    //define a pipeline
+    const pipeline: any[] = [
+      { $sort: { createdAt: -1 } },
+      { $skip: start },
+      { $limit: limit },
+    ];
+
+    //if user is logged in generate media entry details
+    if (userId) {
+      pipeline.push(
+        {
+          $lookup: {
+            from: 'mediaentries',
+            let: { tvShowId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$user', userId] },
+                      { $eq: ['$onModel', 'TVShow'] },
+                      { $eq: ['$mediaItem', '$$tvShowId'] },
+                    ],
+                  },
+                },
+              },
+              {
+                $project: {
+                  _id: 1,
+                  user: 1,
+                  onModel: 1,
+                  status: 1,
+                  rating: 1,
+                },
+              },
+            ],
+            as: 'mediaEntry',
+          },
+        },
+        {
+          $addFields: {
+            mediaEntry: {
+              $cond: {
+                // Check if the array has items
+                if: { $gt: [{ $size: '$mediaEntry' }, 0] },
+                // If YES: take the first item
+                then: { $arrayElemAt: ['$mediaEntry', 0] },
+                // If NO: explicitly set to null
+                else: null,
+              },
+            },
+          },
+        }
+      );
+    }
+
+    // execute pipeline
+    const [tvShow, total] = await Promise.all([
+      TVShow.aggregate(pipeline),
+      TVShow.countDocuments(),
+    ]);
+
+    // console.log(tvShow)
+
+    //return response
+    res.status(200).json({
+      success: true,
+      data: {
+        tvShow,
         pagination: getPaginationResponse(total, limit, start),
       },
     });
