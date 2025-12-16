@@ -110,7 +110,7 @@ export const getDiscoverItems = async (
     res.status(200).json({
       success: true,
       data: {
-        mediaKey: data,
+        [options.mediaKey]: data,
         pagination: getPaginationResponse(total, limit, start),
       },
     });
