@@ -310,9 +310,10 @@ export const getUserMediaEntriesWithFilters = async (
       [sortBy]: sortOrder === 'asc' ? 1 : -1,
     });
 
+    let skip: number;
     //if limit is present
     if (limit) {
-      const skip = (page - 1) * limit;
+      skip = (page - 1) * limit;
       mongooseQuery = mongooseQuery.limit(limit).skip(skip);
     }
 
@@ -325,7 +326,7 @@ export const getUserMediaEntriesWithFilters = async (
     let pagination = undefined;
     if (limit) {
       //get pagination details
-      pagination = getPaginationResponse(total, limit, page);
+      pagination = getPaginationResponse(total, limit, skip);
     }
 
     // return the media entries
