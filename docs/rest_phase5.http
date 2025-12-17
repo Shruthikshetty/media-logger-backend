@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001
-@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzI4NzdjMDkwZGJjZTI5NGViY2Q2NSIsImlhdCI6MTc2NTk1NTk3OCwiZXhwIjoxNzY2MDQyMzc4fQ.Jh3VuLS33Nei4mQqTfk6Jc3mcb497twRvWPQl8uaHXk
+@authToken = Bearer <token>
 
 #-----------------------------------------Media Entry ---------------------------------------------------
 ### get all media entries by user (default pagination applied)
