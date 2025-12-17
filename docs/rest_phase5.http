@@ -39,3 +39,50 @@ Content-Type: application/json
     "rating": 9,
     "status": "Playing"
 }
+
+### get media entry by filter  (gives all by default)
+POST {{baseUrl}}/api/media-entry/filter
+Authorization: {{authToken}}
+
+### with all optional filters
+POST {{baseUrl}}/api/media-entry/filter
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+    "limit": 20,
+    "page": 1,
+    "onModel": "Game", 
+    "rating": 4,  
+    "sortBy": "status", 
+    "sortOrder": "asc" 
+}
+
+### delete a media entry 
+DELETE {{baseUrl}}/api/media-entry/69425ae76649bfbb2f24bd92
+Authorization: {{authToken}}
+
+
+#----------------------------------------------------Discover ------------------------------------------------
+
+### endpoint to discover game with populated user entry data 
+GET {{baseUrl}}/api/discover/games
+Authorization: {{authToken}}
+
+### with limits 
+GET {{baseUrl}}/api/discover/games?limit=5&page=1
+
+
+### Discover for movies 
+GET {{baseUrl}}/api/discover/movies
+Authorization: {{authToken}}
+
+### with limits 
+GET {{baseUrl}}/api/discover/movies?limit=5&page=1
+
+### Discover for tv shows 
+GET {{baseUrl}}/api/discover/tv-show
+Authorization: {{authToken}}
+
+### with limits 
+GET {{baseUrl}}/api/discover/tv-show?limit=5&page=1
