@@ -1,0 +1,88 @@
+@baseUrl = http://localhost:3001
+@authToken = Bearer <token>
+
+#-----------------------------------------Media Entry ---------------------------------------------------
+### get all media entries by user (default pagination applied)
+GET {{baseUrl}}/api/media-entry
+Authorization: {{authToken}}
+
+### with limits
+GET {{baseUrl}}/api/media-entry?limit=5&page=1
+Authorization: {{authToken}}
+
+### get media entry by id 
+GET {{baseUrl}}/api/media-entry/6940fc275165e478167e7a83
+Authorization: {{authToken}}
+
+### add media entry 
+POST  {{baseUrl}}/api/media-entry
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+    "mediaItem":"6922a899a40df344e9daf0c8",
+    "onModel":"Game",
+    "status": "Planning",
+    "rating": 5
+}
+
+### get media entry by media item and model 
+GET {{baseUrl}}/api/media-entry/by-media?mediaItem=6922a899a40df344e9daf0c8&onModel=Game
+Authorization: {{authToken}}
+
+### update added media 
+PATCH {{baseUrl}}/api/media-entry/69425ae76649bfbb2f24bd92
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+    "rating": 9,
+    "status": "Playing"
+}
+
+### get media entry by filter  (gives all by default)
+POST {{baseUrl}}/api/media-entry/filter
+Authorization: {{authToken}}
+
+### with all optional filters
+POST {{baseUrl}}/api/media-entry/filter
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+    "limit": 20,
+    "page": 1,
+    "onModel": "Game", 
+    "rating": 4,  
+    "sortBy": "status", 
+    "sortOrder": "asc" 
+}
+
+### delete a media entry 
+DELETE {{baseUrl}}/api/media-entry/69425ae76649bfbb2f24bd92
+Authorization: {{authToken}}
+
+
+#----------------------------------------------------Discover ------------------------------------------------
+
+### endpoint to discover game with populated user entry data 
+GET {{baseUrl}}/api/discover/games
+Authorization: {{authToken}}
+
+### with limits 
+GET {{baseUrl}}/api/discover/games?limit=5&page=1
+
+
+### Discover for movies 
+GET {{baseUrl}}/api/discover/movies
+Authorization: {{authToken}}
+
+### with limits 
+GET {{baseUrl}}/api/discover/movies?limit=5&page=1
+
+### Discover for tv shows 
+GET {{baseUrl}}/api/discover/tv-show
+Authorization: {{authToken}}
+
+### with limits 
+GET {{baseUrl}}/api/discover/tv-show?limit=5&page=1
