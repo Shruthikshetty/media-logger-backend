@@ -76,8 +76,7 @@ This sub-phase enhances the general "browse" experience by injecting user contex
 ### Testing Tasks (Jest)
 
 - [ ] add related e2e test for applicable endpoints
-- [ ] add unit test for all the controllers and necessary utils 
-
+- [ ] add unit test for all the controllers and necessary utils
 
 ### Swagger Documentation
 
