@@ -21,7 +21,26 @@ import { FilterMediaEntrySchema } from '../common/validation-schema/media-entry/
 //initialize router
 const route = Router();
 
-// add a new media entry
+/**
+ * @swagger
+ * /api/media-entry:
+ *   post:
+ *     tags: [Media Entries]
+ *     summary: Create a new media entry
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/AddMediaEntryRequest'
+ *     responses:
+ *       '201':
+ *         $ref: '#/components/responses/AddMediaEntrySuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post(
   '/',
   requireAuth(),

@@ -1,0 +1,87 @@
+#
+# This file contains the swagger request and response for media entries routes
+#
+
+components:
+  schemas:
+    MediaEntryStatus:
+      type: string
+      enum:
+        - Planning
+        - Playing
+        - Watching
+        - Completed
+        - Dropped
+
+    MediaModel:
+      type: string
+      description: refers the media collection name
+      enum:
+        - Game
+        - Movie
+        - TVShow
+
+    MediaEntries:
+      type: object
+      description: contains user entries on a media item
+      properties:
+        _id:
+          type: string
+          description: Unique identifier for media item
+          example: 630f06f6f80f0c456d5d3e13
+          readOnly: true
+        user:
+          type: string
+          description: user unique identifier
+          example: 630f06f6f80f0c456d5d3e11
+          readOnly: true
+        mediaItem:
+          type: string
+          description: media item unique identifier
+          example: 630f06f6f80f0c456d5d3e12
+        onModel:
+          $ref: '#/components/schemas/MediaModel'
+        status:
+          $ref: '#/components/schemas/MediaEntryStatus'
+        rating:
+          type: number
+          example: 4
+        createdAt:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00.000Z'
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00.000Z'
+          readOnly: true
+
+  requestBodies:
+    AddMediaEntryRequest:
+      description: Request body for adding a media entry
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MediaEntries'
+
+  responses:
+    AddMediaEntrySuccessResponse:
+      description: Success response for adding a media entry
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+              data:
+                $ref: '#/components/schemas/MediaEntries'
+              message:
+                type: string
+                example: 'Media entry created successfully'
