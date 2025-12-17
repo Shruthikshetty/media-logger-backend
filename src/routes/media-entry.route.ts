@@ -56,7 +56,33 @@ route.post(
   getUserMediaEntriesWithFilters
 );
 
-//get all the user media entries
+/**
+ * @swagger
+ * /api/media-entry:
+ *   get:
+ *      summary: Get all user media entries with pagination
+ *      tags: [Media Entries]
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *        - name: limit
+ *          in: query
+ *          require: false
+ *          type: integer
+ *          default: 20
+ *        - name: page
+ *          in: query
+ *          require: false
+ *          type: integer
+ *          default: 20
+ *      responses:
+ *        '200':
+ *          $ref: '#/components/responses/GetAllUserMediaEntriesSuccessResponse'
+ *        '401':
+ *          $ref: '#/components/responses/Unauthorized'
+ *        '500':
+ *          $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/', requireAuth(), getAllUserMediaEntries);
 
 //get single media by media id

@@ -85,3 +85,26 @@ components:
               message:
                 type: string
                 example: 'Media entry created successfully'
+
+    GetAllUserMediaEntriesSuccessResponse:
+      description: Success response for getting all user media entries
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+              data:
+                type: object
+                properties:
+                  mediaEntries:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MediaEntries'
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
