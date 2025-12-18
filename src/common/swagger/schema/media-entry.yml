@@ -66,6 +66,66 @@ components:
           schema:
             $ref: '#/components/schemas/MediaEntries'
 
+    UpdateMediaEntryRequest:
+      description: Request body for updating a media entry
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: '#/components/schemas/MediaEntryStatus'
+              rating:
+                type: number
+                required: false
+                min: 0
+                max: 10
+                example: 4
+
+    FilterMediaEntryRequest:
+      description: Request body for filtering media entries
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              limit:
+                type: number
+                required: false
+                description: by default it will return everything
+                example: 5
+              page:
+                type: number
+                required: false
+                example: 1
+              status:
+                $ref: '#/components/schemas/MediaEntryStatus'
+              rating:
+                type: number
+                required: false
+                min: 0
+                max: 10
+                example: 4
+              onModel:
+                $ref: '#/components/schemas/MediaModel'
+              sortBy:
+                enum:
+                  - createdAt
+                  - rating
+                  - status
+                type: string
+                example: createdAt
+                default: createdAt
+              sortOrder:
+                enum:
+                  - asc
+                  - desc
+                type: string
+                example: asc
+                default: desc
+
   responses:
     AddMediaEntrySuccessResponse:
       description: Success response for adding a media entry
@@ -108,7 +168,7 @@ components:
                       $ref: '#/components/schemas/MediaEntries'
                   pagination:
                     $ref: '#/components/schemas/pagination'
-    
+
     GetSingleMediaEntrySuccessResponse:
       description: Success response for getting a single media entry
       content:
@@ -141,3 +201,22 @@ components:
               message:
                 type: string
                 example: 'Media entry deleted successfully'
+
+    UpdateMediaEntrySuccessResponse:
+      description: Success response for updating a media entry
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+              data:
+                $ref: '#/components/schemas/MediaEntries'
+              message:
+                type: string
+                example: 'Media entry updated successfully'

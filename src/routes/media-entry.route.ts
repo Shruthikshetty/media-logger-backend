@@ -48,7 +48,26 @@ route.post(
   addNewMediaEntry
 );
 
-//get user media entries by filter
+/**
+ * @swagger
+ * /api/media-entry/filter:
+ *   post:
+ *     tags: [Media Entries]
+ *     summary: Get user media entries with filters
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/FilterMediaEntryRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetAllUserMediaEntriesSuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.post(
   '/filter',
   requireAuth(),
@@ -141,7 +160,33 @@ route.get('/by-media', requireAuth(), getMediaEntryByMedia);
  */
 route.get('/:id', requireAuth(), getMediaEntryById);
 
-//update a user media entry
+/**
+ * @swagger
+ * /api/media-entry/{id}:
+ *   patch:
+ *     summary: Update a media entry by id
+ *     tags: [Media Entries]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       $ref: '#/components/requestBodies/UpdateMediaEntryRequest'
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/UpdateMediaEntrySuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.patch(
   '/:id',
   requireAuth(),
