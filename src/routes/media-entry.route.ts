@@ -85,10 +85,60 @@ route.post(
  */
 route.get('/', requireAuth(), getAllUserMediaEntries);
 
-//get single media by media id
+/**
+ * @swagger
+ * /api/media-entry/by-media:
+ *   get:
+ *     tags: [Media Entries]
+ *     summary: Get media entries by mediaItem , onModel
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: mediaItem
+ *         in: query
+ *         required: true
+ *         type: string
+ *       - name: onModel
+ *         in: query
+ *         required: true
+ *         type: string
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetSingleMediaEntrySuccessResponse'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/by-media', requireAuth(), getMediaEntryByMedia);
 
-//get single media entry by id
+/**
+ * @swagger
+ * /api/media-entry/{id}:
+ *   get:
+ *     tags: [Media Entries]
+ *     summary: Get a media entry by id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetSingleMediaEntrySuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.get('/:id', requireAuth(), getMediaEntryById);
 
 //update a user media entry
@@ -99,7 +149,31 @@ route.patch(
   updateUserMediaEntry
 );
 
-//delete a user media entry
+/**
+ * @swagger
+ * /api/media-entry/{id}:
+ *   delete:
+ *     tags: [Media Entries]
+ *     summary: Delete a media entry by id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/DeleteMediaEntrySuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 route.delete('/:id', requireAuth(), deleteUserMediaEntry);
 
 //export all the routes
