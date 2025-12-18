@@ -78,8 +78,8 @@ components:
                 $ref: '#/components/schemas/MediaEntryStatus'
               rating:
                 type: number
-                min: 0
-                max: 10
+                minimum: 0
+                maximum: 10
                 example: 4
 
     FilterMediaEntryRequest:
@@ -101,8 +101,8 @@ components:
                 $ref: '#/components/schemas/MediaEntryStatus'
               rating:
                 type: number
-                min: 0
-                max: 10
+                minimum: 0
+                maximum: 10
                 example: 4
               onModel:
                 $ref: '#/components/schemas/MediaModel'

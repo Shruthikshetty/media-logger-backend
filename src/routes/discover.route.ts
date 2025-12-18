@@ -31,7 +31,7 @@ const route = Router();
  *         in: query
  *         required: false
  *         type: integer
- *         default: 20
+ *         default: 1
  *     responses:
  *       '200':
  *         $ref: '#/components/responses/GetDiscoverGamesSuccessResponse'
@@ -60,7 +60,7 @@ route.get('/games', optionalAuth(), getDiscoverGames);
  *         in: query
  *         required: false
  *         type: integer
- *         default: 20
+ *         default: 1
  *     responses:
  *       '200':
  *         $ref: '#/components/responses/GetDiscoverMoviesSuccessResponse'
@@ -89,7 +89,7 @@ route.get('/movies', optionalAuth(), getDiscoverMovies);
  *         in: query
  *         required: false
  *         type: integer
- *         default: 20
+ *         default: 1
  *     responses:
  *       '200':
  *         $ref: '#/components/responses/GetDiscoverTvShowSuccessResponse'
