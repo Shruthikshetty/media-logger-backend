@@ -24,12 +24,12 @@ const route = Router();
  *     parameters:
  *       - in: query
  *         name: limit
- *         require: false
+ *         required: false
  *         type: integer
  *         default: 20
  *       - name: page
  *         in: query
- *         require: false
+ *         required: false
  *         type: integer
  *         default: 20
  *     responses:
@@ -53,12 +53,12 @@ route.get('/games', optionalAuth(), getDiscoverGames);
  *     parameters:
  *       - in: query
  *         name: limit
- *         require: false
+ *         required: false
  *         type: integer
  *         default: 20
  *       - name: page
  *         in: query
- *         require: false
+ *         required: false
  *         type: integer
  *         default: 20
  *     responses:
@@ -82,12 +82,12 @@ route.get('/movies', optionalAuth(), getDiscoverMovies);
  *     parameters:
  *       - in: query
  *         name: limit
- *         require: false
+ *         required: false
  *         type: integer
  *         default: 20
  *       - name: page
  *         in: query
- *         require: false
+ *         required: false
  *         type: integer
  *         default: 20
  *     responses:

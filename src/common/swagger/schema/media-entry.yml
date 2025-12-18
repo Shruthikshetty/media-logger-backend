@@ -78,7 +78,6 @@ components:
                 $ref: '#/components/schemas/MediaEntryStatus'
               rating:
                 type: number
-                required: false
                 min: 0
                 max: 10
                 example: 4
@@ -93,18 +92,15 @@ components:
             properties:
               limit:
                 type: number
-                required: false
                 description: by default it will return everything
                 example: 5
               page:
                 type: number
-                required: false
                 example: 1
               status:
                 $ref: '#/components/schemas/MediaEntryStatus'
               rating:
                 type: number
-                required: false
                 min: 0
                 max: 10
                 example: 4
