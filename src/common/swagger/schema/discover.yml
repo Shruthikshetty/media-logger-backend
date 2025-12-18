@@ -1,0 +1,116 @@
+components:
+  schemas:
+    DiscoverMediaDetails:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: MongoDB ObjectId string reference to the media.
+          example: '60e9ef67af7b8a0015e3b4bc'
+        user:
+          type: string
+          description: user unique mongo id
+          example: '60e9ef67af7b8a0015e3b4bc'
+        onModel:
+          $ref: '#/components/schemas/MediaModel'
+        status:
+          $ref: '#/components/schemas/MediaEntryStatus'
+        mediaId:
+          type: string
+          description: MongoDB ObjectId string reference to the media.
+          example: '60e9ef67af7b8a0015e3b4bc'
+        rating:
+          type: number
+          description: refers the media rating
+          example: 10
+
+  responses:
+    GetDiscoverGamesSuccessResponse:
+      description: Success response for getting discover games
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+              data:
+                type: object
+                properties:
+                  games:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Game'
+                        - type: object
+                          properties:
+                            mediaEntry:
+                              allOf:
+                                - $ref: '#/components/schemas/DiscoverMediaDetails'
+                              nullable: true
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+
+    GetDiscoverMoviesSuccessResponse:
+      description: Success response for getting discover movies
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+              data:
+                type: object
+                properties:
+                  movies:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Movie'
+                        - type: object
+                          properties:
+                            mediaEntry:
+                              allOf:
+                                - $ref: '#/components/schemas/DiscoverMediaDetails'
+                              nullable: true
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+
+    GetDiscoverTvShowSuccessResponse:
+      description: success response for getting Tv Shows with user entries populated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+              data:
+                type: object
+                properties:
+                  tvShows:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/TvShow'
+                        - type: object
+                          properties:
+                            mediaEntry:
+                              allOf:
+                                - $ref: '#/components/schemas/DiscoverMediaDetails'
+                              nullable: true
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
