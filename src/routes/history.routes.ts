@@ -7,6 +7,7 @@ import { requireAuth } from '../common/middleware/require-auth';
 import {
   getAllHistory,
   getHistoryByFilters,
+  getHistoryById,
 } from '../controllers/history.controller';
 import { validateReq } from '../common/middleware/handle-validation';
 import { HistoryFilterZodSchema } from '../common/validation-schema/history/history-filter';
@@ -57,6 +58,39 @@ const route = Router();
  *         $ref: '#/components/responses/InternalServerError'
  */
 route.get('/', requireAuth('admin'), getAllHistory);
+
+/**
+ * @swagger
+ * /api/history/{id}:
+ *   get:
+ *     tags: [History]
+ *     summary: Get a history record by id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *       - name: fullDetails
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: boolean
+ *         example: true
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetSingleHistorySuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+route.get('/:id', requireAuth('admin'), getHistoryById);
 
 /**
  * @swagger
