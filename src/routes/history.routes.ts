@@ -87,6 +87,8 @@ route.get('/', requireAuth('admin'), getAllHistory);
  *         $ref: '#/components/responses/Unauthorized'
  *       '400':
  *         $ref: '#/components/responses/BadRequest'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
