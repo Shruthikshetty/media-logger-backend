@@ -38,6 +38,8 @@ const route = Router();
  *         $ref: '#/components/responses/Unauthorized'
  *       '400':
  *         $ref: '#/components/responses/BadRequest'
+ *       '409':
+ *         $ref: '#/components/responses/Conflict'
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
