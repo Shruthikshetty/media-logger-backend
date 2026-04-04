@@ -15,10 +15,6 @@ components:
           $ref: '#/components/schemas/MediaModel'
         status:
           $ref: '#/components/schemas/MediaEntryStatus'
-        mediaId:
-          type: string
-          description: MongoDB ObjectId string reference to the media.
-          example: '60e9ef67af7b8a0015e3b4bc'
         rating:
           type: number
           description: refers the media rating

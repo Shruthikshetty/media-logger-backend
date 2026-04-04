@@ -61,8 +61,9 @@ export const addNewMediaEntry = async (
     //handle unexpected errors
     handleError(res, {
       error: err,
+      statusCode: isDuplicate ? 409 : 500,
       message: isDuplicate
-        ? 'You have already logged this media to you collection.'
+        ? 'You have already logged this media to your collection.'
         : 'Media entry creation failed',
     });
   }

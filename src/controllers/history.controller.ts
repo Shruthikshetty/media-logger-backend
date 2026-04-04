@@ -13,6 +13,7 @@ import { handleError } from '../common/utils/handle-error';
 import { getHistoryWithTotal } from '../common/utils/get-history';
 import { HistoryFilterZodType } from '../common/validation-schema/history/history-filter';
 import History from '../models/history.model';
+import { isMongoIdValid } from '../common/utils/mongo-errors';
 
 // controller to get all the history
 export const getAllHistory = async (
@@ -141,6 +142,56 @@ export const getHistoryByFilters = async (
         history,
         pagination: getPaginationResponse(total, limit, start),
       },
+    });
+  } catch (err) {
+    // handle any unexpected error
+    handleError(res, {
+      error: err,
+    });
+  }
+};
+
+// controller to get history by id
+export const getHistoryById = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get quey param for full details
+    const fullDetails = req.query.fullDetails === 'true';
+    // get id from params
+    const { id } = req.params;
+
+    //if id is not valid
+    if (!isMongoIdValid(id)) {
+      handleError(res, {
+        statusCode: 400,
+        message: 'Invalid history id',
+      });
+      return;
+    }
+
+    // get history by id
+    const history = fullDetails
+      ? await History.findById(id)
+          .populate('user', '-password -__v')
+          .lean()
+          .exec()
+      : await History.findById(id).lean().exec();
+
+    //if history is not found
+    if (!history) {
+      handleError(res, {
+        statusCode: 404,
+        message: 'History not found',
+      });
+      return;
+    }
+
+    // send response
+    res.status(200).json({
+      success: true,
+      data: history,
     });
   } catch (err) {
     // handle any unexpected error
