@@ -255,7 +255,7 @@ export const deleteTvShowById = async (
     appendOldDoc(res, tvShow);
     next();
   } catch (err: any) {
-    session.abortTransaction();
+    await session.abortTransaction();
     //handle unexpected error
     handleError(res, {
       error: err,
