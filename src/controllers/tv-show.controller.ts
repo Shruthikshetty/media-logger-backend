@@ -255,7 +255,7 @@ export const deleteTvShowById = async (
     appendOldDoc(res, tvShow);
     next();
   } catch (err: any) {
-    session.abortTransaction();
+    await session.abortTransaction();
     //handle unexpected error
     handleError(res, {
       error: err,
@@ -324,7 +324,7 @@ export const bulkDeleteTvShow = async (
     appendOldDoc(res, tvShows);
     next();
   } catch (err: any) {
-    session.abortTransaction();
+    await session.abortTransaction();
     //handle unexpected error
     handleError(res, {
       error: err,
@@ -423,6 +423,7 @@ export const filterTvShow = async (
       totalEpisodes,
       totalSeasons,
       searchText,
+      ageRating,
     } = req.validatedData!;
 
     //define filters and pipeline
@@ -479,6 +480,16 @@ export const filterTvShow = async (
         range: {
           path: 'averageRating',
           gte: averageRating,
+        },
+      });
+    }
+
+    //check if ageRating is defined
+    if (ageRating) {
+      searchClauses.filter.push({
+        range: {
+          path: 'ageRating',
+          ...ageRating,
         },
       });
     }
