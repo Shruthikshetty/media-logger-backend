@@ -423,6 +423,7 @@ export const filterTvShow = async (
       totalEpisodes,
       totalSeasons,
       searchText,
+      ageRating,
     } = req.validatedData!;
 
     //define filters and pipeline
@@ -479,6 +480,16 @@ export const filterTvShow = async (
         range: {
           path: 'averageRating',
           gte: averageRating,
+        },
+      });
+    }
+
+    //check if ageRating is defined
+    if (ageRating) {
+      searchClauses.filter.push({
+        range: {
+          path: 'ageRating',
+          ...ageRating,
         },
       });
     }

@@ -19,6 +19,26 @@ export const FilterTvShowZodSchema = z.object({
     })
     .optional(),
 
+  ageRating: z
+    .object({
+      gte: z
+        .number({
+          message: 'Age rating gte must be number',
+        })
+        .min(0)
+        .optional(),
+      lte: z
+        .number({
+          message: 'Age rating lte must be number',
+        })
+        .min(0)
+        .optional(),
+    })
+    .refine((data) => data.gte !== undefined || data.lte !== undefined, {
+      message: 'Age rating must include at least one of gte or lte',
+    })
+    .optional(),
+
   genre: z
     .array(z.string({ message: 'Genre must be string' }), {
       message: 'Genre must be an array of strings',
