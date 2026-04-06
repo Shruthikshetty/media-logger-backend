@@ -324,7 +324,7 @@ export const bulkDeleteTvShow = async (
     appendOldDoc(res, tvShows);
     next();
   } catch (err: any) {
-    session.abortTransaction();
+    await session.abortTransaction();
     //handle unexpected error
     handleError(res, {
       error: err,
