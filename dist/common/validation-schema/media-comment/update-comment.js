@@ -8,6 +8,7 @@ exports.UpdateMediaCommentSchema = void 0;
  * @file contains schema for updating a media comment
  */
 const zod_1 = __importDefault(require("zod"));
+//schema
 exports.UpdateMediaCommentSchema = zod_1.default.object({
     comment: zod_1.default
         .string({

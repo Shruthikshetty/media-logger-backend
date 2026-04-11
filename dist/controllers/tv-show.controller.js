@@ -191,7 +191,7 @@ const deleteTvShowById = async (req, res, next) => {
         next();
     }
     catch (err) {
-        session.abortTransaction();
+        await session.abortTransaction();
         //handle unexpected error
         (0, handle_error_1.handleError)(res, {
             error: err,
@@ -250,7 +250,7 @@ const bulkDeleteTvShow = async (req, res, next) => {
         next();
     }
     catch (err) {
-        session.abortTransaction();
+        await session.abortTransaction();
         //handle unexpected error
         (0, handle_error_1.handleError)(res, {
             error: err,
@@ -322,7 +322,7 @@ exports.searchTvShow = searchTvShow;
 const filterTvShow = async (req, res) => {
     try {
         //destructure validated data
-        const { genre, limit, page, languages, status, averageRating, releaseDate, avgRunTime, tags, totalEpisodes, totalSeasons, searchText, } = req.validatedData;
+        const { genre, limit, page, languages, status, averageRating, releaseDate, avgRunTime, tags, totalEpisodes, totalSeasons, searchText, ageRating, } = req.validatedData;
         //define filters and pipeline
         const pipeline = [];
         const searchClauses = {
@@ -372,6 +372,15 @@ const filterTvShow = async (req, res) => {
                 range: {
                     path: 'averageRating',
                     gte: averageRating,
+                },
+            });
+        }
+        //check if ageRating is defined
+        if (ageRating) {
+            searchClauses.filter.push({
+                range: {
+                    path: 'ageRating',
+                    ...ageRating,
                 },
             });
         }

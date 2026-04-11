@@ -55,6 +55,40 @@ const route = (0, express_1.Router)();
 route.get('/', (0, require_auth_1.requireAuth)('admin'), history_controller_1.getAllHistory);
 /**
  * @swagger
+ * /api/history/{id}:
+ *   get:
+ *     tags: [History]
+ *     summary: Get a history record by id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: valid mongo id
+ *         schema:
+ *           type: string
+ *       - name: fullDetails
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: boolean
+ *         example: true
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetSingleHistorySuccessResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+route.get('/:id', (0, require_auth_1.requireAuth)('admin'), history_controller_1.getHistoryById);
+/**
+ * @swagger
  * /api/history/filter:
  *   post:
  *     summary: Get history by filters

@@ -23,6 +23,25 @@ exports.FilterTvShowZodSchema = zod_1.default.object({
         message: 'Average rating must be less than or equal to 10',
     })
         .optional(),
+    ageRating: zod_1.default
+        .object({
+        gte: zod_1.default
+            .number({
+            message: 'Age rating gte must be number',
+        })
+            .min(0)
+            .optional(),
+        lte: zod_1.default
+            .number({
+            message: 'Age rating lte must be number',
+        })
+            .min(0)
+            .optional(),
+    })
+        .refine((data) => data.gte !== undefined || data.lte !== undefined, {
+        message: 'Age rating must include at least one of gte or lte',
+    })
+        .optional(),
     genre: zod_1.default
         .array(zod_1.default.string({ message: 'Genre must be string' }), {
         message: 'Genre must be an array of strings',

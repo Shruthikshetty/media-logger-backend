@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.requireAuth = void 0;
+exports.optionalAuth = exports.requireAuth = void 0;
 const index_1 = __importDefault(require("../passport/index"));
 const config_constants_1 = require("../constants/config.constants");
 const handle_error_1 = require("../utils/handle-error");
@@ -31,3 +31,17 @@ const requireAuth = (role = 'user') => {
     };
 };
 exports.requireAuth = requireAuth;
+/**Middleware to authenticate user if jwt token is present else silently return empty */
+const optionalAuth = () => {
+    return (req, res, next) => {
+        index_1.default.authenticate('jwt', { session: false }, (_err, user) => {
+            if (user) {
+                // Attach user to request
+                // @ts-ignore
+                req.userData = user;
+            }
+            next();
+        })(req, res, next);
+    };
+};
+exports.optionalAuth = optionalAuth;

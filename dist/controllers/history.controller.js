@@ -6,12 +6,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getHistoryByFilters = exports.getAllHistory = void 0;
+exports.getHistoryById = exports.getHistoryByFilters = exports.getAllHistory = void 0;
 const config_constants_1 = require("../common/constants/config.constants");
 const pagination_1 = require("../common/utils/pagination");
 const handle_error_1 = require("../common/utils/handle-error");
 const get_history_1 = require("../common/utils/get-history");
 const history_model_1 = __importDefault(require("../models/history.model"));
+const mongo_errors_1 = require("../common/utils/mongo-errors");
 // controller to get all the history
 const getAllHistory = async (req, res) => {
     try {
@@ -125,3 +126,47 @@ const getHistoryByFilters = async (req, res) => {
     }
 };
 exports.getHistoryByFilters = getHistoryByFilters;
+// controller to get history by id
+const getHistoryById = async (req, res) => {
+    try {
+        // get quey param for full details
+        const fullDetails = req.query.fullDetails === 'true';
+        // get id from params
+        const { id } = req.params;
+        //if id is not valid
+        if (!(0, mongo_errors_1.isMongoIdValid)(id)) {
+            (0, handle_error_1.handleError)(res, {
+                statusCode: 400,
+                message: 'Invalid history id',
+            });
+            return;
+        }
+        // get history by id
+        const history = fullDetails
+            ? await history_model_1.default.findById(id)
+                .populate('user', '-password -__v')
+                .lean()
+                .exec()
+            : await history_model_1.default.findById(id).lean().exec();
+        //if history is not found
+        if (!history) {
+            (0, handle_error_1.handleError)(res, {
+                statusCode: 404,
+                message: 'History not found',
+            });
+            return;
+        }
+        // send response
+        res.status(200).json({
+            success: true,
+            data: history,
+        });
+    }
+    catch (err) {
+        // handle any unexpected error
+        (0, handle_error_1.handleError)(res, {
+            error: err,
+        });
+    }
+};
+exports.getHistoryById = getHistoryById;

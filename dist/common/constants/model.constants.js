@@ -4,7 +4,7 @@
  * NOTE : if new value are added make sure to add them at the end of array
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HISTORY_ENTITY = exports.HISTORY_ACTION = exports.GAME_PLATFORMS = exports.GAME_GENRES = exports.TAGS = exports.GENRE_MOVIE_TV = exports.SEASON_STATUS = exports.MEDIA_STATUS = exports.USER_ROLES = void 0;
+exports.MEDIA_ENTRY_STATUS = exports.MEDIA_ENTRY_MODELS = exports.HISTORY_ENTITY = exports.HISTORY_ACTION = exports.GAME_PLATFORMS = exports.GAME_GENRES = exports.TAGS = exports.GENRE_MOVIE_TV = exports.SEASON_STATUS = exports.MEDIA_STATUS = exports.USER_ROLES = void 0;
 exports.USER_ROLES = ['user', 'admin'];
 exports.MEDIA_STATUS = ['released', 'upcoming'];
 exports.SEASON_STATUS = ['ended', 'upcoming', 'on-going'];
@@ -204,4 +204,12 @@ exports.HISTORY_ENTITY = [
     'Season',
     'User',
     'Tv Show',
+];
+exports.MEDIA_ENTRY_MODELS = ['Game', 'Movie', 'TVShow'];
+exports.MEDIA_ENTRY_STATUS = [
+    'Planning',
+    'Playing',
+    'Watching',
+    'Completed',
+    'Dropped',
 ];
