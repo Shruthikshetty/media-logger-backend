@@ -64,7 +64,7 @@ components:
         - platforms
       properties:
         _id:
-          type: integer
+          type: string
           example: 630f06f6f80f0c456d5d3e11
           readOnly: true
           description: Unique game identifier

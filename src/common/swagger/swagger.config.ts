@@ -14,7 +14,7 @@ const options: swaggerJSDoc.Options = {
     openapi: '3.0.0',
     info: {
       title: 'Media Logger API',
-      version: '1.2.0',
+      version: '1.3.0',
       description: 'API documentation for Movie logger application',
       contact: {
         name: 'Shruthik shetty',

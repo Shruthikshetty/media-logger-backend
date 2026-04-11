@@ -3,8 +3,8 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { handleError } from '../utils/handle-error';
 import z from 'zod';
+import { validateDataUsingZod } from '../utils/validate-data';
 
 /**
  * Middleware to check validation results and return errors if any
@@ -12,32 +12,13 @@ import z from 'zod';
 export const validateReq = (schema: z.ZodSchema<any>) => {
   // return a middleware
   return (req: Request, res: Response, next: NextFunction) => {
-    // parse request body
-    const result = schema.safeParse(req.body);
-
+    //validate data
+    const result = validateDataUsingZod(schema, req.body, res);
     // in case validations fail
-    if (!result.success) {
-      const { fieldErrors, formErrors } = result.error.flatten();
-      // combine errors
-      const combinedErrors = [
-        ...Object.values(fieldErrors).flat(),
-        ...formErrors,
-      ];
-
-      // get all the error's
-      const errorMessage = Object.values(combinedErrors).flat().join(' | ');
-
-      handleError(res, {
-        message: errorMessage,
-        error: combinedErrors,
-        statusCode: 400,
-      });
-      return;
-    }
-
+    if (!result) return;
     // attach validated data
     // @ts-ignore
-    req.validatedData = result.data;
+    req.validatedData = result;
     next();
   };
 };

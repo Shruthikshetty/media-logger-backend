@@ -97,6 +97,18 @@ export const GET_ALL_MEDIA_COMMENTS_LIMITS = {
   },
 };
 
+export const GET_ALL_MEDIA_ENTRY_LIMITS = {
+  limit: {
+    min: 1,
+    max: 50,
+    default: 20,
+  },
+  start: {
+    min: 0,
+    default: 0,
+  },
+};
+
 export const HISTORY_RETENTION_DAYS = 180;
 
 //sanitization custom rules
@@ -105,3 +117,5 @@ export const CUSTOM_SANITIZATION_RULES = ['password', 'token'];
 export const RECOMMENDER_MS_HEALTH_CHECK_TIMEOUT = 2000; // ms (2s)
 
 export const RECOMMENDER_MS_REQUEST_TIMEOUT = 5000; // ms (5s)
+
+export const MEDIA_ENTRY_SORT_FILTERS = ['rating', 'status', 'createdAt'];
