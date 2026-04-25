@@ -13,8 +13,9 @@ import {
   addBulkMovies,
   searchMovies,
   getMoviesWithFilters,
+  getMovieDetailWithUserContext,
 } from '../controllers/movie.controller';
-import { requireAuth } from '../common/middleware/require-auth';
+import { optionalAuth, requireAuth } from '../common/middleware/require-auth';
 import { validateReq } from '../common/middleware/handle-validation';
 import { AddMovieZodSchema } from '../common/validation-schema/movie/add-movie';
 import { updateMoveZodSchema } from '../common/validation-schema/movie/update-movie';
@@ -137,6 +138,11 @@ route.post('/filter', validateReq(MovieFiltersZodSchema), getMoviesWithFilters);
  *         $ref: '#/components/responses/BadRequest'
  */
 route.get('/:id', getMovieById);
+
+/**
+ * route to get the movie with populated media entry if user is logged in
+ */
+route.get('/:id/with-entry', optionalAuth(), getMovieDetailWithUserContext);
 
 /**
  * @swagger
