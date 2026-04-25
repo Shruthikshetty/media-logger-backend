@@ -13,7 +13,9 @@ import {
   bulkAddGames,
   filterGames,
   searchGame,
+  getGameDetailWithUserContext,
 } from '../controllers/game.controller';
+import { optionalAuth } from '../common/middleware/require-auth';
 import { validateReq } from '../common/middleware/handle-validation';
 import { AddGameZodSchema } from '../common/validation-schema/game/add-game';
 import { requireAuth } from '../common/middleware/require-auth';
@@ -115,6 +117,31 @@ route.get('/search', searchGame);
  *         $ref: '#/components/responses/BadRequest'
  *  */
 route.get('/:id', getGameById);
+
+/**
+ * @swagger
+ * /api/game/{id}/with-entry:
+ *   get:
+ *     summary: Get game details with user context (media entry)
+ *     tags: [Games]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: valid mongo id
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetGameWithUserEntrySuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ */
+route.get('/:id/with-entry', optionalAuth(), getGameDetailWithUserContext);
 
 /**
  * @swagger
