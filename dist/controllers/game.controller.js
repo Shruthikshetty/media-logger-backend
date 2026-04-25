@@ -6,9 +6,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.filterGames = exports.searchGame = exports.bulkDeleteGames = exports.bulkAddGames = exports.updateGameById = exports.deleteGameById = exports.addGame = exports.getGameById = exports.getAllGames = void 0;
+exports.getGameDetailWithUserContext = exports.filterGames = exports.searchGame = exports.bulkDeleteGames = exports.bulkAddGames = exports.updateGameById = exports.deleteGameById = exports.addGame = exports.getGameById = exports.getAllGames = void 0;
 const handle_error_1 = require("../common/utils/handle-error");
 const game_model_1 = __importDefault(require("../models/game.model"));
+const media_entry_1 = __importDefault(require("../models/media-entry"));
 const mongo_errors_1 = require("../common/utils/mongo-errors");
 const pagination_1 = require("../common/utils/pagination");
 const config_constants_1 = require("../common/constants/config.constants");
@@ -472,3 +473,47 @@ const filterGames = async (req, res) => {
     }
 };
 exports.filterGames = filterGames;
+//get game details with user context (media entry)
+const getGameDetailWithUserContext = async (req, res) => {
+    try {
+        const { id } = req.params;
+        // @ts-ignore
+        const user = req.userData;
+        // validate id
+        if (!(0, mongo_errors_1.isMongoIdValid)(id)) {
+            (0, handle_error_1.handleError)(res, { message: 'Invalid game id', statusCode: 400 });
+            return;
+        }
+        // fetch game and media entry in parallel
+        const [game, mediaEntry] = await Promise.all([
+            game_model_1.default.findById(id).lean().exec(),
+            user
+                ? media_entry_1.default.findOne({
+                    user: user._id,
+                    mediaItem: id,
+                    onModel: 'Game',
+                })
+                    .lean()
+                    .exec()
+                : Promise.resolve(null),
+        ]);
+        // if game is not found
+        if (!game) {
+            (0, handle_error_1.handleError)(res, { message: 'Game not found', statusCode: 404 });
+            return;
+        }
+        //send response
+        res.status(200).json({
+            success: true,
+            data: {
+                game,
+                mediaEntry,
+            },
+        });
+    }
+    catch (err) {
+        // handle unexpected error
+        (0, handle_error_1.handleError)(res, { error: err });
+    }
+};
+exports.getGameDetailWithUserContext = getGameDetailWithUserContext;

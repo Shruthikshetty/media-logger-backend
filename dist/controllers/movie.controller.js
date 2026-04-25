@@ -3,13 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMoviesWithFilters = exports.searchMovies = exports.addBulkMovies = exports.bulkDeleteMovies = exports.updateMovieById = exports.deleteMovieById = exports.getAllMovies = exports.getMovieById = exports.addMovie = void 0;
+exports.getMovieDetailWithUserContext = exports.getMoviesWithFilters = exports.searchMovies = exports.addBulkMovies = exports.bulkDeleteMovies = exports.updateMovieById = exports.deleteMovieById = exports.getAllMovies = exports.getMovieById = exports.addMovie = void 0;
 const handle_error_1 = require("../common/utils/handle-error");
 const movie_model_1 = __importDefault(require("../models/movie.model"));
 const mongo_errors_1 = require("../common/utils/mongo-errors");
 const pagination_1 = require("../common/utils/pagination");
 const config_constants_1 = require("../common/constants/config.constants");
 const history_utils_1 = require("../common/utils/history-utils");
+const media_entry_1 = __importDefault(require("../models/media-entry"));
 // controller to add a new movie
 const addMovie = async (req, res, next) => {
     try {
@@ -486,3 +487,42 @@ const getMoviesWithFilters = async (req, res) => {
     }
 };
 exports.getMoviesWithFilters = getMoviesWithFilters;
+/**
+ * get a movie by id with populated user entry
+ */
+const getMovieDetailWithUserContext = async (req, res) => {
+    try {
+        // get media id
+        const { id } = req.params;
+        const user = req?.userData;
+        // validate id
+        if (!(0, mongo_errors_1.isMongoIdValid)(id)) {
+            (0, handle_error_1.handleError)(res, { message: 'Invalid movie id', statusCode: 400 });
+            return;
+        }
+        // fetch the movie and user entry in parallel
+        const [movie, mediaEntry] = await Promise.all([
+            movie_model_1.default.findById(id).lean().exec(),
+            user
+                ? media_entry_1.default.findOne({ user: user.id, mediaItem: id, onModel: 'Movie' })
+                    .lean()
+                    .exec()
+                : null,
+        ]);
+        // handle if movie not found
+        if (!movie) {
+            (0, handle_error_1.handleError)(res, { message: 'Movie not found', statusCode: 404 });
+            return;
+        }
+        // return the movie
+        res.status(200).json({
+            success: true,
+            data: { movie, mediaEntry },
+        });
+    }
+    catch (err) {
+        // handle unexpected error
+        (0, handle_error_1.handleError)(res, { error: err });
+    }
+};
+exports.getMovieDetailWithUserContext = getMovieDetailWithUserContext;

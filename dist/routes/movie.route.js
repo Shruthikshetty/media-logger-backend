@@ -111,7 +111,7 @@ route.post('/filter', (0, handle_validation_1.validateReq)(movie_filters_1.Movie
  *     parameters:
  *       - name: id
  *         in: path
- *         required:
+ *         required: true
  *         schema:
  *           type: string
  *         description: valid mongo id
@@ -126,6 +126,30 @@ route.post('/filter', (0, handle_validation_1.validateReq)(movie_filters_1.Movie
  *         $ref: '#/components/responses/BadRequest'
  */
 route.get('/:id', movie_controller_1.getMovieById);
+/**
+ * @swagger
+ * /api/movie/{id}/with-entry:
+ *   get:
+ *     summary: Get movie by id with user entry context
+ *     tags: [Movies]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: valid mongo id
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetMovieWithUserEntrySuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ */
+route.get('/:id/with-entry', (0, require_auth_1.optionalAuth)(), movie_controller_1.getMovieDetailWithUserContext);
 /**
  * @swagger
  * /api/movie:
