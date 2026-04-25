@@ -123,7 +123,7 @@ route.post('/filter', validateReq(MovieFiltersZodSchema), getMoviesWithFilters);
  *     parameters:
  *       - name: id
  *         in: path
- *         required:
+ *         required: true
  *         schema:
  *           type: string
  *         description: valid mongo id
@@ -148,7 +148,7 @@ route.get('/:id', getMovieById);
  *     parameters:
  *       - name: id
  *         in: path
- *         required:
+ *         required: true
  *         schema:
  *           type: string
  *         description: valid mongo id

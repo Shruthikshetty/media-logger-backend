@@ -531,5 +531,5 @@ components:
                 properties:
                   game:
                     $ref: '#/components/schemas/Game'
-                  userEntry:
+                  mediaEntry:
                     $ref: '#/components/schemas/MediaEntries'

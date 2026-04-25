@@ -516,5 +516,5 @@ components:
                 properties:
                   movie:
                     $ref: '#/components/schemas/Movie'
-                  userEntry:
+                  mediaEntry:
                     $ref: '#/components/schemas/MediaEntries'

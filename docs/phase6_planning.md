@@ -9,7 +9,7 @@ To clearly communicate that these endpoints merge user context, they will follow
 ## Objectives
 
 - Implement "Unified Detail" routes for Movies, TV Shows, and Games using the `/:id/with-entry` path.
-- Ensure these routes handle both authenticated and unauthenticated requests gracefully (returning `userEntry: null` for guests or if no entry exists).
+- Ensure these routes handle both authenticated and unauthenticated requests gracefully (returning `mediaEntry: null` for guests or if no entry exists).
 
 ---
 
@@ -36,7 +36,7 @@ To clearly communicate that these endpoints merge user context, they will follow
 To support these unified routes, we need a middleware that extracts user information if a token is present but doesn't block the request if it isn't.
 
 - If `req.user` is present, the controller will query `MediaEntry` for `user_id` + `media_id`.
-- If `req.user` is absent, `userEntry` will be `null`.
+- If `req.user` is absent, `mediaEntry` will be `null`.
 
 ### Response Structure
 
@@ -45,7 +45,7 @@ To support these unified routes, we need a middleware that extracts user informa
   "success": true,
   "data": {
     "media": { ...mediaDetails... },
-    "userEntry": { ...mediaEntryDetails... } // or null if unauthenticated / no entry
+    "mediaEntry": { ...mediaEntryDetails... } // or null if unauthenticated / no entry
   }
 }
 ```
