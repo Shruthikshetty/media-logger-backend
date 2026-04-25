@@ -509,3 +509,27 @@ components:
                     type: array
                     items:
                       $ref: '#/components/schemas/Game'
+    GetGameWithUserEntrySuccessResponse:
+      description: success response of getting a game with user entry data
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - success
+              - requestId
+              - data
+            properties:
+              success:
+                type: boolean
+                example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+              data:
+                type: object
+                properties:
+                  game:
+                    $ref: '#/components/schemas/Game'
+                  userEntry:
+                    $ref: '#/components/schemas/MediaEntries'
