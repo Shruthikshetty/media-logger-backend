@@ -493,3 +493,28 @@ components:
               message:
                 type: string
                 example: 'Movie updated successfully'
+
+    GetMovieWithUserEntrySuccessResponse:
+      description: Success response of getting a movie with user entry data
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - success
+              - requestId
+              - data
+            properties:
+              success:
+                type: boolean
+                example: true
+              requestId:
+                type: string
+                example: 'aa636e0e-13e8-472c-874c-3aac8ae00000'
+              data:
+                type: object
+                properties:
+                  movie:
+                    $ref: '#/components/schemas/Movie'
+                  mediaEntry:
+                    $ref: '#/components/schemas/MediaEntries'

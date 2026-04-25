@@ -6,6 +6,7 @@ import { handleError } from '../common/utils/handle-error';
 import { NextFunction, Response } from 'express';
 import { ValidatedRequest } from '../types/custom-types';
 import Game from '../models/game.model';
+import MediaEntry from '../models/media-entry';
 import {
   isDuplicateKeyError,
   isMongoIdValid,
@@ -559,5 +560,55 @@ export const filterGames = async (
     handleError(res, {
       error: err,
     });
+  }
+};
+
+//get game details with user context (media entry)
+export const getGameDetailWithUserContext = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    const { id } = req.params;
+    // @ts-ignore
+    const user = req.userData;
+
+    // validate id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid game id', statusCode: 400 });
+      return;
+    }
+
+    // fetch game and media entry in parallel
+    const [game, mediaEntry] = await Promise.all([
+      Game.findById(id).lean().exec(),
+      user
+        ? MediaEntry.findOne({
+            user: user._id,
+            mediaItem: id,
+            onModel: 'Game',
+          })
+            .lean()
+            .exec()
+        : Promise.resolve(null),
+    ]);
+
+    // if game is not found
+    if (!game) {
+      handleError(res, { message: 'Game not found', statusCode: 404 });
+      return;
+    }
+
+    //send response
+    res.status(200).json({
+      success: true,
+      data: {
+        game,
+        mediaEntry,
+      },
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, { error: err });
   }
 };

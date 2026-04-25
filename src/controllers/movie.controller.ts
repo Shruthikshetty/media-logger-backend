@@ -26,6 +26,7 @@ import {
   appendOldAndNewDoc,
   appendOldDoc,
 } from '../common/utils/history-utils';
+import MediaEntry from '../models/media-entry';
 
 // controller to add a new movie
 export const addMovie = async (
@@ -590,5 +591,50 @@ export const getMoviesWithFilters = async (
     handleError(res, {
       error: err,
     });
+  }
+};
+
+/**
+ * get a movie by id with populated user entry
+ */
+export const getMovieDetailWithUserContext = async (
+  req: ValidatedRequest<{}>,
+  res: Response
+) => {
+  try {
+    // get media id
+    const { id } = req.params;
+    const user = req?.userData;
+
+    // validate id
+    if (!isMongoIdValid(id)) {
+      handleError(res, { message: 'Invalid movie id', statusCode: 400 });
+      return;
+    }
+
+    // fetch the movie and user entry in parallel
+    const [movie, mediaEntry] = await Promise.all([
+      Movie.findById(id).lean().exec(),
+      user
+        ? MediaEntry.findOne({ user: user.id, mediaItem: id, onModel: 'Movie' })
+            .lean()
+            .exec()
+        : null,
+    ]);
+
+    // handle if movie not found
+    if (!movie) {
+      handleError(res, { message: 'Movie not found', statusCode: 404 });
+      return;
+    }
+
+    // return the movie
+    res.status(200).json({
+      success: true,
+      data: { movie, mediaEntry },
+    });
+  } catch (err) {
+    // handle unexpected error
+    handleError(res, { error: err });
   }
 };

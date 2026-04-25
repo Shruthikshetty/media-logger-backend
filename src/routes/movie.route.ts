@@ -13,8 +13,9 @@ import {
   addBulkMovies,
   searchMovies,
   getMoviesWithFilters,
+  getMovieDetailWithUserContext,
 } from '../controllers/movie.controller';
-import { requireAuth } from '../common/middleware/require-auth';
+import { optionalAuth, requireAuth } from '../common/middleware/require-auth';
 import { validateReq } from '../common/middleware/handle-validation';
 import { AddMovieZodSchema } from '../common/validation-schema/movie/add-movie';
 import { updateMoveZodSchema } from '../common/validation-schema/movie/update-movie';
@@ -122,7 +123,7 @@ route.post('/filter', validateReq(MovieFiltersZodSchema), getMoviesWithFilters);
  *     parameters:
  *       - name: id
  *         in: path
- *         required:
+ *         required: true
  *         schema:
  *           type: string
  *         description: valid mongo id
@@ -137,6 +138,31 @@ route.post('/filter', validateReq(MovieFiltersZodSchema), getMoviesWithFilters);
  *         $ref: '#/components/responses/BadRequest'
  */
 route.get('/:id', getMovieById);
+
+/**
+ * @swagger
+ * /api/movie/{id}/with-entry:
+ *   get:
+ *     summary: Get movie by id with user entry context
+ *     tags: [Movies]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: valid mongo id
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/GetMovieWithUserEntrySuccessResponse'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ *       '404':
+ *         $ref: '#/components/responses/NotFound'
+ *       '400':
+ *         $ref: '#/components/responses/BadRequest'
+ */
+route.get('/:id/with-entry', optionalAuth(), getMovieDetailWithUserContext);
 
 /**
  * @swagger

@@ -1,0 +1,14 @@
+@baseUrl = http://localhost:3001
+@authToken = Bearer <token>
+
+#---------------------------------Games--------------------------------------------------------------------------------------
+### get game by id with user context
+GET {{baseUrl}}/api/game/696da5c214ab5aefab34a9e1/with-entry
+Authorization: {{authToken}}
+
+
+
+#---------------------------------Movie--------------------------------------------------------------------------------------
+### get movie by id with user context
+GET {{baseUrl}}/api/movie/69dbc20c4f143d20e0fe2b23/with-entry
+Authorization: {{authToken}}
