@@ -616,7 +616,7 @@ export const getMovieDetailWithUserContext = async (
     const [movie, mediaEntry] = await Promise.all([
       Movie.findById(id).lean().exec(),
       user
-        ? MediaEntry.findOne({ user: user.id, mediaItem: id, onModel: 'Movie' })
+        ? MediaEntry.findOne({ user: user._id, mediaItem: id, onModel: 'Movie' })
             .lean()
             .exec()
         : null,
